@@ -104,6 +104,12 @@ python3 nos_tlplot.py sample.csv output-traffic-light.png gray
 
 ---
 
+### 🧩 Python Sample
+
+![Python Result1](example/python.png)
+
+---
+
 **Parameters:**
 
 | Parameter     | Description                                         |

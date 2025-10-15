@@ -312,7 +312,7 @@ All figures are **publication-ready**.
     sample_csv_path = "sample.csv"
     if os.path.exists(sample_csv_path):
         st.markdown('<div class="scrollable-table">', unsafe_allow_html=True)
-        st.dataframe(pd.read_csv(sample_csv_path), use_container_width=True)
+        st.dataframe(pd.read_csv(sample_csv_path), width='stretch')
         st.markdown('</div>', unsafe_allow_html=True)
 
     # Download buttons
@@ -390,7 +390,7 @@ if uploaded_file is not None:
             
             with tab1:
                 st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                st.image(output_files[".png"], use_container_width=True)
+                st.image(output_files[".png"], width='stretch')
                 st.caption("Professional Traffic-Light Bubble Chart")
                 
                 # Add download buttons for all formats
@@ -427,7 +427,7 @@ if uploaded_file is not None:
                 col1, col2 = st.columns(2)
                 with col1:
                     st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                    st.image(plot_files["Radar Chart"][".png"], use_container_width=True)
+                    st.image(plot_files["Radar Chart"][".png"], width='stretch')
                     st.caption("Domain Scores Radar Chart")
                     
                     # Add download buttons for all formats
@@ -454,7 +454,7 @@ if uploaded_file is not None:
                     
                 with col2:
                     st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                    st.image(plot_files["Theme-based Radar Chart"][".png"], use_container_width=True)
+                    st.image(plot_files["Theme-based Radar Chart"][".png"], width='stretch')
                     st.caption("Theme-based Domain Scores Radar Chart")
                     
                     # Add download buttons for all formats
@@ -486,7 +486,7 @@ if uploaded_file is not None:
                 for i, name in enumerate(plot_names):
                     with cols[i % 3]:
                         st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                        st.image(plot_files[name][".png"], use_container_width=True)
+                        st.image(plot_files[name][".png"], width='stretch')
                         st.caption(name)
                         
                         # Add download buttons for all formats

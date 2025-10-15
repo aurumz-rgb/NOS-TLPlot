@@ -23,7 +23,7 @@ THEME_OPTIONS = {
 
 # global style 
 plt.style.use('seaborn-v0_8-whitegrid')
-mpl.rcParams['font.family'] = 'Arial'
+mpl.rcParams['font.family'] = 'DejaVu Sans'
 mpl.rcParams['font.weight'] = 'bold'
 mpl.rcParams['axes.labelweight'] = 'bold'
 mpl.rcParams['axes.titleweight'] = 'bold'

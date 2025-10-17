@@ -14,8 +14,6 @@ from matplotlib.patches import Rectangle
 import matplotlib.patheffects as path_effects
 from matplotlib.collections import LineCollection
 
-
-
 THEME_OPTIONS = {
     "traffic_light": {"Low":"#2E7D32", "Moderate":"#F9A825", "High":"#C62828"},  
     "gray": {"Low":"#95A5A6", "Moderate":"#34495E", "High":"#1E2A37"},            
@@ -442,10 +440,13 @@ def plot_star_distribution(df: pd.DataFrame, output_file: str, theme: str = "tra
     
 
     fig, ax = plt.subplots(figsize=(10, 6))
+    
+    # Fixed: Define domain order and palette list
+    domain_order = ["Selection", "Comparability", "Outcome/Exposure"]
+    palette_list = [colors_map["Low"], colors_map["Moderate"], colors_map["High"]]
+    
     sns.barplot(data=plot_df, x="Stars", y="Count", hue="Domain", 
-                palette={"Selection": colors_map["Low"], 
-                         "Comparability": colors_map["Moderate"],
-                         "Outcome/Exposure": colors_map["High"]},
+                hue_order=domain_order, palette=palette_list,
                 ax=ax, edgecolor='black', linewidth=1.2, alpha=0.9)
     
     ax.set_title("Distribution of Star Ratings by Domain", fontsize=16, pad=12)
@@ -463,44 +464,6 @@ def plot_star_distribution(df: pd.DataFrame, output_file: str, theme: str = "tra
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Star distribution plot saved to {output_file}")
-
-
-def plot_box_scores(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
-    colors_map = get_theme_colors(theme)
-    
-
-    plot_df = df.melt(id_vars=["Author, Year", "Overall RoB"], 
-                      value_vars=["Selection", "Comparability", "Outcome/Exposure"],
-                      var_name="Domain", value_name="Score")
-    
-
-    fig, ax = plt.subplots(figsize=(8, 6))
-    sns.boxplot(data=plot_df, x="Domain", y="Score", 
-                palette={"Selection": colors_map["Low"], 
-                         "Comparability": colors_map["Moderate"],
-                         "Outcome/Exposure": colors_map["High"]},
-                ax=ax, linewidth=1.5, boxprops=dict(alpha=0.9))
-    
-
-    sns.stripplot(data=plot_df, x="Domain", y="Score", 
-                  hue="Overall RoB", palette=colors_map,
-                  alpha=0.7, jitter=True, ax=ax, size=5, dodge=True, 
-                  linewidth=0.8, edgecolor='black')
-    
-    ax.set_title("Distribution of Domain Scores", fontsize=16, pad=12)
-    ax.set_xlabel("Domain", fontsize=12)
-    ax.set_ylabel("Score", fontsize=12)
-    ax.grid(axis='y', linestyle='--', alpha=0.7)
-    
-
-    risk_legend_elements = [Patch(facecolor=colors_map[rob], label=rob, edgecolor='black', linewidth=1.2) 
-                            for rob in ["High", "Moderate", "Low"]]
-    ax.legend(handles=risk_legend_elements, title="Overall Risk", bbox_to_anchor=(1.2, 0.5), loc='center left')
-    
-    plt.tight_layout()
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
-    plt.close()
-    print(f"✅ Box plot saved to {output_file}")
 
 
 def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
@@ -815,6 +778,63 @@ def plot_stacked_area_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
     plt.close()
     print(f"✅ Stacked area chart saved to {output_file}")
 
+# NEW FUNCTION: Star Distribution Histogram
+def plot_star_distribution_hist(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
+    colors_map = get_theme_colors(theme)
+    domains = ["Selection", "Comparability", "Outcome/Exposure"]
+    
+    # Create figure with subplots for each domain
+    fig, axs = plt.subplots(1, 3, figsize=(15, 5))
+    
+    # Define colors for each star rating
+    star_colors = {
+        0: "#d32f2f",  # Red for 0 stars
+        1: "#f57c00",  # Orange for 1 star
+        2: "#fbc02d",  # Yellow for 2 stars
+        3: "#689f38",  # Light green for 3 stars
+        4: "#388e3c",  # Green for 4 stars
+        5: "#1976d2"   # Blue for 5 stars
+    }
+    
+    # Plot histogram for each domain
+    for i, domain in enumerate(domains):
+        # Get star counts for this domain
+        star_counts = df[domain].value_counts().sort_index()
+        
+        # Create bars for each possible star rating (0-5)
+        x = range(0, 6)
+        heights = [star_counts.get(stars, 0) for stars in x]
+        colors = [star_colors[stars] for stars in x]
+        
+        # Plot bars
+        bars = axs[i].bar(x, heights, color=colors, edgecolor='black', alpha=0.8, linewidth=1.2)
+        
+        # Add count labels on top of bars
+        for bar, height in zip(bars, heights):
+            if height > 0:
+                axs[i].text(bar.get_x() + bar.get_width()/2., height + 0.05,
+                           f'{int(height)}', ha='center', va='bottom', fontweight='bold')
+        
+        # Set domain-specific title and labels
+        axs[i].set_title(f"{domain} Domain", fontsize=14, pad=10)
+        axs[i].set_xlabel("Star Rating", fontsize=12)
+        axs[i].set_ylabel("Number of Studies", fontsize=12)
+        axs[i].set_xticks(x)
+        axs[i].set_ylim(0, max(heights) * 1.2 if heights else 1)
+        axs[i].grid(axis='y', linestyle='--', alpha=0.7)
+    
+    # Add overall title
+    fig.suptitle("NOS Star Distribution by Domain", fontsize=16, y=1.05, fontweight='bold')
+    
+    # Create legend for star ratings
+    legend_elements = [Patch(facecolor=star_colors[stars], label=f'{stars} Stars', 
+                           edgecolor='black', linewidth=1.2) for stars in range(0, 6)]
+    fig.legend(handles=legend_elements, loc='center right', bbox_to_anchor=(1.15, 0.5))
+    
+    plt.tight_layout()
+    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"✅ Star distribution histogram saved to {output_file}")
 
 def read_input_file(file_path: str) -> pd.DataFrame:
     ext = os.path.splitext(file_path)[1].lower()
@@ -856,3 +876,4 @@ if __name__ == "__main__":
     plot_lollipop_total(df, f"{base}_lollipop{ext}", theme)
     plot_pie_overall_rob(df, f"{base}_pie{ext}", theme)
     plot_stacked_area_risk(df, f"{base}_stacked_area{ext}", theme)
+    plot_star_distribution_hist(df, f"{base}_star_hist{ext}", theme)  # NEW PLOT

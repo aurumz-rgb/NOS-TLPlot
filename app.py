@@ -4,7 +4,8 @@ from nos_tlplot import (
     process_detailed_nos, professional_plot, plot_domain_radar, 
     plot_theme_radar, plot_domain_heatmap, plot_dot_profile, 
     plot_score_table, plot_donut_domain_risk, plot_line_ordered_scores, 
-    plot_lollipop_total, plot_pie_overall_rob, plot_stacked_area_risk
+    plot_lollipop_total, plot_pie_overall_rob, plot_stacked_area_risk,
+    plot_star_distribution_hist
 )
 import tempfile
 import os
@@ -12,7 +13,7 @@ import shutil
 from io import BytesIO
 import base64
 import streamlit.components.v1 as components
-import gc  # For garbage collection
+import gc  
 
 st.set_page_config(
     page_title="NOS-TLPlot",
@@ -349,20 +350,33 @@ if uploaded_file is not None:
         
         # Create a temporary directory that will be cleaned up automatically
         with tempfile.TemporaryDirectory() as temp_dir:
-            # Use a regular dictionary for plot files
+           
             plot_files = {}
             
-            # Generate professional plot
-            output_files = {ext: os.path.join(temp_dir, f"NOS_TrafficLight{ext}") for ext in [".png",".pdf",".svg",".eps"]}
-            for out_ext, path in output_files.items():
-                professional_plot(df, path, theme=theme)
-            plot_files["Professional Traffic-Light Plot"] = output_files
+            
+            main_plot_files = {}
+            for fmt in [".png", ".pdf", ".svg", ".eps"]:
+                output_path = os.path.join(temp_dir, f"NOS_StarDistributionHist{fmt}")
+                plot_star_distribution_hist(df, output_path, theme=theme)
+                main_plot_files[fmt] = output_path
             gc.collect()  # Free memory after generating plots
             
-            # Define plot functions
+            # Generate radar charts
+            output_files_radar = {ext: os.path.join(temp_dir, f"NOS_radar{ext}") for ext in [".png",".pdf",".svg",".eps"]}
+            for out_ext, path in output_files_radar.items():
+                plot_domain_radar(df, path, theme=theme)
+            plot_files["Radar Chart"] = output_files_radar
+            gc.collect()
+            
+            output_files_theme_radar = {ext: os.path.join(temp_dir, f"NOS_theme_radar{ext}") for ext in [".png",".pdf",".svg",".eps"]}
+            for out_ext, path in output_files_theme_radar.items():
+                plot_theme_radar(df, path, theme=theme)
+            plot_files["Theme-based Radar Chart"] = output_files_theme_radar
+            gc.collect()
+            
+            # Define plot functions including the bubble chart
             plot_functions = [
-                ("Radar Chart", plot_domain_radar, "radar"),
-                ("Theme-based Radar Chart", plot_theme_radar, "theme_radar"),
+                ("Professional Traffic-Light Plot", professional_plot, "traffic_light"),
                 ("Domain Heatmap", plot_domain_heatmap, "heatmap"),
                 ("Dot Profile Plot", plot_dot_profile, "dot_profile"),
                 ("Score Table", plot_score_table, "table"),
@@ -386,12 +400,12 @@ if uploaded_file is not None:
             st.markdown("### Visualization Preview")
             
             # Display only PNG previews to save memory
-            tab1, tab2, tab3 = st.tabs(["Main Plot", "Radar Charts", "Other Visualizations"])
+            tab1, tab2, tab3 = st.tabs(["Star Distribution", "Radar Charts", "Other Visualizations"])
             
             with tab1:
                 st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                st.image(output_files[".png"], width='stretch')
-                st.caption("Professional Traffic-Light Bubble Chart")
+                st.image(main_plot_files[".png"], width='stretch')
+                st.caption("Star Distribution Histogram")
                 
                 # Add download buttons for all formats
                 st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
@@ -405,11 +419,11 @@ if uploaded_file is not None:
                 }
                 
                 for fmt in formats:
-                    file_path = output_files[fmt]
+                    file_path = main_plot_files[fmt]
                     with open(file_path, "rb") as f:
                         file_data = f.read()
                     
-                    filename = f"NOS_TrafficLight{fmt}"
+                    filename = f"NOS_StarDistributionHist{fmt}"
                     
                     st.download_button(
                         label=f"{fmt[1:].upper()}",
@@ -481,7 +495,8 @@ if uploaded_file is not None:
             
             with tab3:
                 cols = st.columns(3)
-                plot_names = list(plot_files.keys())[2:]  
+                # Filter out radar charts from the list of plots to display
+                plot_names = [name for name in plot_files.keys() if name not in ["Radar Chart", "Theme-based Radar Chart"]]
                 
                 for i, name in enumerate(plot_names):
                     with cols[i % 3]:
@@ -517,7 +532,7 @@ if uploaded_file is not None:
             # Explicitly clear references and force garbage collection
             plot_files.clear()
             del plot_files
-            del output_files
+            del main_plot_files
             gc.collect()
         
     except Exception as e:
@@ -528,45 +543,45 @@ st.markdown("---")
 st.markdown("## 📖 Citation")
 
 apa_citation = (
-    "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0). "
+    "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). "
     "Zenodo. https://doi.org/10.5281/zenodo.17065214"
 )
 
 harvard_citation = (
-    "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0). "
+    "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). "
     "Zenodo. Available at: https://doi.org/10.5281/zenodo.17065214"
 )
 
 mla_citation = (
-    "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0).\" "
+    "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1).\" "
     "2025, Zenodo, https://doi.org/10.5281/zenodo.17065214."
 )
 
 chicago_citation = (
-    "Sahu, Vihaan. 2025. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0).\" "
+    "Sahu, Vihaan. 2025. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1).\" "
     "Zenodo. https://doi.org/10.5281/zenodo.17065214."
 )
 
 ieee_citation = (
-    "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0),\" "
+    "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1),\" "
     "Zenodo, 2025. doi: 10.5281/zenodo.17065214."
 )
 
 vancouver_citation = (
-    "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0). "
+    "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). "
     "Zenodo. 2025. doi:10.5281/zenodo.17065214"
 )
 
 ris_data = """TY  - JOUR
 AU  - Sahu, V
-TI  - NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0)
+TI  - NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1)
 PY  - 2025
 DO  - 10.5281/zenodo.17065214
 ER  -"""
 
 bib_data = """@misc{Sahu2025,
   author={Sahu, V.},
-  title={NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0)},
+  title={NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1)},
   year={2025},
   doi={10.5281/zenodo.17065214}
 }"""
@@ -614,7 +629,7 @@ components.html(f"""
 st.markdown(f"""
 <div style="display:flex; gap:10px; margin-top:10px; margin-bottom:10px;">
     <a download="NOS-TLPlot_citation.ris" href="data:application/x-research-info-systems;base64,{ris_data_encoded}" class="citation-button">RIS Format</a>
-    <a download="NOS_TLPlot_citation.bib" href="data:application/x-bibtex;base64,{bib_data_encoded}" class="citation-button">BibTeX Format</a>
+    <a download="NOS-TLPlot_citation.bib" href="data:application/x-bibtex;base64,{bib_data_encoded}" class="citation-button">BibTeX Format</a>
 </div>
 """, unsafe_allow_html=True)
 

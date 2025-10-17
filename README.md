@@ -16,7 +16,7 @@ It converts NOS star ratings into **publication-ready traffic-light plots** and 
 
 ## ✨ Key Features
 
-- **11 Visualization Types**: Traffic-light plots, radar charts, heatmaps, dot profiles, donut charts, lollipop charts, line plots, and more  
+- **12 Visualization Types**: Traffic-light plots, radar charts, heatmaps, dot profiles, donut charts, lollipop charts, line plots, and more  
 - **Publication-Quality Output**: Export figures in `.png`, `.pdf`, `.svg`, `.eps` formats  
 - **Multiple Themes**: Traffic-light and grayscale themes for various publication requirements  
 - **Interactive Web App**: Built with Streamlit for simple data upload, preview, and figure export  
@@ -77,7 +77,7 @@ streamlit run app.py
 
 * Upload CSV/Excel files
 * Real-time visualization preview
-* Choose from 11 plot types
+* Choose from 12 plot types
 * Download publication-ready figures in multiple formats
 * Theme switcher (Traffic-light / Grayscale)
 
@@ -122,7 +122,7 @@ python3 nos_tlplot.py sample.csv output-traffic-light.png gray
 
 | File                 | Description                             |
 | -------------------- | --------------------------------------- |
-| `_traffic-light.png` | Classic traffic-light plot              |
+| `_traffic-light.png` | Classic traffic-light bubble plot       |
 | `_radar.png`         | Radar chart of domain scores            |
 | `_heatmap.png`       | Color heatmap for domain-level bias     |
 | `_dot_profile.png`   | Dot-style bias visualization            |
@@ -132,6 +132,7 @@ python3 nos_tlplot.py sample.csv output-traffic-light.png gray
 | `_lollipop.png`      | Lollipop chart for comparative bias     |
 | `_pie.png`           | Proportional risk-of-bias pie           |
 | `_stacked_area.png`  | Stacked area visualization over domains |
+| `_star_dist.png`     | Star distribution visualization         |
 
 ---
 
@@ -160,7 +161,7 @@ Your file should have these columns:
 
 ## 🎨 Visualization Types
 
-1. **Traffic-light Plot** – Standard risk-of-bias visualization.
+1. **Traffic-light bubble Plot** – Standard bubble risk-of-bias visualization.
 2. **Radar Chart** – Displays study performance across domains.
 3. **Heatmap** – Visual overview of domain-level variation.
 4. **Dot Profile** – Shows domain-level bias in compact form.
@@ -171,6 +172,7 @@ Your file should have these columns:
 9. **Line Ordered Plot** – Connects domain bias levels for each study.
 10. **Table View** – Tabular representation of bias domains.
 11. **Radar (Thematic)** – Theme-adapted radar chart (gray/colored).
+12. **Star distribution** – Star-adapted plot (only traffic-light).
 
 ---
 
@@ -190,7 +192,7 @@ Your file should have these columns:
 
 If including NOS-TLPlot in a methods section, you can use this suggested text:
 
-> “Risk of bias for included non-randomized studies was assessed using the Newcastle–Ottawa Scale (NOS). Visualization and synthesis of domain-level NOS scores were performed using NOS-TLPlot (v2.0.0), an open-source Python-based tool that generates traffic-light plots and other visual formats for NOS-based risk-of-bias representation (Sahu, 2025; DOI: 10.5281/zenodo.17065214).”
+> “Risk of bias for included non-randomized studies was assessed using the Newcastle–Ottawa Scale (NOS). Visualization and synthesis of domain-level NOS scores were performed using NOS-TLPlot (v2.0.1), an open-source Python-based tool that generates traffic-light plots and other visual formats for NOS-based risk-of-bias representation (Sahu, 2025; DOI: 10.5281/zenodo.17065214).”
 
 ---
 
@@ -198,17 +200,17 @@ If including NOS-TLPlot in a methods section, you can use this suggested text:
 
 If you use NOS-TLPlot, please cite:
 
-**Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0). Zenodo.**
+**Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). Zenodo.**
 DOI: [10.5281/zenodo.17065214](https://doi.org/10.5281/zenodo.17065214)
 
 ```bibtex
 @software{Sahu2025,
   author = {Sahu, Vihaan},
-  title = {NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0)},
+  title = {NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1)},
   year = {2025},
   doi = {10.5281/zenodo.17065214},
   url = {https://doi.org/10.5281/zenodo.17065214},
-  version = {2.0.0}
+  version = {2.0.1}
 }
 ```
 
@@ -267,6 +269,10 @@ NOS-TLPlot/
 # Sample Plots
 
 All the Output Sample plots
+
+![Example Result1111](example/NOS_star.png)
+NOS star plot
+
 
 ![Example Result1](example/output.png)
 NOS bubble plot

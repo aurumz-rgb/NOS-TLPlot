@@ -7,7 +7,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>NOS-TLPlot</title>
-  <meta name="description" content="NOS-TLPlot is an open-source Python tool for visualizing Newcastle–Ottawa Scale risk-of-bias assessments with 11 publication-ready visualization types.">
+  <meta name="description" content="NOS-TLPlot is an open-source Python tool for visualizing Newcastle–Ottawa Scale risk-of-bias assessments with 12 publication-ready visualization types.">
   <meta name="keywords" content="NOS-TLPlot, Newcastle–Ottawa Scale, NOS, risk of bias, meta-analysis, systematic review, traffic light plot, bias visualization, open-source, Python, Vihaan Sahu">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <meta name="author" content="Vihaan Sahu">
@@ -27,9 +27,11 @@
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="NOS-TLPlot | Newcastle-Ottawa Scale Visualization Tool">
-  <meta property="og:description" content="Open-source Python tool for visualizing NOS risk-of-bias assessments with 11 publication-ready visualization types for systematic reviews and meta-analysis.">
+  <meta property="og:description" content="Open-source Python tool for visualizing NOS risk-of-bias assessments with 12 publication-ready visualization types for systematic reviews and meta-analysis.">
   <meta property="og:image" content="https://nos-tlplot.vercel.app/assets/preview1.png">
   <meta property="og:image:alt" content="NOS-TLPlot Banner">
+  <meta property="og:image" content="https://raw.githubusercontent.com/aurumz-rgb/NOS-TLPlot/main/example/NOS_star.png">
+  <meta property="og:image:alt" content="NOS star distribution visualization">
   <meta property="og:image" content="https://raw.githubusercontent.com/aurumz-rgb/NOS-TLPlot/main/example/output.png">
   <meta property="og:image:alt" content="NOS bubble chart visualization">
   <meta property="og:image" content="https://raw.githubusercontent.com/aurumz-rgb/NOS-TLPlot/main/example/output_radar.png">
@@ -94,7 +96,7 @@
     "alternateName": "Newcastle-Ottawa Scale Visualization Tool",
     "operatingSystem": "Web, Python",
     "applicationCategory": "Research Visualization Tool",
-    "description": "An open-source Python tool for visualizing Newcastle–Ottawa Scale risk-of-bias assessments with 11 publication-ready visualization types for systematic reviews and meta-analysis.",
+    "description": "An open-source Python tool for visualizing Newcastle–Ottawa Scale risk-of-bias assessments with 12 publication-ready visualization types for systematic reviews and meta-analysis.",
     "url": "https://nos-tlplot.vercel.app/",
     "creator": {
       "@type": "Person",
@@ -211,21 +213,21 @@
       border-radius: 8px;
       background: #ffffff;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      height: 450px; 
+      height: 500px; 
     }
     .carousel-track {
       display: flex;
-      width: 1100%; 
+      width: 1200%; 
       transition: transform 0.5s ease-in-out;
       height: 100%;
     }
     .carousel-track img {
-      width: 9.090909%; 
+      width: 8.333333%; 
       flex-shrink: 0;
       display: block;
       height: 100%;
       object-fit: contain;
-      padding: 15px;
+      padding: 10px;
       box-sizing: border-box;
     }
     
@@ -234,29 +236,28 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      width: 40px;
-      height: 40px;
-      background-color: rgba(45, 74, 61, 0.9);
+      width: 30px;
+      height: 30px;
+      background-color: rgba(45, 74, 61, 0.8);
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
       cursor: pointer;
       z-index: 10;
-      font-size: 20px;
+      font-size: 16px;
       border: none;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      color: white;
       transition: all 0.3s ease;
     }
     .carousel-arrow:hover {
       background-color: #2d4a3d;
-      transform: translateY(-50%) scale(1.1);
     }
     .carousel-arrow.prev {
-      left: 15px;
+      left: 10px;
     }
     .carousel-arrow.next {
-      right: 15px;
+      right: 10px;
     }
 
     .table-container {
@@ -501,7 +502,7 @@
       <h2>About NOS-TLPlot</h2>
       <p>
         <strong>NOS-TLPlot</strong> is an open-source Python tool for <strong>visualizing Newcastle–Ottawa Scale (NOS) risk-of-bias assessments</strong>.  
-        It converts NOS star ratings into <strong>publication-ready traffic-light plots</strong> and <strong>11 specialized visualizations</strong>, enabling reviewers and readers to interpret study-level risk-of-bias results clearly and reproducibly.
+        It converts NOS star ratings into <strong>publication-ready traffic-light plots</strong> and <strong>12 specialized visualizations</strong>, enabling reviewers and readers to interpret study-level risk-of-bias results clearly and reproducibly.
       </p>
       
       <div class="feature-grid">
@@ -510,7 +511,7 @@
           <p>Designed exclusively for NOS evaluations of non-randomised studies in systematic reviews and meta-analyses.</p>
         </div>
         <div class="feature-card">
-          <h3>📊 11 Visualization Types</h3>
+          <h3>📊 12 Visualization Types</h3>
           <p>Traffic-light plots, radar charts, heatmaps, dot profiles, donut charts, lollipop charts, and more.</p>
         </div>
         <div class="feature-card">
@@ -528,6 +529,7 @@
     <section class="carousel">
       <button class="carousel-arrow prev">&#10094;</button>
       <div class="carousel-track">
+        <img src="example/NOS_star.png" alt="NOS star visualization Plot">
         <img src="example/output.png" alt="NOS Bubble Plot">
         <img src="example/output_radar.png" alt="Domain Scores Radar Chart">
         <img src="example/output_theme_radar.png" alt="Theme-based Radar Chart">
@@ -563,6 +565,7 @@
         <div class="viz-item">9. Line Ordered Plot</div>
         <div class="viz-item">10. Table View</div>
         <div class="viz-item">11. Thematic Radar</div>
+        <div class="viz-item">12. Star Distribution</div>
       </div>
     </section>
 
@@ -669,7 +672,7 @@
       <h2> Methods Section Text</h2>
       <p>For including NOS-TLPlot in your systematic review methods section:</p>
       <div style="background: #f8f9fa; padding: 1.5rem; border-radius: 8px; border-left: 4px solid #2d4a3d;">
-        <p><em>"Risk of bias for included non-randomized studies was assessed using the Newcastle–Ottawa Scale (NOS). Visualization and synthesis of domain-level NOS scores were performed using NOS-TLPlot (v2.0.0), an open-source Python-based tool that generates traffic-light plots and other visual formats for NOS-based risk-of-bias representation (Sahu, 2025; DOI: 10.5281/zenodo.17065214)."</em></p>
+        <p><em>"Risk of bias for included non-randomized studies was assessed using the Newcastle–Ottawa Scale (NOS). Visualization and synthesis of domain-level NOS scores were performed using NOS-TLPlot (v2.0.1), an open-source Python-based tool that generates traffic-light plots and other visual formats for NOS-based risk-of-bias representation (Sahu, 2025; DOI: 10.5281/zenodo.17065214)."</em></p>
       </div>
     </section>
 
@@ -699,7 +702,7 @@
         <button onclick="copyCitation()">Copy</button>
       </div>
 
-      <p id="citationText"><em>Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0). Zenodo. https://doi.org/10.5281/zenodo.17065214</em></p>
+      <p id="citationText"><em>Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). Zenodo. https://doi.org/10.5281/zenodo.17065214</em></p>
       
       <div class="citation-download">
         <button onclick="downloadCitation('ris')">Download RIS</button>
@@ -744,12 +747,12 @@
 
 
   const citations = {
-    apa: "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0). Zenodo. https://doi.org/10.5281/zenodo.17065214",
-    vancouver: "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0). Zenodo; 2025. Available from: https://doi.org/10.5281/zenodo.17065214",
-    chicago: "Sahu, V. 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0). Zenodo. https://doi.org/10.5281/zenodo.17065214",
-    harvard: "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0). Zenodo. Available at: https://doi.org/10.5281/zenodo.17065214",
-    mla: "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0).\" 2025, Zenodo, https://doi.org/10.5281/zenodo.17065214.",
-    ieee: "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.0),\" Zenodo, 2025. doi: 10.5281/zenodo.17065214."
+    apa: "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). Zenodo. https://doi.org/10.5281/zenodo.17065214",
+    vancouver: "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). Zenodo; 2025. Available from: https://doi.org/10.5281/zenodo.17065214",
+    chicago: "Sahu, V. 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). Zenodo. https://doi.org/10.5281/zenodo.17065214",
+    harvard: "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). Zenodo. Available at: https://doi.org/10.5281/zenodo.17065214",
+    mla: "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1).\" 2025, Zenodo, https://doi.org/10.5281/zenodo.17065214.",
+    ieee: "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1),\" Zenodo, 2025. doi: 10.5281/zenodo.17065214."
   };
 
   const citationSelect = document.getElementById("citationType");
@@ -786,7 +789,7 @@ ER  - `;
   author = {Sahu, Vihaan},
   title = {{NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis}},
   year = {2025},
-  version = {v2.0.0},
+  version = {v2.0.1},
   publisher = {Zenodo},
   doi = {10.5281/zenodo.17065214},
   url = {https://doi.org/10.5281/zenodo.17065214}

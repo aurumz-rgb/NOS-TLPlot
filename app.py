@@ -288,7 +288,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('<div class="lowered-section">', unsafe_allow_html=True)
 
 # Quick Start
-st.markdown('<div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; color: #f5f6fa;">🚀 Quick Start & Data Instructions</div>', unsafe_allow_html=True)
+st.markdown('<div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; color: #f5f6fa;"> Quick Start & Data Instructions</div>', unsafe_allow_html=True)
 with st.expander("**Setting Up Your Data**", expanded=True):
     st.markdown('<div class="quickstart" style="margin-top:-1rem;">', unsafe_allow_html=True)
     st.write("""
@@ -316,7 +316,7 @@ All figures are **publication-ready**.
         st.dataframe(pd.read_csv(sample_csv_path), width='stretch')
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # Download buttons
+
     excel_file_path = "sample.xlsx"
     csv_file_path = "sample.csv"
     def file_to_b64(path):
@@ -333,7 +333,7 @@ All figures are **publication-ready**.
     st.markdown('</div>', unsafe_allow_html=True)
 
 # Upload
-st.markdown("### 📂 Upload Your Data")
+st.markdown("### Upload Your Data")
 st.markdown('<p style="color: #f5f6fa; font-size: 1.1rem;">Upload a <b>CSV</b> or <b>Excel (.xlsx)</b> file.</p>', unsafe_allow_html=True)
 theme = st.selectbox("Select Plot Theme", options=["traffic_light", "gray"])
 uploaded_file = st.file_uploader("Choose a CSV or Excel file", type=["csv","xls","xlsx"])
@@ -343,12 +343,12 @@ if uploaded_file is not None:
         ext = os.path.splitext(uploaded_file.name)[1].lower()
         df = pd.read_csv(uploaded_file) if ext==".csv" else pd.read_excel(uploaded_file)
         df = process_detailed_nos(df)
-        st.success("✅ Data validated successfully!")
+        st.success(" Data validated successfully!")
         
-        # Force garbage collection to free memory
+        
         gc.collect()
         
-        # Create a temporary directory that will be cleaned up automatically
+       
         with tempfile.TemporaryDirectory() as temp_dir:
            
             plot_files = {}
@@ -359,9 +359,9 @@ if uploaded_file is not None:
                 output_path = os.path.join(temp_dir, f"NOS_StarDistributionHist{fmt}")
                 plot_star_distribution_hist(df, output_path, theme=theme)
                 main_plot_files[fmt] = output_path
-            gc.collect()  # Free memory after generating plots
+            gc.collect()  
             
-            # Generate radar charts
+           
             output_files_radar = {ext: os.path.join(temp_dir, f"NOS_radar{ext}") for ext in [".png",".pdf",".svg",".eps"]}
             for out_ext, path in output_files_radar.items():
                 plot_domain_radar(df, path, theme=theme)
@@ -374,7 +374,7 @@ if uploaded_file is not None:
             plot_files["Theme-based Radar Chart"] = output_files_theme_radar
             gc.collect()
             
-            # Define plot functions including the bubble chart
+           
             plot_functions = [
                 ("Professional Traffic-Light Plot", professional_plot, "traffic_light"),
                 ("Domain Heatmap", plot_domain_heatmap, "heatmap"),
@@ -387,7 +387,7 @@ if uploaded_file is not None:
                 ("Stacked Area Chart", plot_stacked_area_risk, "stacked_area")
             ]
             
-            # Generate plots with memory optimization
+            
             for name, func, base in plot_functions:
                 format_files = {}
                 for fmt in [".png", ".pdf", ".svg", ".eps"]:
@@ -395,11 +395,11 @@ if uploaded_file is not None:
                     func(df, output_path, theme=theme)
                     format_files[fmt] = output_path
                 plot_files[name] = format_files
-                gc.collect()  # Free memory after each plot
+                gc.collect() 
             
             st.markdown("### Visualization Preview")
             
-            # Display only PNG previews to save memory
+            
             tab1, tab2, tab3 = st.tabs(["Star Distribution", "Radar Charts", "Other Visualizations"])
             
             with tab1:
@@ -407,7 +407,7 @@ if uploaded_file is not None:
                 st.image(main_plot_files[".png"], width='stretch')
                 st.caption("Star Distribution Histogram")
                 
-                # Add download buttons for all formats
+                
                 st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
                 
                 formats = [".png", ".pdf", ".svg", ".eps"]
@@ -444,7 +444,7 @@ if uploaded_file is not None:
                     st.image(plot_files["Radar Chart"][".png"], width='stretch')
                     st.caption("Domain Scores Radar Chart")
                     
-                    # Add download buttons for all formats
+                   
                     st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
                     
                     for fmt in formats:
@@ -471,7 +471,7 @@ if uploaded_file is not None:
                     st.image(plot_files["Theme-based Radar Chart"][".png"], width='stretch')
                     st.caption("Theme-based Domain Scores Radar Chart")
                     
-                    # Add download buttons for all formats
+                    
                     st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
                     
                     for fmt in formats:
@@ -495,7 +495,7 @@ if uploaded_file is not None:
             
             with tab3:
                 cols = st.columns(3)
-                # Filter out radar charts from the list of plots to display
+                
                 plot_names = [name for name in plot_files.keys() if name not in ["Radar Chart", "Theme-based Radar Chart"]]
                 
                 for i, name in enumerate(plot_names):
@@ -504,10 +504,10 @@ if uploaded_file is not None:
                         st.image(plot_files[name][".png"], width='stretch')
                         st.caption(name)
                         
-                        # Add download buttons for all formats
+                       
                         st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
                         
-                        # Create filename based on plot name
+                        
                         clean_name = name.replace(' ', '_').replace('-', '_').replace(' ', '')
                         
                         for fmt in formats:
@@ -529,7 +529,7 @@ if uploaded_file is not None:
                         st.markdown('</div>', unsafe_allow_html=True)
                         st.markdown('</div>', unsafe_allow_html=True)
             
-            # Explicitly clear references and force garbage collection
+           
             plot_files.clear()
             del plot_files
             del main_plot_files
@@ -540,7 +540,7 @@ if uploaded_file is not None:
 
 # Citation 
 st.markdown("---")
-st.markdown("## 📖 Citation")
+st.markdown("##  Citation")
 
 apa_citation = (
     "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). "
@@ -664,6 +664,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Close wrappers
+
 st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)

@@ -19,7 +19,7 @@ THEME_OPTIONS = {
     "gray": {"Low":"#95A5A6", "Moderate":"#34495E", "High":"#1E2A37"},            
 }
 
-# global style 
+
 plt.style.use('seaborn-v0_8-whitegrid')
 mpl.rcParams['font.family'] = 'DejaVu Sans'
 mpl.rcParams['font.weight'] = 'bold'
@@ -74,7 +74,7 @@ def process_detailed_nos(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-# Map stars to risk colors
+
 def stars_to_rob(stars, domain):
     if domain == "Selection":
         return "Low" if stars >= 3 else "Moderate" if stars == 2 else "High"
@@ -88,7 +88,7 @@ def map_color(stars, domain, colors):
     risk = stars_to_rob(stars, domain)
     return colors.get(risk, "grey")
 
-# Professional combined plot with enhanced bubble chart
+
 def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors = get_theme_colors(theme)
     line_width = 1.5
@@ -211,7 +211,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     plt.close()
     print(f"✅ Professional combined plot saved to {output_file}")
 
-# Enhanced Radar Chart with publication quality styling
+
 def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
     
@@ -778,44 +778,43 @@ def plot_stacked_area_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
     plt.close()
     print(f"✅ Stacked area chart saved to {output_file}")
 
-# NEW FUNCTION: Star Distribution Histogram
+
 def plot_star_distribution_hist(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
     domains = ["Selection", "Comparability", "Outcome/Exposure"]
     
-    # Create figure with subplots for each domain
+
     fig, axs = plt.subplots(1, 3, figsize=(15, 5))
     
-    # Define colors for each star rating
+
     star_colors = {
-        0: "#d32f2f",  # Red for 0 stars
-        1: "#f57c00",  # Orange for 1 star
-        2: "#fbc02d",  # Yellow for 2 stars
-        3: "#689f38",  # Light green for 3 stars
-        4: "#388e3c",  # Green for 4 stars
-        5: "#1976d2"   # Blue for 5 stars
+        0: "#d32f2f",  
+        1: "#f57c00", 
+        2: "#fbc02d",  
+        3: "#689f38",  
+        4: "#388e3c", 
+        5: "#1976d2"   
     }
     
-    # Plot histogram for each domain
+
     for i, domain in enumerate(domains):
-        # Get star counts for this domain
+
         star_counts = df[domain].value_counts().sort_index()
         
-        # Create bars for each possible star rating (0-5)
         x = range(0, 6)
         heights = [star_counts.get(stars, 0) for stars in x]
         colors = [star_colors[stars] for stars in x]
         
-        # Plot bars
+
         bars = axs[i].bar(x, heights, color=colors, edgecolor='black', alpha=0.8, linewidth=1.2)
         
-        # Add count labels on top of bars
+
         for bar, height in zip(bars, heights):
             if height > 0:
                 axs[i].text(bar.get_x() + bar.get_width()/2., height + 0.05,
                            f'{int(height)}', ha='center', va='bottom', fontweight='bold')
         
-        # Set domain-specific title and labels
+  
         axs[i].set_title(f"{domain} Domain", fontsize=14, pad=10)
         axs[i].set_xlabel("Star Rating", fontsize=12)
         axs[i].set_ylabel("Number of Studies", fontsize=12)
@@ -864,7 +863,7 @@ if __name__ == "__main__":
    
     base, ext = os.path.splitext(output_file)
     
-    # Generate all plots
+
     professional_plot(df, output_file, theme)
     plot_domain_radar(df, f"{base}_radar{ext}", theme)
     plot_theme_radar(df, f"{base}_theme_radar{ext}", theme)
@@ -876,4 +875,4 @@ if __name__ == "__main__":
     plot_lollipop_total(df, f"{base}_lollipop{ext}", theme)
     plot_pie_overall_rob(df, f"{base}_pie{ext}", theme)
     plot_stacked_area_risk(df, f"{base}_stacked_area{ext}", theme)
-    plot_star_distribution_hist(df, f"{base}_star_hist{ext}", theme)  # NEW PLOT
+    plot_star_distribution_hist(df, f"{base}_star_hist{ext}", theme)  

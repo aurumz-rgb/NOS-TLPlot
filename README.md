@@ -192,7 +192,7 @@ Your file should have these columns:
 
 If including NOS-TLPlot in a methods section, you can use this suggested text:
 
-> “Risk of bias for included non-randomized studies was assessed using the Newcastle–Ottawa Scale (NOS). Visualization and synthesis of domain-level NOS scores were performed using NOS-TLPlot (v2.0.1), an open-source Python-based tool that generates traffic-light plots and other visual formats for NOS-based risk-of-bias representation (Sahu, 2025; DOI: 10.5281/zenodo.17065214).”
+> “Risk of bias for included non-randomized studies was assessed using the Newcastle–Ottawa Scale (NOS). Visualization and synthesis of domain-level NOS scores were performed using NOS-TLPlot (v2.0.2), an open-source Python-based tool that generates traffic-light plots and other visual formats for NOS-based risk-of-bias representation (Sahu, 2025; DOI: 10.5281/zenodo.17065214).”
 
 ---
 
@@ -200,17 +200,17 @@ If including NOS-TLPlot in a methods section, you can use this suggested text:
 
 If you use NOS-TLPlot, please cite:
 
-**Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). Zenodo.**
+**Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). Zenodo.**
 DOI: [10.5281/zenodo.17065214](https://doi.org/10.5281/zenodo.17065214)
 
 ```bibtex
 @software{Sahu2025,
   author = {Sahu, Vihaan},
-  title = {NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1)},
+  title = {NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2)},
   year = {2025},
   doi = {10.5281/zenodo.17065214},
   url = {https://doi.org/10.5281/zenodo.17065214},
-  version = {2.0.1}
+  version = {2.0.2}
 }
 ```
 

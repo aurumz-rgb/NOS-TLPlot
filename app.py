@@ -21,7 +21,6 @@ st.set_page_config(
     page_icon="./assets/icon.png"  
 )
 
-# Hide menu & footer
 hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
@@ -30,7 +29,6 @@ hide_streamlit_style = """
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
 
-# Hide Streamlit default sidebar
 st.markdown(
     """
     <style>
@@ -106,7 +104,6 @@ st.markdown("""
     }
     .top-padding-container { margin-top: 100px; }
 
-    /* Navigation */
     .nav-container {
         position: absolute;
         top: -1rem;
@@ -129,7 +126,6 @@ st.markdown("""
         color: #ffffff !important;
     }
     
-    /* Plot selection styling */
     .plot-selection-container {
         background-color: rgba(255,255,255,0.05);
         border-radius: 10px;
@@ -162,7 +158,6 @@ st.markdown("""
         font-weight: 500;
     }
     
-    /* Download buttons styling */
     .download-button-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -183,7 +178,6 @@ st.markdown("""
         margin-bottom: 10px;
     }
     
-    /* Plot container with download button */
     .plot-container {
         position: relative;
         margin-bottom: 2rem;
@@ -211,38 +205,47 @@ st.markdown("""
         box-shadow: 0 6px 16px rgba(0,0,0,0.35);
     }
     
-    /* Format selector styling */
     .format-selector {
         margin-top: 0.5rem;
         margin-bottom: 1rem;
     }
     
-    /* Multiple download buttons styling */
     .download-buttons-container {
         position: absolute;
         bottom: 10px;
         right: 10px;
-        display: flex;
-        gap: 8px;
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 15px;
         z-index: 10;
+        flex-wrap: nowrap !important;
+        max-width: none !important;
+        background-color: rgba(0,0,0,0.5);
+        padding: 6px;
+        border-radius: 8px;
     }
     
     .small-download-btn {
-        background: linear-gradient(135deg, #74ebd5, #ACB6E5) !important;
+        background: linear-gradient(135deg, #8e8e8e, #c0c0c0) !important;
         color: #2c3e50 !important;
         font-weight: 600 !important;
-        padding: 0.3rem 0.6rem !important;
+        padding: 0.4rem 0.8rem !important;
         font-size: 0.8rem !important;
         border-radius: 6px !important;
         border: none !important;
         cursor: pointer !important;
         box-shadow: 0 3px 10px rgba(0,0,0,0.2);
         transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+        white-space: nowrap;
+        flex: 0 0 auto !important;
+        text-decoration: none !important;
+        display: inline-block !important;
     }
     
     .small-download-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+        background: linear-gradient(135deg, #9e9e9e, #d0d0d0) !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -266,7 +269,6 @@ add_background_png("./assets/background.png")
 
 st.markdown('<div class="top-padding-container">', unsafe_allow_html=True)
 
-
 gif_file = "assets/Chart.gif"
 if os.path.exists(gif_file):
     with open(gif_file, "rb") as f:
@@ -287,7 +289,6 @@ st.markdown('<p class="centered-subtitle">Risk-of-Bias Visualizations for Newcas
 st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('<div class="lowered-section">', unsafe_allow_html=True)
 
-# Quick Start
 st.markdown('<div style="font-size: 1.5rem; font-weight: bold; margin-bottom: 10px; color: #f5f6fa;"> Quick Start & Data Instructions</div>', unsafe_allow_html=True)
 with st.expander("**Setting Up Your Data**", expanded=True):
     st.markdown('<div class="quickstart" style="margin-top:-1rem;">', unsafe_allow_html=True)
@@ -316,7 +317,6 @@ All figures are **publication-ready**.
         st.dataframe(pd.read_csv(sample_csv_path), width='stretch')
         st.markdown('</div>', unsafe_allow_html=True)
 
-
     excel_file_path = "sample.xlsx"
     csv_file_path = "sample.csv"
     def file_to_b64(path):
@@ -332,7 +332,6 @@ All figures are **publication-ready**.
     """, unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# Upload
 st.markdown("### Upload Your Data")
 st.markdown('<p style="color: #f5f6fa; font-size: 1.1rem;">Upload a <b>CSV</b> or <b>Excel (.xlsx)</b> file.</p>', unsafe_allow_html=True)
 theme = st.selectbox("Select Plot Theme", options=["traffic_light", "gray"])
@@ -345,68 +344,86 @@ if uploaded_file is not None:
         df = process_detailed_nos(df)
         st.success(" Data validated successfully!")
         
+        num_studies = len(df)
+        
+        if num_studies > 5:
+            st.warning("Note: Radar plots and dot profile plot are only generated when there are 5 or fewer studies.")
         
         gc.collect()
         
-       
         with tempfile.TemporaryDirectory() as temp_dir:
-           
             plot_files = {}
+            plot_exists = {}
             
-            
-            main_plot_files = {}
+            star_plot_files = {}
             for fmt in [".png", ".pdf", ".svg", ".eps"]:
                 output_path = os.path.join(temp_dir, f"NOS_StarDistributionHist{fmt}")
                 plot_star_distribution_hist(df, output_path, theme=theme)
-                main_plot_files[fmt] = output_path
-            gc.collect()  
-            
-           
-            output_files_radar = {ext: os.path.join(temp_dir, f"NOS_radar{ext}") for ext in [".png",".pdf",".svg",".eps"]}
-            for out_ext, path in output_files_radar.items():
-                plot_domain_radar(df, path, theme=theme)
-            plot_files["Radar Chart"] = output_files_radar
+                star_plot_files[fmt] = output_path
+            plot_exists["Star Distribution"] = True
             gc.collect()
             
-            output_files_theme_radar = {ext: os.path.join(temp_dir, f"NOS_theme_radar{ext}") for ext in [".png",".pdf",".svg",".eps"]}
-            for out_ext, path in output_files_theme_radar.items():
-                plot_theme_radar(df, path, theme=theme)
-            plot_files["Theme-based Radar Chart"] = output_files_theme_radar
-            gc.collect()
+            radar_exists = num_studies <= 5
+            if radar_exists:
+                output_files_radar = {ext: os.path.join(temp_dir, f"NOS_radar{ext}") for ext in [".png",".pdf",".svg",".eps"]}
+                for out_ext, path in output_files_radar.items():
+                    plot_domain_radar(df, path, theme=theme)
+                plot_files["Radar Chart"] = output_files_radar
+                plot_exists["Radar Chart"] = True
+                gc.collect()
+                
+                output_files_theme_radar = {ext: os.path.join(temp_dir, f"NOS_theme_radar{ext}") for ext in [".png",".pdf",".svg",".eps"]}
+                for out_ext, path in output_files_theme_radar.items():
+                    plot_theme_radar(df, path, theme=theme)
+                plot_files["Theme-based Radar Chart"] = output_files_theme_radar
+                plot_exists["Theme-based Radar Chart"] = True
+                gc.collect()
+            else:
+                plot_exists["Radar Chart"] = False
+                plot_exists["Theme-based Radar Chart"] = False
             
-           
             plot_functions = [
                 ("Professional Traffic-Light Plot", professional_plot, "traffic_light"),
                 ("Domain Heatmap", plot_domain_heatmap, "heatmap"),
-                ("Dot Profile Plot", plot_dot_profile, "dot_profile"),
+                ("Lollipop Chart", plot_lollipop_total, "lollipop"),
                 ("Score Table", plot_score_table, "table"),
                 ("Donut Chart", plot_donut_domain_risk, "donut"),
                 ("Line Plot of Domain Scores", plot_line_ordered_scores, "line_ordered"),
-                ("Lollipop Chart", plot_lollipop_total, "lollipop"),
                 ("Pie Chart", plot_pie_overall_rob, "pie"),
                 ("Stacked Area Chart", plot_stacked_area_risk, "stacked_area")
             ]
             
+            if num_studies <= 5:
+                plot_functions.insert(3, ("Dot Profile Plot", plot_dot_profile, "dot_profile"))
             
             for name, func, base in plot_functions:
                 format_files = {}
+                success = True
                 for fmt in [".png", ".pdf", ".svg", ".eps"]:
                     output_path = os.path.join(temp_dir, f"NOS_{base}{fmt}")
                     func(df, output_path, theme=theme)
+                    if not os.path.exists(output_path):
+                        success = False
+                        break
                     format_files[fmt] = output_path
-                plot_files[name] = format_files
-                gc.collect() 
+                if success:
+                    plot_files[name] = format_files
+                    plot_exists[name] = True
+                else:
+                    plot_exists[name] = False
+                gc.collect()
             
             st.markdown("### Visualization Preview")
             
-            
-            tab1, tab2, tab3 = st.tabs(["Star Distribution", "Radar Charts", "Other Visualizations"])
+            if radar_exists:
+                tab1, tab2, tab3 = st.tabs(["Star Distribution", "Radar Charts", "Other Visualizations"])
+            else:
+                tab1, tab2 = st.tabs(["Star Distribution", "Other Visualizations"])
             
             with tab1:
                 st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                st.image(main_plot_files[".png"], width='stretch')
+                st.image(star_plot_files[".png"], width='stretch')
                 st.caption("Star Distribution Histogram")
-                
                 
                 st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
                 
@@ -418,82 +435,71 @@ if uploaded_file is not None:
                     ".eps": "application/postscript"
                 }
                 
+                download_html = ""
                 for fmt in formats:
-                    file_path = main_plot_files[fmt]
+                    file_path = star_plot_files[fmt]
                     with open(file_path, "rb") as f:
                         file_data = f.read()
+                        b64_data = base64.b64encode(file_data).decode()
                     
                     filename = f"NOS_StarDistributionHist{fmt}"
-                    
-                    st.download_button(
-                        label=f"{fmt[1:].upper()}",
-                        data=file_data,
-                        file_name=filename,
-                        mime=mime_types[fmt],
-                        key=f"download_main_{fmt}",
-                        help=f"Download this plot in {fmt[1:].upper()} format"
-                    )
+                    download_html += f'<a download="{filename}" href="data:{mime_types[fmt]};base64,{b64_data}" class="small-download-btn">{fmt[1:].upper()}</a>'
                 
+                st.markdown(download_html, unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
                 st.markdown('</div>', unsafe_allow_html=True)
             
-            with tab2:
-                col1, col2 = st.columns(2)
-                with col1:
-                    st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                    st.image(plot_files["Radar Chart"][".png"], width='stretch')
-                    st.caption("Domain Scores Radar Chart")
-                    
-                   
-                    st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
-                    
-                    for fmt in formats:
-                        file_path = plot_files["Radar Chart"][fmt]
-                        with open(file_path, "rb") as f:
-                            file_data = f.read()
+            if radar_exists:
+                with tab2:
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        st.markdown('<div class="plot-container">', unsafe_allow_html=True)
+                        st.image(plot_files["Radar Chart"][".png"], width='stretch')
+                        st.caption("Domain Scores Radar Chart")
                         
-                        filename = f"NOS_Radar{fmt}"
+                        st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
                         
-                        st.download_button(
-                            label=f"{fmt[1:].upper()}",
-                            data=file_data,
-                            file_name=filename,
-                            mime=mime_types[fmt],
-                            key=f"download_radar_{fmt}",
-                            help=f"Download this plot in {fmt[1:].upper()} format"
-                        )
-                    
-                    st.markdown('</div>', unsafe_allow_html=True)
-                    st.markdown('</div>', unsafe_allow_html=True)
-                    
-                with col2:
-                    st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                    st.image(plot_files["Theme-based Radar Chart"][".png"], width='stretch')
-                    st.caption("Theme-based Domain Scores Radar Chart")
-                    
-                    
-                    st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
-                    
-                    for fmt in formats:
-                        file_path = plot_files["Theme-based Radar Chart"][fmt]
-                        with open(file_path, "rb") as f:
-                            file_data = f.read()
+                        download_html = ""
+                        for fmt in formats:
+                            file_path = plot_files["Radar Chart"][fmt]
+                            with open(file_path, "rb") as f:
+                                file_data = f.read()
+                                b64_data = base64.b64encode(file_data).decode()
+                            
+                            filename = f"NOS_Radar{fmt}"
+                            download_html += f'<a download="{filename}" href="data:{mime_types[fmt]};base64,{b64_data}" class="small-download-btn">{fmt[1:].upper()}</a>'
                         
-                        filename = f"NOS_ThemeRadar{fmt}"
+                        st.markdown(download_html, unsafe_allow_html=True)
+                        st.markdown('</div>', unsafe_allow_html=True)
+                        st.markdown('</div>', unsafe_allow_html=True)
                         
-                        st.download_button(
-                            label=f"{fmt[1:].upper()}",
-                            data=file_data,
-                            file_name=filename,
-                            mime=mime_types[fmt],
-                            key=f"download_theme_radar_{fmt}",
-                            help=f"Download this plot in {fmt[1:].upper()} format"
-                        )
-                    
-                    st.markdown('</div>', unsafe_allow_html=True)
-                    st.markdown('</div>', unsafe_allow_html=True)
+                    with col2:
+                        st.markdown('<div class="plot-container">', unsafe_allow_html=True)
+                        st.image(plot_files["Theme-based Radar Chart"][".png"], width='stretch')
+                        st.caption("Theme-based Domain Scores Radar Chart")
+                        
+                        st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
+                        
+                        download_html = ""
+                        for fmt in formats:
+                            file_path = plot_files["Theme-based Radar Chart"][fmt]
+                            with open(file_path, "rb") as f:
+                                file_data = f.read()
+                                b64_data = base64.b64encode(file_data).decode()
+                            
+                            filename = f"NOS_ThemeRadar{fmt}"
+                            download_html += f'<a download="{filename}" href="data:{mime_types[fmt]};base64,{b64_data}" class="small-download-btn">{fmt[1:].upper()}</a>'
+                        
+                        st.markdown(download_html, unsafe_allow_html=True)
+                        st.markdown('</div>', unsafe_allow_html=True)
+                        st.markdown('</div>', unsafe_allow_html=True)
             
-            with tab3:
+            if radar_exists:
+                other_plots_tab = tab3
+            else:
+                other_plots_tab = tab2
+                
+            with other_plots_tab:
                 cols = st.columns(3)
                 
                 plot_names = [name for name in plot_files.keys() if name not in ["Radar Chart", "Theme-based Radar Chart"]]
@@ -504,84 +510,75 @@ if uploaded_file is not None:
                         st.image(plot_files[name][".png"], width='stretch')
                         st.caption(name)
                         
-                       
                         st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
-                        
                         
                         clean_name = name.replace(' ', '_').replace('-', '_').replace(' ', '')
                         
+                        download_html = ""
                         for fmt in formats:
                             file_path = plot_files[name][fmt]
                             with open(file_path, "rb") as f:
                                 file_data = f.read()
+                                b64_data = base64.b64encode(file_data).decode()
                             
                             filename = f"NOS_{clean_name}{fmt}"
-                            
-                            st.download_button(
-                                label=f"{fmt[1:].upper()}",
-                                data=file_data,
-                                file_name=filename,
-                                mime=mime_types[fmt],
-                                key=f"download_{name}_{fmt}",
-                                help=f"Download this plot in {fmt[1:].upper()} format"
-                            )
+                            download_html += f'<a download="{filename}" href="data:{mime_types[fmt]};base64,{b64_data}" class="small-download-btn">{fmt[1:].upper()}</a>'
                         
+                        st.markdown(download_html, unsafe_allow_html=True)
                         st.markdown('</div>', unsafe_allow_html=True)
                         st.markdown('</div>', unsafe_allow_html=True)
             
-           
             plot_files.clear()
             del plot_files
-            del main_plot_files
+            del star_plot_files
             gc.collect()
         
     except Exception as e:
         st.error(f"❌ Error: {e}")
 
-# Citation 
 st.markdown("---")
 st.markdown("##  Citation")
 
 apa_citation = (
-    "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). "
+    "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). "
     "Zenodo. https://doi.org/10.5281/zenodo.17065214"
 )
 
 harvard_citation = (
-    "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). "
+    "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). "
     "Zenodo. Available at: https://doi.org/10.5281/zenodo.17065214"
 )
 
 mla_citation = (
-    "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1).\" "
+    "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2).\" "
     "2025, Zenodo, https://doi.org/10.5281/zenodo.17065214."
 )
 
 chicago_citation = (
-    "Sahu, Vihaan. 2025. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1).\" "
+    "Sahu, Vihaan. 2025. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2).\" "
     "Zenodo. https://doi.org/10.5281/zenodo.17065214."
 )
 
 ieee_citation = (
-    "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1),\" "
+    "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2),\" "
     "Zenodo, 2025. doi: 10.5281/zenodo.17065214."
 )
 
 vancouver_citation = (
-    "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1). "
+    "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). "
     "Zenodo. 2025. doi:10.5281/zenodo.17065214"
 )
 
 ris_data = """TY  - JOUR
 AU  - Sahu, V
-TI  - NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1)
+TI  - NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2)
 PY  - 2025
 DO  - 10.5281/zenodo.17065214
 ER  -"""
 
 bib_data = """@misc{Sahu2025,
   author={Sahu, V.},
-  title={NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.1)},
+  title={NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2)},
   year={2025},
   doi={10.5281/zenodo.17065214}
 }"""
@@ -633,7 +630,6 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# Footer
 st.markdown("---")
 st.markdown("""
 <style>
@@ -663,7 +659,6 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
-
 
 st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)

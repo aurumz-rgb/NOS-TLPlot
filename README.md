@@ -174,6 +174,8 @@ Your file should have these columns:
 11. **Radar (Thematic)** – Theme-adapted radar chart (gray/colored).
 12. **Star distribution** – Star-adapted plot (only traffic-light).
 
+Note: Radar Plots and Dot Profile plot is only limited to 5 studies.
+
 ---
 
 ## NOS Scoring → Risk-of-Bias Conversion

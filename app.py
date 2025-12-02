@@ -284,7 +284,7 @@ if os.path.exists(gif_file):
 
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 st.markdown('<h1 class="centered-title">NOS-TLPlot</h1>', unsafe_allow_html=True)
-st.markdown('<p class="centered-subtitle">Risk-of-Bias Visualizations for Newcastle–Ottawa Scale (NOS) Studies.</p>', unsafe_allow_html=True)
+st.markdown('<p class="centered-subtitle">Traffic Light Risk-of-Bias Visualizations for Newcastle–Ottawa Scale (NOS) Studies.</p>', unsafe_allow_html=True)
 
 st.markdown('</div>', unsafe_allow_html=True)
 st.markdown('<div class="lowered-section">', unsafe_allow_html=True)

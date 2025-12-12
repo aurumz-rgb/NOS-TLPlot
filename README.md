@@ -1,6 +1,6 @@
 
 ![Logo](assets/preview1.png)
-[![Python Version](https://img.shields.io/badge/python-3.12+-blue)](https://www.python.org/)
+[![Python Version](https://img.shields.io/badge/python-3.11+-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit-Demo-orange)](https://nos-tlplot.streamlit.app)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17065214.svg)](https://doi.org/10.5281/zenodo.17065214)
@@ -48,7 +48,7 @@ Streamlit user-interface
 ## 📥 Installation (Optional)
 
 ### Prerequisites
-- This code is based on Python-3.12.3
+- This code is based on Python-3.12.3 (however works with **3.11+**)
 - `pip` package manager  
 
 ### Installation Steps

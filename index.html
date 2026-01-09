@@ -16,7 +16,9 @@
   <link rel="canonical" href="https://nos-tlplot.vercel.app/">
   <link rel="icon" href="assets/icon.png" type="image/png">
   <meta name="theme-color" content="#1e3a2e">
-  
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
   <script
     defer
@@ -871,8 +873,8 @@
     </section>
 
     <section class="redirect">
-      <a href="https://nos-tlplot.streamlit.app" target="_blank">🚀 Launch Web App</a>
-      <a href="https://github.com/aurumz-rgb/NOS-TLPlot" target="_blank" class="secondary">📁 GitHub Repository</a>
+      <a href="https://nos-tlplot.streamlit.app" target="_blank"><i class="fa-brands fa-space-awesome"></i>   Launch NOS-TLPlot</a>
+      <a href="https://github.com/aurumz-rgb/NOS-TLPlot" target="_blank" class="secondary"><i class="fa-brands fa-github"></i> GitHub Repository</a>
     </section>
 
 
@@ -900,6 +902,10 @@
 
     <section class="table-instructions section-header">
       <h2>Input Data Format & Template</h2>
+      <p style="font-size: 18px; color: #df9203; font-weight: 700;">
+        Note:
+      </p>
+      <h4>The tool is case-sensitive. Accordingly, the exact use of uppercase and lowercase characters, as presented in the NOS-TLPlot template, must be strictly adhered to.</h4>
       
       <div class="template-container">
         <div class="template-box">
@@ -911,8 +917,8 @@
         </div>
       </div>
       
-      <p>Your NOS data file should follow this structure:</p>
-
+      <p>Your NOS data file should strictly follow this structure:</p>
+      
       <div class="table-container">
         <table>
           <thead>
@@ -1112,13 +1118,13 @@
       
       document.body.appendChild(notification);
       
-      // Trigger animation
+
       setTimeout(() => {
         notification.style.opacity = '1';
         notification.style.transform = 'translateY(0)';
       }, 10);
       
-      // Remove after 3 seconds
+      
       setTimeout(() => {
         notification.style.opacity = '0';
         notification.style.transform = 'translateY(20px)';

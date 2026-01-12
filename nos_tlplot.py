@@ -14,7 +14,6 @@ from matplotlib.patches import Rectangle
 import matplotlib.patheffects as path_effects
 from matplotlib.collections import LineCollection
 
-
 try:
     from PIL import Image
     Image.MAX_IMAGE_PIXELS = None
@@ -101,9 +100,8 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     
     fig_height = max(6, 0.4 * len(df) + 3)
     fig = plt.figure(figsize=(20, fig_height))
-    
 
-    gs = GridSpec(1, 1, left=0.15, right=0.75, top=0.95, bottom=0.08)
+    gs = GridSpec(1, 1, left=0.08, right=0.75, top=0.95, bottom=0.08)
 
     ax = fig.add_subplot(gs[0])
     
@@ -177,7 +175,6 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     ax.set_xlabel("")
     ax.set_ylabel("Study", fontsize=14)
     
-
     ax.set_xticks([0, 7, 14, 21])
     ax.set_xticklabels(domains, fontsize=14)
     
@@ -207,8 +204,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     
     explanation = "Note: In Overall Risk column, H=High Risk, M=Moderate Risk, L=Low Risk"
     fig.text(0.5, 0.02, explanation, ha='center', fontsize=12, style='italic')
-    
-    plt.subplots_adjust(left=0.15, right=0.75, top=0.95, bottom=0.08)
+
 
     valid_ext = [".png", ".pdf", ".svg", ".eps"]
     ext = os.path.splitext(output_file)[1].lower()
@@ -293,8 +289,7 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     )
     fig.text(0.5, 0.02, explanation, ha='center', fontsize=9, 
              bbox=dict(facecolor='white', alpha=0.8, edgecolor='gray', boxstyle='round,pad=0.5'))
-    
-    plt.tight_layout(rect=[0, 0.15, 1, 0.95])
+
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Domain radar chart saved to {output_file}")
@@ -370,7 +365,7 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     fig.text(0.5, 0.02, explanation, ha='center', fontsize=9, 
              bbox=dict(facecolor='white', alpha=0.8, edgecolor='gray', boxstyle='round,pad=0.5'))
     
-    plt.tight_layout(rect=[0, 0.15, 1, 0.95])
+
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Theme-based radar chart saved to {output_file}")
@@ -407,7 +402,7 @@ def plot_domain_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffi
     
     ax.set_title("Risk of Bias by Domain and Study", fontsize=10, pad=12)
     
-    plt.tight_layout()
+
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Domain heatmap plot saved to {output_file}")
@@ -443,7 +438,7 @@ def plot_star_distribution(df: pd.DataFrame, output_file: str, theme: str = "tra
                             for rob in ["High", "Moderate", "Low"]]
     ax.legend(handles=risk_legend_elements, title="Overall Risk", bbox_to_anchor=(1.2, 0.5), loc='center left')
     
-    plt.tight_layout()
+
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Star distribution plot saved to {output_file}")
@@ -504,7 +499,7 @@ def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=3.5, label=rob) for rob in ["Low", "Moderate", "High"]]
     ax.legend(handles=legend_elements, title="Overall Risk", loc='center left', bbox_to_anchor=(1.2, 0.5))
     
-    plt.tight_layout()
+
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Dot profile plot saved to {output_file}")
@@ -512,6 +507,7 @@ def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
 def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
     
+
     color_alpha = 0.9
 
     table_df = df[["Author, Year", "Selection", "Comparability", "Outcome/Exposure", "Total Score", "Overall RoB"]].copy()
@@ -530,7 +526,6 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     table = ax.table(
         cellText=table_df.values,
         colLabels=table_df.columns,
-
         cellColours=[[apply_alpha(colors_map.get(row["Overall RoB"], "white")) for _ in range(len(table_df.columns))] 
                     for _, row in table_df.iterrows()],
         loc='top left',
@@ -559,13 +554,14 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     ax.set_title("NOS Scores by Study", fontsize=16, pad=12)
     
 
-    plt.subplots_adjust(left=0.05, right=0.75)
+    plt.subplots_adjust(left=0.05, right=0.95)
     
     legend_elements = [Patch(facecolor=colors_map[rob], label=rob, edgecolor='black', linewidth=1.2) 
                       for rob in ["High", "Moderate", "Low"]]
     ax.legend(handles=legend_elements, title="Overall Risk", bbox_to_anchor=(1.05, 1), loc='upper left')
     
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+
+    plt.savefig(output_file, dpi=300, bbox_inches='tight', pad_inches=0.2)
     plt.close()
     print(f"✅ Score table plot saved to {output_file}")
 
@@ -607,7 +603,7 @@ def plot_donut_domain_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
                       for rob in ["High", "Moderate", "Low"]]
     fig.legend(handles=legend_elements, loc='center right', bbox_to_anchor=(1.15, 0.5))
     
-    plt.tight_layout()
+   
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Donut chart saved to {output_file}")
@@ -652,8 +648,7 @@ def plot_line_ordered_scores(df: pd.DataFrame, output_file: str, theme: str = "t
     ax.legend(title="Domain", bbox_to_anchor=(1.02, 1), loc='upper left', 
              edgecolor='black', facecolor='white', framealpha=1)
     
-    plt.tight_layout(rect=[0, 0, 0.85, 0.95])
-    
+
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Line plot saved to {output_file}")
@@ -672,9 +667,8 @@ def plot_lollipop_total(df: pd.DataFrame, output_file: str, theme: str = "traffi
               color=df_sorted["Overall RoB"].map(colors_map), alpha=0.9, s=80, 
               edgecolor='black', linewidth=0.8)
     
-
     for idx, row in df_sorted.iterrows():
-        ax.text(row["Total Score"] + 0.3, row["Author, Year"], str(row["Total Score"]), 
+        ax.text(row["Total Score"] + 0.1, row["Author, Year"], str(row["Total Score"]), 
                va='center', fontsize=10, fontweight='bold')
     
     ax.set_title("Total NOS Scores by Study (Lollipop Chart)", fontsize=16, pad=12)
@@ -685,7 +679,7 @@ def plot_lollipop_total(df: pd.DataFrame, output_file: str, theme: str = "traffi
     legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.5, label=rob) for rob in ["Low", "Moderate", "High"]]
     ax.legend(handles=legend_elements, title="Overall Risk", loc='center left', bbox_to_anchor=(1.2, 0.5))
     
-    plt.tight_layout()
+   
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Lollipop chart saved to {output_file}")
@@ -720,7 +714,7 @@ def plot_pie_overall_rob(df: pd.DataFrame, output_file: str, theme: str = "traff
                       for rob in ["High", "Moderate", "Low"]]
     ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.2, 0.5))
     
-    plt.tight_layout()
+
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Pie chart saved to {output_file}")
@@ -755,7 +749,7 @@ def plot_stacked_area_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
     
     ax.legend(title="Overall Risk", loc='center left', bbox_to_anchor=(1.2, 0.5))
     
-    plt.tight_layout()
+
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Stacked area chart saved to {output_file}")
@@ -802,7 +796,7 @@ def plot_star_distribution_hist(df: pd.DataFrame, output_file: str, theme: str =
                            edgecolor='black', linewidth=1.2) for stars in range(0, 6)]
     fig.legend(handles=legend_elements, loc='center right', bbox_to_anchor=(1.15, 0.5))
     
-    plt.tight_layout()
+
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Star distribution histogram saved to {output_file}")

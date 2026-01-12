@@ -101,7 +101,9 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     
     fig_height = max(6, 0.4 * len(df) + 3)
     fig = plt.figure(figsize=(20, fig_height))
-    gs = GridSpec(1, 1, left=0.08, right=0.75, top=0.95, bottom=0.08)
+    
+
+    gs = GridSpec(1, 1, left=0.15, right=0.75, top=0.95, bottom=0.08)
 
     ax = fig.add_subplot(gs[0])
     
@@ -206,7 +208,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     explanation = "Note: In Overall Risk column, H=High Risk, M=Moderate Risk, L=Low Risk"
     fig.text(0.5, 0.02, explanation, ha='center', fontsize=12, style='italic')
     
-    plt.subplots_adjust(left=0.08, right=0.75, top=0.95, bottom=0.08)
+    plt.subplots_adjust(left=0.15, right=0.75, top=0.95, bottom=0.08)
 
     valid_ext = [".png", ".pdf", ".svg", ".eps"]
     ext = os.path.splitext(output_file)[1].lower()
@@ -510,7 +512,6 @@ def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
 def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
     
-   
     color_alpha = 0.9
 
     table_df = df[["Author, Year", "Selection", "Comparability", "Outcome/Exposure", "Total Score", "Overall RoB"]].copy()
@@ -557,8 +558,8 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     
     ax.set_title("NOS Scores by Study", fontsize=16, pad=12)
     
-  
-    plt.subplots_adjust(left=0.05, right=0.95)
+
+    plt.subplots_adjust(left=0.05, right=0.75)
     
     legend_elements = [Patch(facecolor=colors_map[rob], label=rob, edgecolor='black', linewidth=1.2) 
                       for rob in ["High", "Moderate", "Low"]]
@@ -671,8 +672,9 @@ def plot_lollipop_total(df: pd.DataFrame, output_file: str, theme: str = "traffi
               color=df_sorted["Overall RoB"].map(colors_map), alpha=0.9, s=80, 
               edgecolor='black', linewidth=0.8)
     
+
     for idx, row in df_sorted.iterrows():
-        ax.text(row["Total Score"] + 0.1, row["Author, Year"], str(row["Total Score"]), 
+        ax.text(row["Total Score"] + 0.3, row["Author, Year"], str(row["Total Score"]), 
                va='center', fontsize=10, fontweight='bold')
     
     ax.set_title("Total NOS Scores by Study (Lollipop Chart)", fontsize=16, pad=12)

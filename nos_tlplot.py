@@ -14,6 +14,13 @@ from matplotlib.patches import Rectangle
 import matplotlib.patheffects as path_effects
 from matplotlib.collections import LineCollection
 
+
+try:
+    from PIL import Image
+    Image.MAX_IMAGE_PIXELS = None
+except ImportError:
+    print("⚠️ Warning: Pillow (PIL) not found. Image size limits may apply.")
+
 THEME_OPTIONS = {
     "traffic_light": {"Low":"#2E7D32", "Moderate":"#F9A825", "High":"#C62828"},  
     "gray": {"Low":"#C7D5E2", "Moderate":"#8B98A1", "High":"#5F6770"},            
@@ -101,6 +108,9 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     domains = ["Selection", "Comparability", "Outcome/Exposure", "Overall Risk"]
     max_scores = {"Selection": 4, "Comparability": 2, "Outcome/Exposure": 3, "Overall Risk": 1}
     
+    
+    domain_positions = {"Selection": 0, "Comparability": 7, "Outcome/Exposure": 14, "Overall Risk": 21}
+    
     bubble_data = []
     for _, row in df.iterrows():
         for domain in domains:
@@ -123,7 +133,6 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     
     bubble_df = pd.DataFrame(bubble_data)
     
-    domain_positions = {"Selection": 0, "Comparability": 4.5, "Outcome/Exposure": 9, "Overall Risk": 13.5}
     bubble_df["X"] = bubble_df["Domain"].map(domain_positions)
     
     studies = df["Author, Year"].unique()
@@ -165,11 +174,14 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     ax.set_title("NOS Risk Assessment Bubble Chart", fontsize=18, pad=20)
     ax.set_xlabel("")
     ax.set_ylabel("Study", fontsize=14)
-    ax.set_xticks([0, 4.5, 9, 13.5])
+    
+
+    ax.set_xticks([0, 7, 14, 21])
     ax.set_xticklabels(domains, fontsize=14)
+    
     ax.set_yticks(range(len(studies)))
     ax.set_yticklabels(studies, fontsize=12)
-    ax.set_xlim(-1, 14.5)
+    ax.set_xlim(-2, 23) 
     ax.set_ylim(-0.5, len(studies) - 0.5)
     ax.grid(False)
     
@@ -191,7 +203,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     leg = ax.legend(handles=legend_elements, title="Risk Level", bbox_to_anchor=(1.02, 1), 
                    loc='upper left', edgecolor='black', facecolor='white', framealpha=1)
     
-    explanation = "Note: In the Overall Risk column, H=High Risk, M=Moderate Risk, L=Low Risk"
+    explanation = "Note: In Overall Risk column, H=High Risk, M=Moderate Risk, L=Low Risk"
     fig.text(0.5, 0.02, explanation, ha='center', fontsize=12, style='italic')
     
     plt.subplots_adjust(left=0.08, right=0.75, top=0.95, bottom=0.08)
@@ -271,7 +283,7 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         y_offset += 0.04
     
     explanation = (
-        "In the radar chart, scores are normalized by dividing by the maximum possible score for each domain:\n"
+        "In radar chart, scores are normalized by dividing by the maximum possible score for each domain:\n"
         "Selection: max 4 stars → score/4\n"
         "Comparability: max 2 stars → score/2\n"
         "Outcome/Exposure: max 3 stars → score/3\n"
@@ -347,7 +359,7 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
         y_offset += 0.04
     
     explanation = (
-        "In the radar chart, scores are normalized by dividing by the maximum possible score for each domain:\n"
+        "In radar chart, scores are normalized by dividing by the maximum possible score for each domain:\n"
         "Selection: max 4 stars → score/4\n"
         "Comparability: max 2 stars → score/2\n"
         "Outcome/Exposure: max 3 stars → score/3\n"
@@ -498,20 +510,30 @@ def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
 def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
     
+   
+    color_alpha = 0.9
+
     table_df = df[["Author, Year", "Selection", "Comparability", "Outcome/Exposure", "Total Score", "Overall RoB"]].copy()
     table_df = table_df.sort_values("Overall RoB", ascending=False)
     
-    fig_width = max(12, 8 + len(table_df.columns) * 1.5)
-    fig_height = max(5, 0.3 * len(table_df) + 1.2)
+    fig_width = max(12, 10 + len(table_df.columns) * 1.5)
+    fig_height = max(5, 0.4 * len(table_df) + 1.2)
+    
     fig, ax = plt.subplots(figsize=(fig_width, fig_height))
     ax.axis('off')
+    
+
+    def apply_alpha(hex_color):
+        return mcolors.to_rgba(hex_color, alpha=color_alpha)
     
     table = ax.table(
         cellText=table_df.values,
         colLabels=table_df.columns,
-        cellColours=[[colors_map.get(row["Overall RoB"], "white") for _ in range(len(table_df.columns))] 
+
+        cellColours=[[apply_alpha(colors_map.get(row["Overall RoB"], "white")) for _ in range(len(table_df.columns))] 
                     for _, row in table_df.iterrows()],
-        loc='center',
+        loc='top left',
+        bbox=[0, 0, 1, 1],
         cellLoc='center'
     )
     
@@ -522,7 +544,7 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
         cell.set_text_props(weight='bold')
         cell.set_edgecolor('white')
     
-    table.scale(1.5, 1.2)
+    table.scale(1.0, 1.2)
     
     for (i, j), cell in table.get_celld().items():
         if i == 0:  
@@ -535,11 +557,13 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     
     ax.set_title("NOS Scores by Study", fontsize=16, pad=12)
     
+  
+    plt.subplots_adjust(left=0.05, right=0.95)
+    
     legend_elements = [Patch(facecolor=colors_map[rob], label=rob, edgecolor='black', linewidth=1.2) 
                       for rob in ["High", "Moderate", "Low"]]
     ax.legend(handles=legend_elements, title="Overall Risk", bbox_to_anchor=(1.05, 1), loc='upper left')
     
-    plt.tight_layout()
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Score table plot saved to {output_file}")

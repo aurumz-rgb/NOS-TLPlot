@@ -534,7 +534,7 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     )
     
     table.auto_set_font_size(False)
-    table.set_fontsize(10)
+    table.set_fontsize(13)
     
     for key, cell in table.get_celld().items():
         cell.set_text_props(weight='bold')

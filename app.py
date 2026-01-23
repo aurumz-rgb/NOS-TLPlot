@@ -540,45 +540,45 @@ st.markdown("---")
 st.markdown("##  Citation")
 
 apa_citation = (
-    "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). "
+    "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). "
     "Zenodo. https://doi.org/10.5281/zenodo.17065214"
 )
 
 harvard_citation = (
-    "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). "
+    "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). "
     "Zenodo. Available at: https://doi.org/10.5281/zenodo.17065214"
 )
 
 mla_citation = (
-    "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2).\" "
+    "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3).\" "
     "2025, Zenodo, https://doi.org/10.5281/zenodo.17065214."
 )
 
 chicago_citation = (
-    "Sahu, Vihaan. 2025. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2).\" "
+    "Sahu, Vihaan. 2025. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3).\" "
     "Zenodo. https://doi.org/10.5281/zenodo.17065214."
 )
 
 ieee_citation = (
-    "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2),\" "
+    "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3),\" "
     "Zenodo, 2025. doi: 10.5281/zenodo.17065214."
 )
 
 vancouver_citation = (
-    "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). "
+    "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). "
     "Zenodo. 2025. doi:10.5281/zenodo.17065214"
 )
 
 ris_data = """TY  - JOUR
 AU  - Sahu, V
-TI  - NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2)
+TI  - NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3)
 PY  - 2025
 DO  - 10.5281/zenodo.17065214
 ER  -"""
 
 bib_data = """@misc{Sahu2025,
   author={Sahu, V.},
-  title={NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2)},
+  title={NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3)},
   year={2025},
   doi={10.5281/zenodo.17065214}
 }"""

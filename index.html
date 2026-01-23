@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -255,26 +253,29 @@
       transform: scale(1.05);
     }
     
+
     .badges {
       text-align: center;
       margin: 2rem 0;
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 15px;
+      gap: 12px;
+      padding: 20px;
     }
     
     .badges img {
-      height: 25px;
+      height: 24px;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.15));
+      filter: grayscale(0.7);
       border-radius: 4px;
     }
     
     .badges img:hover {
       transform: translateY(-4px) scale(1.05);
-      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+      filter: grayscale(0);
     }
+
     
     .redirect {
       text-align: center;
@@ -533,6 +534,27 @@
     footer a:hover::after {
       width: 100%;
     }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+    }
+
+    .footer-left, 
+    .footer-center, 
+    .footer-right {
+      flex: 1;
+    }
+
+    .footer-center {
+      text-align: center;
+    }
+
+    .footer-right {
+      text-align: right;
+    }
     
     .template-container {
       display: flex;
@@ -790,6 +812,17 @@
       .template-box {
         width: 100%;
       }
+
+      .footer-content {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+
+      .footer-left, .footer-center, .footer-right {
+        text-align: center;
+        flex: auto;
+      }
     }
     
     @media (max-width: 480px) {
@@ -821,9 +854,15 @@
   <h1 style="margin-top: 15px;">NOS-TLPlot</h1>
   <p>Newcastle-Ottawa Scale Traffic Light Visualization Tool for Systematic Reviews</p>
   <div class="badges">
-    <img src="https://img.shields.io/badge/python-3.11+-blue?style=flat-square" alt="Python Version">
-    <img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=flat-square" alt="License">
-    <img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17065214.svg?style=flat-square" alt="DOI">
+    <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge" alt="License"></a>
+    <a href="https://doi.org/10.5281/zenodo.17065214"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17065214.svg?style=for-the-badge" alt="DOI"></a>
+    <a href="https://github.com/aurumz-rgb/NOS-TLPlot/releases"><img src="https://img.shields.io/github/v/release/aurumz-rgb/NOS-TLPlot?style=for-the-badge" alt="Version"></a>
+    <a href="https://github.com/aurumz-rgb/NOS-TLPlot/commits/main"><img src="https://img.shields.io/github/last-commit/aurumz-rgb/NOS-TLPlot?style=for-the-badge" alt="Last Commit"></a>
+    <a href="https://github.com/aurumz-rgb/NOS-TLPlot/issues"><img src="https://img.shields.io/github/issues-raw/aurumz-rgb/NOS-TLPlot?style=for-the-badge" alt="GitHub Issues"></a>
+    <a href="https://github.com/aurumz-rgb/NOS-TLPlot"><img src="https://img.shields.io/badge/uses-Streamlit-red?style=for-the-badge&logo=streamlit" alt="Uses streamlit"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Maintained%3F-yes-green.svg?style=for-the-badge" alt="Maintenance"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Status-Active-success?style=for-the-badge" alt="Status Active"></a>
+    <a href="#"><img src="https://img.shields.io/badge/Built%20for-Researchers-9cf?style=for-the-badge" alt="Built For Researchers"></a>
   </div>
 </header>
 
@@ -1011,7 +1050,7 @@
       <h2>Methods Section Text</h2>
       <p>For including NOS-TLPlot in your systematic review methods section:</p>
       <div class="methods-text">
-        <p><em>"Risk of bias for included non-randomized studies was assessed using the Newcastle–Ottawa Scale (NOS). Visualization and synthesis of domain-level NOS scores were performed using NOS-TLPlot (v2.0.2), an open-source Python-based tool that generates traffic-light plots and other visual formats for NOS-based risk-of-bias representation (Sahu, 2025; DOI: 10.5281/zenodo.17065214)."</em></p>
+        <p><em>"Risk of bias for included non-randomized studies was assessed using the Newcastle–Ottawa Scale (NOS). Visualization and synthesis of domain-level NOS scores were performed using NOS-TLPlot (v2.0.3), an open-source Python-based tool that generates traffic-light plots and other visual formats for NOS-based risk-of-bias representation (Sahu, 2025; DOI: 10.5281/zenodo.17065214)."</em></p>
       </div>
     </section>
 
@@ -1041,7 +1080,7 @@
         <button onclick="copyCitation()">Copy</button>
       </div>
 
-      <p id="citationText"><em>Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). Zenodo. https://doi.org/10.5281/zenodo.17065214</em></p>
+      <p id="citationText"><em>Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo. https://doi.org/10.5281/zenodo.17065214</em></p>
       
       <div class="citation-download">
         <button onclick="downloadCitation('ris')">Download RIS</button>
@@ -1052,11 +1091,20 @@
   </div>
 </main>
 
-<footer>
-  <div>
-    © 2025 Vihaan Sahu – Licensed under Apache 2.0
-  </div>
-</footer>
+
+  <footer>
+    <div class="footer-content">
+      <div class="footer-left">
+        <p>© 2025 Vihaan Sahu – Licensed under Apache 2.0</p>
+      </div>
+      <div class="footer-center">
+        <p>NOS-TLPlot</p>
+      </div>
+      <div class="footer-right">
+        <p><a href="https://aurumz-rgb.github.io" target="_blank">Made with 💛 by V.S.</a></p>
+      </div>
+    </div>
+  </footer>
 
 <script>
 
@@ -1086,12 +1134,12 @@
 
 
   const citations = {
-    apa: "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). Zenodo. https://doi.org/10.5281/zenodo.17065214",
-    vancouver: "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). Zenodo; 2025. Available from: https://doi.org/10.5281/zenodo.17065214",
-    chicago: "Sahu, V. 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). Zenodo. https://doi.org/10.5281/zenodo.17065214",
-    harvard: "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2). Zenodo. Available at: https://doi.org/10.5281/zenodo.17065214",
-    mla: "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2).\" 2025, Zenodo, https://doi.org/10.5281/zenodo.17065214.",
-    ieee: "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.2),\" Zenodo, 2025. doi: 10.5281/zenodo.17065214."
+    apa: "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo. https://doi.org/10.5281/zenodo.17065214",
+    vancouver: "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo; 2025. Available from: https://doi.org/10.5281/zenodo.17065214",
+    chicago: "Sahu, V. 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo. https://doi.org/10.5281/zenodo.17065214",
+    harvard: "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo. Available at: https://doi.org/10.5281/zenodo.17065214",
+    mla: "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3).\" 2025, Zenodo, https://doi.org/10.5281/zenodo.17065214.",
+    ieee: "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3),\" Zenodo, 2025. doi: 10.5281/zenodo.17065214."
   };
 
   const citationSelect = document.getElementById("citationType");
@@ -1160,7 +1208,7 @@ ER  - `;
   author = {Sahu, Vihaan},
   title = {{NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis}},
   year = {2025},
-  version = {v2.0.2},
+  version = {v2.0.3},
   publisher = {Zenodo},
   doi = {10.5281/zenodo.17065214},
   url = {https://doi.org/10.5281/zenodo.17065214}

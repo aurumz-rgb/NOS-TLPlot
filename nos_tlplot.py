@@ -171,9 +171,9 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
             lc = LineCollection([segment], colors=[color], linewidth=3, alpha=0.7)
             ax.add_collection(lc)
     
-    ax.set_title("NOS Risk Assessment Bubble Chart", fontsize=18, pad=20)
+    ax.set_title("NOS Risk Assessment Bubble Chart", fontsize=20, pad=20)
     ax.set_xlabel("")
-    ax.set_ylabel("Study", fontsize=14)
+    ax.set_ylabel("Study", fontsize=14, labelpad=20)
     
     ax.set_xticks([0, 7, 14, 21])
     ax.set_xticklabels(domains, fontsize=14)
@@ -193,17 +193,17 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     
     legend_elements = [
         Line2D([0], [0], marker='o', color='w', label='Low Risk', 
-                markerfacecolor=colors["Low"], markersize=14, markeredgewidth=1.2, markeredgecolor='black'),
+                markerfacecolor=colors["Low"], markersize=15, markeredgewidth=1.2, markeredgecolor='black'),
         Line2D([0], [0], marker='o', color='w', label='Moderate Risk', 
-                markerfacecolor=colors["Moderate"], markersize=14, markeredgewidth=1.2, markeredgecolor='black'),
+                markerfacecolor=colors["Moderate"], markersize=15, markeredgewidth=1.2, markeredgecolor='black'),
         Line2D([0], [0], marker='o', color='w', label='High Risk', 
-                markerfacecolor=colors["High"], markersize=14, markeredgewidth=1.2, markeredgecolor='black')
+                markerfacecolor=colors["High"], markersize=15, markeredgewidth=1.2, markeredgecolor='black')
     ]
     leg = ax.legend(handles=legend_elements, title="Risk Level", bbox_to_anchor=(1.02, 1), 
                    loc='upper left', edgecolor='black', facecolor='white', framealpha=1)
     
     explanation = "Note: In Overall Risk column, H=High Risk, M=Moderate Risk, L=Low Risk"
-    fig.text(0.5, 0.02, explanation, ha='center', fontsize=12, style='italic')
+    fig.text(0.5, 0.1, explanation, ha='center', fontsize=13, style='italic')
 
 
     valid_ext = [".png", ".pdf", ".svg", ".eps"]
@@ -214,12 +214,19 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     plt.close()
     print(f"✅ Professional combined plot saved to {output_file}")
 
+
+
 def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     if len(df) > 5:
         print(f"⚠️ Skipping radar chart: {len(df)} studies exceed the maximum of 5 for radar visualization")
         return
     
-    colors_map = get_theme_colors(theme)
+
+    try:
+        colors_map = get_theme_colors(theme)
+    except NameError:
+
+        colors_map = {"Low": "green", "Moderate": "yellow", "High": "red"}
     
     max_scores = {"Selection": 4, "Comparability": 2, "Outcome/Exposure": 3}
     domains = list(max_scores.keys())
@@ -232,8 +239,9 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     angles = np.linspace(0, 2 * np.pi, len(domains), endpoint=False).tolist()
     angles += angles[:1] 
     
-    cmap = plt.colormaps.get_cmap('tab20')
-    study_colors = [cmap(i) for i in np.linspace(0, 1, len(df))]
+    
+    hardcoded_study_colors = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd']
+    study_colors = [hardcoded_study_colors[i] for i in range(len(df))]
     
     for idx, row in df.iterrows():
         values = [row[domain] / max_scores[domain] for domain in domains]
@@ -245,54 +253,62 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(["A", "B", "C"], fontsize=15)
-    ax.set_title("Domain Scores Radar Chart by Study", size=19, pad=20)
+    ax.set_title("Domain Scores Radar Chart by Study", size=18, pad=20)
     ax.set_ylim(0, 1)
     
     ax.tick_params(axis='y', labelsize=14)
     ax.grid(True, linestyle='-', alpha=0.7, linewidth=1.5)
     
+
     legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.5, label=rob) for rob in ["Low", "Moderate", "High"]]
     risk_legend = ax.legend(handles=legend_elements, title="Overall Risk", loc='center left', bbox_to_anchor=(1.15, 0.5))
     
+
     n_cols = min(5, max(2, len(df) // 10 + 1))
     study_legend_elements = [Line2D([0], [0], color=study_colors[i], lw=2, label=row['Author, Year']) 
                             for i, (_, row) in enumerate(df.iterrows())]
-    study_legend = ax.legend(handles=study_legend_elements, title="Study", loc='lower center', 
-                            bbox_to_anchor=(0.5, -0.2), ncol=n_cols, fontsize=10)
     
+
+    plt.subplots_adjust(bottom=0.22)
+    
+    study_legend = ax.legend(handles=study_legend_elements, loc='upper center', 
+                            bbox_to_anchor=(0.5, -0.12), ncol=n_cols, fontsize=12)
+    
+
     domain_mapping = {"A": "Selection", "B": "Comparability", "C": "Outcome/Exposure"}
     
+ 
     legend_x = 0.98
     legend_y = 0.05
     
-    rect = Rectangle((legend_x - 0.02, legend_y - 0.05), 0.25, 0.15, 
+    rect = Rectangle((legend_x, legend_y - 0.05), 0.25, 0.15, 
                      transform=ax.transAxes, facecolor='white', 
                      edgecolor='black', alpha=0.8, linewidth=1.2)
     ax.add_patch(rect)
     
     y_offset = 0.03
     for letter, domain in domain_mapping.items():
-        ax.text(legend_x, legend_y + y_offset, letter, transform=ax.transAxes, 
-                fontsize=15, color='red', verticalalignment='bottom', 
+        ax.text(legend_x + 0.01, legend_y + y_offset - 0.05, letter, transform=ax.transAxes, 
+                fontsize=14, color='red', verticalalignment='bottom', 
                 horizontalalignment='left', fontweight='bold')
-        ax.text(legend_x + 0.03, legend_y + y_offset, f": {domain}", transform=ax.transAxes, 
-                fontsize=14, color='black', verticalalignment='bottom', 
+        ax.text(legend_x + 0.04, legend_y + y_offset - 0.05, f": {domain}", transform=ax.transAxes, 
+                fontsize=13, color='black', verticalalignment='bottom', 
                 horizontalalignment='left')
         y_offset += 0.04
     
+
     explanation = (
-        "In radar chart, scores are normalized by dividing by the maximum possible score for each domain:\n"
-        "Selection: max 4 stars → score/4\n"
-        "Comparability: max 2 stars → score/2\n"
-        "Outcome/Exposure: max 3 stars → score/3\n"
-        "Risk categories: Low (green), Moderate (yellow), High (red)"
+        "Note: Scores are normalized to domain maxima (Selection ÷4, Comparability ÷2, Outcome/Exposure ÷3);"
     )
-    fig.text(0.5, 0.02, explanation, ha='center', fontsize=9, 
-             bbox=dict(facecolor='white', alpha=0.8, edgecolor='gray', boxstyle='round,pad=0.5'))
+
+    fig.text(0.5, 0.02, explanation, ha='center', fontsize=12)
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Domain radar chart saved to {output_file}")
+
+
+
 
 def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     if len(df) > 5:
@@ -330,7 +346,7 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     ax.grid(True, linestyle='-', alpha=0.7, linewidth=1.5)
     
     legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.5, label=rob) for rob in ["Low", "Moderate", "High"]]
-    risk_legend = ax.legend(handles=legend_elements, title="Overall Risk", loc='center left', bbox_to_anchor=(1.15, 0.5))
+    risk_legend = ax.legend(handles=legend_elements, title="Overall Risk",title_fontsize=14, loc='center left', bbox_to_anchor=(1.15, 0.5))
     
     for text in risk_legend.get_texts():
         text.set_fontsize(14)
@@ -356,14 +372,10 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
         y_offset += 0.04
     
     explanation = (
-        "In radar chart, scores are normalized by dividing by the maximum possible score for each domain:\n"
-        "Selection: max 4 stars → score/4\n"
-        "Comparability: max 2 stars → score/2\n"
-        "Outcome/Exposure: max 3 stars → score/3\n"
-        "Risk categories: Low (green), Moderate (yellow), High (red)"
+        "Note: Scores are normalized to domain maxima (Selection ÷4, Comparability ÷2, Outcome/Exposure ÷3);"
     )
-    fig.text(0.5, 0.02, explanation, ha='center', fontsize=9, 
-             bbox=dict(facecolor='white', alpha=0.8, edgecolor='gray', boxstyle='round,pad=0.5'))
+    fig.text(0.5, 0.02, explanation, ha='center', fontsize=12, 
+             )
     
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -386,13 +398,18 @@ def plot_domain_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffi
     bounds = [-0.5, 0.5, 1.5, 2.5]
     norm = mcolors.BoundaryNorm(bounds, cmap.N)
     
-    fig_height = max(5, 0.3 * len(df))
+   
+    fig_height = max(5, 0.8 * len(df))
     fig, ax = plt.subplots(figsize=(8, fig_height))
     
-    sns.heatmap(numeric_df, cmap=cmap, norm=norm, linewidths=1.2, linecolor='white', ax=ax, cbar=False)
+    sns.heatmap(numeric_df, cmap=cmap, norm=norm, linewidths=1.5, linecolor='white', ax=ax, cbar=False)
     
-    ax.set_yticklabels(heatmap_df.index, fontsize=6)
-    ax.set_xticklabels(heatmap_df.columns, rotation=45, ha='right', fontsize=8)
+
+    ax.set_yticklabels(heatmap_df.index, fontsize=8)
+    ax.set_xticklabels(heatmap_df.columns, rotation=45, ha='right', fontsize=8.5)
+    
+
+    ax.set_ylabel("Author, Year", fontsize=12, labelpad=20)
     
     legend_elements = [Patch(facecolor=colors_map[rob], label=rob, edgecolor='black', linewidth=1.2) 
                       for rob in ["High", "Moderate", "Low"]]
@@ -400,7 +417,7 @@ def plot_domain_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffi
     ax.legend(handles=legend_elements, title="Overall Risk", bbox_to_anchor=(1.2, 0.5), 
               loc='center left', fontsize=8, title_fontsize=9)
     
-    ax.set_title("Risk of Bias by Domain and Study", fontsize=10, pad=12)
+    ax.set_title("Risk of Bias by Domain and Study", fontsize=15, pad=12)
     
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -546,12 +563,12 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
         if i == 0:  
             cell.set_facecolor('#f0f0f0')
             cell.set_edgecolor('white')
-            cell.set_linewidth(1.2)
+            cell.set_linewidth(1.3)
         else:
             cell.set_edgecolor('white')
-            cell.set_linewidth(1.2)
+            cell.set_linewidth(1.3)
     
-    ax.set_title("NOS Scores by Study", fontsize=16, pad=12)
+    ax.set_title("NOS Scores by Study", fontsize=19, pad=19)
     
 
     plt.subplots_adjust(left=0.05, right=0.95)
@@ -581,6 +598,7 @@ def plot_donut_domain_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
                                             colors=[colors_map[rob] for rob in risk_counts.index],
                                             startangle=90, wedgeprops={'linewidth': 1.2, 'edgecolor': 'black'})
         
+
         center_circle = plt.Circle((0,0), 0.70, fc='white', edgecolor='black', linewidth=1.2)
         axs[i].add_artist(center_circle)
         
@@ -588,12 +606,14 @@ def plot_donut_domain_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
             autotext.set_color('black')
             autotext.set_fontweight('bold')
             autotext.set_fontsize(9)
-            autotext.set_position((autotext.get_position()[0] * 0.9, autotext.get_position()[1] * 0.9))
+         
+            autotext.set_position((autotext.get_position()[0] * 0.75, autotext.get_position()[1] * 0.75))
         
         for j, text in enumerate(texts):
             text.set_fontweight('bold')
             text.set_fontsize(10)
-            text.set_position((text.get_position()[0] * 1.1, text.get_position()[1] * 1.1))
+ 
+            text.set_position((text.get_position()[0] * 1.05, text.get_position()[1] * 1.05))
         
         axs[i].set_title(f"{domain} Domain", fontsize=12)
     
@@ -631,19 +651,19 @@ def plot_line_ordered_scores(df: pd.DataFrame, output_file: str, theme: str = "t
                'o-', label=domain, linewidth=2.0, markersize=6, 
                markeredgecolor='black', markeredgewidth=0.8, color=domain_colors[domain])
     
-    ax.set_title("Domain Scores Ordered by Total Score", fontsize=16, pad=12)
-    ax.set_xlabel("Study (Ordered by Total Score)", fontsize=12)
-    ax.set_ylabel("Score", fontsize=12)
+    ax.set_title("Domain Scores Ordered by Total Score", fontsize=19, pad=19)
+    ax.set_xlabel("Study (Ordered by Total Score)", fontsize=14, labelpad=18)
+    ax.set_ylabel("Score", fontsize=14, labelpad=20)
     ax.grid(alpha=0.7)
     
     plt.xticks(rotation=45, ha='right')
     
     if len(df) > 50:
-        ax.tick_params(axis='x', labelsize=7)
+        ax.tick_params(axis='x', labelsize=10)
     elif len(df) > 20:
-        ax.tick_params(axis='x', labelsize=8)
+        ax.tick_params(axis='x', labelsize=11)
     elif len(df) > 10:
-        ax.tick_params(axis='x', labelsize=9)
+        ax.tick_params(axis='x', labelsize=12)
     
     ax.legend(title="Domain", bbox_to_anchor=(1.02, 1), loc='upper left', 
              edgecolor='black', facecolor='white', framealpha=1)
@@ -671,9 +691,9 @@ def plot_lollipop_total(df: pd.DataFrame, output_file: str, theme: str = "traffi
         ax.text(row["Total Score"] + 0.1, row["Author, Year"], str(row["Total Score"]), 
                va='center', fontsize=10, fontweight='bold')
     
-    ax.set_title("Total NOS Scores by Study (Lollipop Chart)", fontsize=16, pad=12)
+    ax.set_title("Total NOS Scores by Study (Lollipop Chart)", fontsize=16, pad=15)
     ax.set_xlabel("Total Score", fontsize=12)
-    ax.set_ylabel("Study", fontsize=12)
+    ax.set_ylabel("Study", fontsize=12, labelpad=20)
     ax.grid(axis='x', alpha=0.7)
     
     legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.5, label=rob) for rob in ["Low", "Moderate", "High"]]
@@ -697,16 +717,16 @@ def plot_pie_overall_rob(df: pd.DataFrame, output_file: str, theme: str = "traff
     
     wedges, texts, autotexts = ax.pie(counts, labels=counts.index, autopct='%1.1f%%',
                                       colors=[colors_map[rob] for rob in counts.index],
-                                      startangle=90, wedgeprops={'linewidth': 1.2, 'edgecolor': 'black'})
+                                      startangle=90, wedgeprops={'linewidth': 4, 'edgecolor': 'white'})
     
     for autotext in autotexts:
         autotext.set_color('white')
         autotext.set_fontweight('bold')
-        autotext.set_fontsize(11)
+        autotext.set_fontsize(13)
     
     for text in texts:
         text.set_fontweight('bold')
-        text.set_fontsize(11)
+        text.set_fontsize(12)
     
     ax.set_title("Distribution of Overall Risk of Bias", fontsize=16, pad=12)
     

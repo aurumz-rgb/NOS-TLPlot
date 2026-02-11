@@ -72,10 +72,14 @@
   <meta name="twitter:creator" content="@Vihaan">
 
 
-  <meta name="citation_title" content="NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis">
+  <meta name="citation_title" content="NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments">
   <meta name="citation_author" content="Vihaan Sahu">
-  <meta name="citation_publication_date" content="2025">
-  <meta name="citation_doi" content="10.5281/zenodo.17065214">
+  <meta name="citation_publication_date" content="2026">
+  <meta name="citation_journal_title" content="Journal of Open Research Software">
+  <meta name="citation_volume" content="14">
+  <meta name="citation_issue" content="1">
+  <meta name="citation_firstpage" content="7">
+  <meta name="citation_doi" content="10.5334/jors.635">
 
 
   <script type="application/ld+json">
@@ -664,7 +668,7 @@
       background: var(--bg-light);
       padding: 2rem;
       border-radius: 12px;
-      border-left: 5px solid var(--primary-medium);
+
       transition: var(--transition);
       box-shadow: var(--shadow-sm);
       height: 100%;
@@ -701,7 +705,7 @@
       padding: 1.2rem;
       border-radius: 10px;
       font-size: 0.95rem;
-      border-left: 4px solid var(--primary-medium);
+
       transition: var(--transition);
       box-shadow: var(--shadow-sm);
       font-weight: 500;
@@ -758,7 +762,7 @@
       background: var(--bg-light);
       padding: 2rem;
       border-radius: 12px;
-      border-left: 5px solid var(--primary-medium);
+
       box-shadow: var(--shadow-sm);
       margin: 1.5rem 0;
     }
@@ -855,6 +859,7 @@
   <p>Newcastle-Ottawa Scale Traffic Light Visualization Tool for Systematic Reviews</p>
   <div class="badges">
     <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge" alt="License"></a>
+    <a href="https://doi.org/10.5334/jors.635"><img src="https://img.shields.io/badge/DOI-10.5334/jors.635-blue?style=for-the-badge" alt="Journal DOI"></a>
     <a href="https://doi.org/10.5281/zenodo.17065214"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.17065214.svg?style=for-the-badge" alt="DOI"></a>
     <a href="https://github.com/aurumz-rgb/NOS-TLPlot/releases"><img src="https://img.shields.io/github/v/release/aurumz-rgb/NOS-TLPlot?style=for-the-badge" alt="Version"></a>
     <a href="https://github.com/aurumz-rgb/NOS-TLPlot/commits/main"><img src="https://img.shields.io/github/last-commit/aurumz-rgb/NOS-TLPlot?style=for-the-badge" alt="Last Commit"></a>
@@ -872,7 +877,7 @@
     <section class="section-header">
       <h2>About NOS-TLPlot</h2>
       <p>
-        <strong>NOS-TLPlot</strong> is an open-source Python tool for <strong>visualizing Newcastle–Ottawa Scale (NOS) risk-of-bias assessments</strong>.  
+        <strong>NOS-TLPlot</strong> is an <strong>open-source</strong> Python tool for <strong>visualizing Newcastle–Ottawa Scale (NOS) risk-of-bias assessments</strong>.  
         It converts NOS star ratings into <strong>publication-ready traffic-light plots</strong> and <strong>12 specialized visualizations</strong>, enabling reviewers and readers to interpret study-level risk-of-bias results clearly and reproducibly.
       </p>
       
@@ -1050,7 +1055,7 @@
       <h2>Methods Section Text</h2>
       <p>For including NOS-TLPlot in your systematic review methods section:</p>
       <div class="methods-text">
-        <p><em>"Risk of bias for included non-randomized studies was assessed using the Newcastle–Ottawa Scale (NOS). Visualization and synthesis of domain-level NOS scores were performed using NOS-TLPlot (v2.0.3), an open-source Python-based tool that generates traffic-light plots and other visual formats for NOS-based risk-of-bias representation (Sahu, 2025; DOI: 10.5281/zenodo.17065214)."</em></p>
+        <p><em>"Risk of bias for included non-randomized studies was assessed using the Newcastle–Ottawa Scale (NOS). Visualization and synthesis of domain-level NOS scores were performed using NOS-TLPlot (v2.0.3), an open-source Python-based tool that generates traffic-light plots and other visual formats for NOS-based risk-of-bias representation (Sahu, 2026; DOI: 10.5334/jors.635)."</em></p>
       </div>
     </section>
 
@@ -1066,9 +1071,11 @@
 
     <section class="citation section-header">
       <h2>Citation</h2>
-      <p>If you use NOS-TLPlot in your research, please cite:</p>
+     
+      <p style="margin-bottom: 1.5rem;">If you use NOS-TLPlot in your research, please cite the Software article:</p>
 
-      <div class="citation-select-container">
+  
+      <div class="citation-select-container" style="margin-bottom: 1.5rem;">
         <select id="citationType">
           <option value="apa">APA</option>
           <option value="vancouver">Vancouver</option>
@@ -1080,12 +1087,16 @@
         <button onclick="copyCitation()">Copy</button>
       </div>
 
-      <p id="citationText"><em>Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo. https://doi.org/10.5281/zenodo.17065214</em></p>
+      <p id="citationText"><em>Sahu, V. (2026). NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments. <em>Journal of Open Research Software</em>, 14(1), 7. https://doi.org/10.5334/jors.635</em></p>
       
       <div class="citation-download">
         <button onclick="downloadCitation('ris')">Download RIS</button>
         <button onclick="downloadCitation('bibtex')">Download BibTeX</button>
       </div>
+
+      <p style="margin-top: 1.5rem; font-size: 0.95rem; color: var(--text-secondary);">
+        <i class="fa-solid fa-archive"></i> <strong>Note:</strong> The software's code is also available as a citable, archivable artifact on Zenodo: <a href="https://doi.org/10.5281/zenodo.17065214" target="_blank" style="color: var(--primary-medium);">https://doi.org/10.5281/zenodo.17065214</a>
+      </p>
     </section>
 
   </div>
@@ -1095,7 +1106,7 @@
   <footer>
     <div class="footer-content">
       <div class="footer-left">
-        <p>© 2025 Vihaan Sahu – Licensed under Apache 2.0</p>
+        <p>© 2025–2026 Vihaan Sahu – Apache 2.0 License</p>
       </div>
       <div class="footer-center">
         <p>NOS-TLPlot</p>
@@ -1132,14 +1143,13 @@
 
   setInterval(() => moveCarousel('next'), 10000);
 
-
   const citations = {
-    apa: "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo. https://doi.org/10.5281/zenodo.17065214",
-    vancouver: "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo; 2025. Available from: https://doi.org/10.5281/zenodo.17065214",
-    chicago: "Sahu, V. 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo. https://doi.org/10.5281/zenodo.17065214",
-    harvard: "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo. Available at: https://doi.org/10.5281/zenodo.17065214",
-    mla: "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3).\" 2025, Zenodo, https://doi.org/10.5281/zenodo.17065214.",
-    ieee: "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3),\" Zenodo, 2025. doi: 10.5281/zenodo.17065214."
+    apa: "Sahu, V. (2026). NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments. Journal of Open Research Software, 14(1), 7. https://doi.org/10.5334/jors.635",
+    vancouver: "Sahu V. NOS-TLPlot: a specialized python tool for visualizing newcastle–ottawa scale risk-of-bias assessments. J Open Res Softw. 2026;14(1):7. doi:10.5334/jors.635",
+    chicago: "Sahu, Vihaan. 2026. \"NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments.\" Journal of Open Research Software 14 (1): 7. https://doi.org/10.5334/jors.635.",
+    harvard: "Sahu, V., 2026. ‘NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments’, Journal of Open Research Software, 14(1), p. 7. doi:10.5334/jors.635.",
+    mla: "Sahu, Vihaan. \"NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments.\" Journal of Open Research Software, vol. 14, no. 1, 2026, p. 7. Crossref, https://doi.org/10.5334/jors.635.",
+    ieee: "V. Sahu, \"NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments,\" Journal of Open Research Software, vol. 14, no. 1, p. 7, 2026."
   };
 
   const citationSelect = document.getElementById("citationType");
@@ -1152,7 +1162,7 @@
 
   function copyCitation() {
     navigator.clipboard.writeText(citationText.innerText).then(() => {
-      // Create a custom notification instead of alert
+      //  custom notification instead of alert
       const notification = document.createElement('div');
       notification.textContent = "Citation copied to clipboard!";
       notification.style.position = 'fixed';
@@ -1194,24 +1204,27 @@
     let filename = "nos-tlplot_citation";
     
     if (format === 'ris') {
-      content = `TY  - COMP
-T1  - NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis
+      content = `TY  - JOUR
+T1  - NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments
 A1  - Sahu, Vihaan
-Y1  - 2025
-DO  - https://doi.org/10.5281/zenodo.17065214
-PB  - Zenodo
-PY  - 2025
+Y1  - 2026
+JO  - Journal of Open Research Software
+VL  - 14
+IS  - 1
+SP  - 7
+DO  - 10.5334/jors.635
 ER  - `;
       filename += ".ris";
     } else if (format === 'bibtex') {
-      content = `@software{nos_tlplot,
+      content = `@article{sahu2026nos,
   author = {Sahu, Vihaan},
-  title = {{NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis}},
-  year = {2025},
-  version = {v2.0.3},
-  publisher = {Zenodo},
-  doi = {10.5281/zenodo.17065214},
-  url = {https://doi.org/10.5281/zenodo.17065214}
+  title = {NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle--Ottawa Scale Risk-of-Bias Assessments},
+  journal = {Journal of Open Research Software},
+  year = {2026},
+  volume = {14},
+  number = {1},
+  pages = {7},
+  doi = {10.5334/jors.635}
 }`;
       filename += ".bib";
     }

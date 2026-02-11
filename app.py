@@ -536,51 +536,56 @@ if uploaded_file is not None:
     except Exception as e:
         st.error(f"❌ Error: {e}")
 
-st.markdown("---")
-st.markdown("##  Citation")
-
 apa_citation = (
-    "Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). "
-    "Zenodo. https://doi.org/10.5281/zenodo.17065214"
+    "Sahu, V. (2026). NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments. "
+    "Journal of Open Research Software, 14(1), 7. https://doi.org/10.5334/jors.635"
 )
 
 harvard_citation = (
-    "Sahu, V., 2025. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). "
-    "Zenodo. Available at: https://doi.org/10.5281/zenodo.17065214"
+    "Sahu, V., 2026. ‘NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments’. "
+    "Journal of Open Research Software, 14(1), p. 7. Available at: https://doi.org/10.5334/jors.635."
 )
 
 mla_citation = (
-    "Sahu, Vihaan. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3).\" "
-    "2025, Zenodo, https://doi.org/10.5281/zenodo.17065214."
+    "Sahu, Vihaan. \"NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments.\" "
+    "Journal of Open Research Software, vol. 14, no. 1, 2026, p. 7. Crossref, https://doi.org/10.5334/jors.635."
 )
 
 chicago_citation = (
-    "Sahu, Vihaan. 2025. \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3).\" "
-    "Zenodo. https://doi.org/10.5281/zenodo.17065214."
+    "Sahu, Vihaan. 2026. \"NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments.\" "
+    "Journal of Open Research Software 14 (1): 7. https://doi.org/10.5334/jors.635."
 )
 
 ieee_citation = (
-    "V. Sahu, \"NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3),\" "
-    "Zenodo, 2025. doi: 10.5281/zenodo.17065214."
+    "V. Sahu, \"NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments\", "
+    "Journal of Open Research Software, vol. 14, no. 1, p. 7, 2026."
 )
 
 vancouver_citation = (
-    "Sahu V. NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). "
-    "Zenodo. 2025. doi:10.5281/zenodo.17065214"
+    "Sahu V. NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments. "
+    "J Open Res Softw. 2026;14(1):7. doi:10.5334/jors.635"
 )
 
 ris_data = """TY  - JOUR
 AU  - Sahu, V
-TI  - NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3)
-PY  - 2025
-DO  - 10.5281/zenodo.17065214
+TI  - NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments
+PY  - 2026
+JO  - Journal of Open Research Software
+VL  - 14
+IS  - 1
+SP  - 7
+DO  - 10.5334/jors.635
 ER  -"""
 
-bib_data = """@misc{Sahu2025,
+bib_data = """@article{Sahu2026,
   author={Sahu, V.},
-  title={NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3)},
-  year={2025},
-  doi={10.5281/zenodo.17065214}
+  title={NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle--Ottawa Scale Risk-of-Bias Assessments},
+  journal={Journal of Open Research Software},
+  year={2026},
+  volume={14},
+  number={1},
+  pages={7},
+  doi={10.5334/jors.635}
 }"""
 
 citation_style = st.selectbox("Select citation style", ["APA", "Harvard", "MLA", "Chicago", "IEEE", "Vancouver"])
@@ -649,7 +654,7 @@ st.markdown("""
 
 <div class="footer-container">
     <div class="footer-left">
-        <div>© 2025 Vihaan Sahu</div>
+        <div>© 2025–2026 Vihaan Sahu</div>
         <div>Licensed under the Apache License, Version 2.0</div>
     </div>
     <div class="footer-center">

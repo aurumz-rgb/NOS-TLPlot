@@ -4,6 +4,8 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit-Demo-orange)](https://nos-tlplot.streamlit.app)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17065214.svg)](https://doi.org/10.5281/zenodo.17065214)
+[![JORS](https://img.shields.io/badge/Journal-JORS-blue)](https://doi.org/10.5334/jors.635)
+
 
 ---
 
@@ -11,6 +13,8 @@
 It converts NOS star ratings into **publication-ready traffic-light plots** and **10 specialized visualizations**, enabling reviewers and readers to interpret study-level risk-of-bias results clearly and reproducibly.
  
 📂 **Code & Archive (Zenodo DOI):** [10.5281/zenodo.17065214](https://doi.org/10.5281/zenodo.17065214)
+
+📃 **Software Metapaper (Journal of Open Research Software DOI):** [10.5334/jors.635](https://doi.org/10.5334/jors.635)
 
 ---
 
@@ -136,7 +140,7 @@ python3 nos_tlplot.py sample.csv output-traffic-light.png gray
 
 ---
 
-## 📊 Input Data Format
+##  Input Data Format
 
 Your file should have these columns:
 
@@ -190,38 +194,6 @@ Note: Radar Plots and Dot Profile plot is only limited to 5 studies.
 
 ---
 
-## 📖 Methods Notes (for Systematic Reviews)
-
-If including NOS-TLPlot in a methods section, you can use this suggested text:
-
-> “Risk of bias for included non-randomized studies was assessed using the Newcastle–Ottawa Scale (NOS). Visualization and synthesis of domain-level NOS scores were performed using NOS-TLPlot (v2.0.3), an open-source Python-based tool that generates traffic-light plots and other visual formats for NOS-based risk-of-bias representation (Sahu, 2025; DOI: 10.5281/zenodo.17065214).”
-
----
-
-## 🎯 Citation
-
-If you use NOS-TLPlot, please cite:
-
-**Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo.**
-DOI: [10.5281/zenodo.17065214](https://doi.org/10.5281/zenodo.17065214)
-
-```bibtex
-@software{Sahu2025,
-  author = {Sahu, Vihaan},
-  title = {NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3)},
-  year = {2025},
-  doi = {10.5281/zenodo.17065214},
-  url = {https://doi.org/10.5281/zenodo.17065214},
-  version = {2.0.3}
-}
-```
-
-A structured `citation.cff` file is also included in this repository for citation managers and GitHub recognition.
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17065214.svg)](https://doi.org/10.5281/zenodo.17065214)
-
----
-
 ## 🔧 Technical Details
 
 * **Core Engine:** `matplotlib`, `seaborn`, `numpy`, `pandas`
@@ -233,22 +205,6 @@ A structured `citation.cff` file is also included in this repository for citatio
 * **Batch Plotting:** Parallel generation for multiple figure types
 * **Export Quality:** 300 DPI (default), publication-ready vector output
 
-
----
-
-## 📄 License
-
-Licensed under the **Apache License 2.0**.
-© 2025 Vihaan Sahu
-
-
----
-
-##  Support
-
-*  For usage questions, open a [Discussion](https://github.com/aurumz-rgb/NOS-TLPlot/discussions)
-*  For bug reports or feature requests, open an [Issue](https://github.com/aurumz-rgb/NOS-TLPlot/issues)
-*  Email: [mail](mailto:pteroisvolitans12@gmail.com)
 
 ---
 
@@ -265,6 +221,62 @@ NOS-TLPlot/
 ├── examples               # All the Sample outputs
 
 ```
+
+---
+
+##  Support
+
+*  For usage questions, open a [Discussion](https://github.com/aurumz-rgb/NOS-TLPlot/discussions)
+*  For bug reports or feature requests, open an [Issue](https://github.com/aurumz-rgb/NOS-TLPlot/issues)
+*  Email: [mail](mailto:pteroisvolitans12@gmail.com)
+
+
+---
+
+
+## 📄 Acknowledgment:
+
+I sincerely thank the **Journal of Open Research Software (JORS)** for providing a full publication waiver supporting this software.
+
+
+---
+
+## 🎯 Citation
+
+NOS-TLPlot Software code is cited:
+
+**Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo.**
+DOI: [10.5281/zenodo.17065214](https://doi.org/10.5281/zenodo.17065214)
+
+
+NOS-TLPlot Software Metapaper is cited:
+
+**Sahu, V. (2026). NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments. *Journal of Open Research Software*, 14(1), 7.**
+DOI: [10.5334/jors.635](https://doi.org/10.5334/jors.635)
+
+```bibtex
+@software{Sahu2025,
+  author = {Sahu, Vihaan},
+  title = {NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3)},
+  year = {2025},
+  doi = {10.5281/zenodo.17065214},
+  url = {https://doi.org/10.5281/zenodo.17065214},
+  version = {2.0.3}
+}
+
+@article{Sahu2026,
+  author = {Sahu, Vihaan},
+  title = {NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments},
+  journal = {Journal of Open Research Software},
+  volume = {14},
+  number = {1},
+  pages = {7},
+  year = {2026},
+  doi = {10.5334/jors.635},
+  url = {https://doi.org/10.5334/jors.635}
+}
+```
+
 
 ---
 
@@ -318,3 +330,5 @@ Risk of Bias by Domain and Study by heatmap
 
 ![Example Result11](example/output_table.png)
 NOS Scores by Study
+
+

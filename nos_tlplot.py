@@ -681,15 +681,26 @@ def plot_lollipop_total(df: pd.DataFrame, output_file: str, theme: str = "traffi
     fig_height = max(6, 0.3 * len(df) + 2)
     fig, ax = plt.subplots(figsize=(8, fig_height))
     
-    ax.hlines(y=df_sorted["Author, Year"], xmin=0, xmax=df_sorted["Total Score"], 
+    
+    y_positions = range(len(df_sorted))
+    
+
+    ax.hlines(y=y_positions, xmin=0, xmax=df_sorted["Total Score"], 
              colors=df_sorted["Overall RoB"].map(colors_map), alpha=0.8, linewidth=2.0)
-    ax.scatter(df_sorted["Total Score"], df_sorted["Author, Year"], 
+    
+
+    ax.scatter(df_sorted["Total Score"], y_positions, 
               color=df_sorted["Overall RoB"].map(colors_map), alpha=0.9, s=80, 
               edgecolor='black', linewidth=0.8)
     
-    for idx, row in df_sorted.iterrows():
-        ax.text(row["Total Score"] + 0.1, row["Author, Year"], str(row["Total Score"]), 
+
+    for i, (idx, row) in enumerate(df_sorted.iterrows()):
+        ax.text(row["Total Score"] + 0.1, i, str(row["Total Score"]), 
                va='center', fontsize=10, fontweight='bold')
+    
+
+    ax.set_yticks(y_positions)
+    ax.set_yticklabels(df_sorted["Author, Year"])
     
     ax.set_title("Total NOS Scores by Study (Lollipop Chart)", fontsize=16, pad=15)
     ax.set_xlabel("Total Score", fontsize=12)
@@ -699,7 +710,6 @@ def plot_lollipop_total(df: pd.DataFrame, output_file: str, theme: str = "traffi
     legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.5, label=rob) for rob in ["Low", "Moderate", "High"]]
     ax.legend(handles=legend_elements, title="Overall Risk", loc='center left', bbox_to_anchor=(1.2, 0.5))
     
-   
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Lollipop chart saved to {output_file}")

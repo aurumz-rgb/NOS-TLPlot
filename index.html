@@ -6,9 +6,9 @@
 
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NOS-TLPlot</title>
-  <meta name="description" content="NOS-TLPlot is an open-source Python tool for visualizing Newcastle–Ottawa Scale risk-of-bias assessments with 12 publication-ready visualization types.">
-  <meta name="keywords" content="NOS-TLPlot, Newcastle–Ottawa Scale, NOS, risk of bias, meta-analysis, systematic review, traffic light plot, bias visualization, open-source, Python, Vihaan Sahu">
+  <title>NOS-TLPlot: Newcastle-Ottawa Scale Risk of Bias Visualization Tool</title>
+  <meta name="description" content="NOS-TLPlot is a free, open-source Python tool to visualize Newcastle-Ottawa Scale (NOS) risk-of-bias assessments. Generate 12 publication-ready traffic light plots and charts for systematic reviews.">
+  <meta name="keywords" content="NOS-TLPlot, Newcastle-Ottawa Scale, NOS, risk of bias, meta-analysis, systematic review, traffic light plot, bias visualization, open-source, Python, Vihaan Sahu">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <meta name="author" content="Vihaan Sahu">
   <meta name="copyright" content="© 2025 NOS-TLPlot Project">
@@ -30,8 +30,10 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="NOS-TLPlot | Newcastle-Ottawa Scale Visualization Tool">
   <meta property="og:description" content="Open-source Python tool for visualizing NOS risk-of-bias assessments with 12 publication-ready visualization types for systematic reviews and meta-analysis.">
-  <meta property="og:image" content="https://nos-tlplot.vercel.app/assets/preview1.png">
-  <meta property="og:image:alt" content="NOS-TLPlot Banner">
+<meta property="og:image" content="https://nos-tlplot.vercel.app/assets/preview1.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="NOS-TLPlot Newcastle-Ottawa Scale visualization tool banner">
   <meta property="og:image" content="https://nos-tlplot.vercel.app/example/NOS_star.png">
   <meta property="og:image:alt" content="NOS star distribution visualization">
   <meta property="og:image" content="https://nos-tlplot.vercel.app/example/output.png">
@@ -81,7 +83,6 @@
   <meta name="citation_firstpage" content="7">
   <meta name="citation_doi" content="10.5334/jors.635">
 
-
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -90,8 +91,22 @@
     "alternateName": "Newcastle-Ottawa Scale Visualization Tool",
     "operatingSystem": "Web, Python",
     "applicationCategory": "Research Visualization Tool",
-    "description": "An open-source Python tool for visualizing Newcastle–Ottawa Scale risk-of-bias assessments with 12 publication-ready visualization types for systematic reviews and meta-analysis.",
+    "description": "An open-source Python tool for visualizing Newcastle-Ottawa Scale risk-of-bias assessments with 12 publication-ready visualization types for systematic reviews and meta-analysis.",
     "url": "https://nos-tlplot.vercel.app/",
+    "downloadUrl": "https://github.com/aurumz-rgb/NOS-TLPlot",
+    "applicationSubCategory": "Evidence Synthesis Software",
+    "featureList": [
+      "Generates traffic light plots for NOS risk of bias assessment",
+      "12 specialized visualizations including radar charts, heatmaps, and lollipop plots",
+      "Publication-ready output in .png, .pdf, .svg, and .eps formats",
+      "Traffic-light and grayscale themes available",
+      "Available as a web app and Python package"
+    ],
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
     "creator": {
       "@type": "Person",
       "name": "Vihaan Sahu",
@@ -848,6 +863,38 @@
       }
     }
   </style>
+    <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is NOS-TLPlot?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "NOS-TLPlot is a free, open-source Python tool designed to visualize Newcastle-Ottawa Scale (NOS) risk-of-bias assessments. It generates publication-ready traffic light plots and 12 other specialized visualizations for systematic reviews."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How many visualization types does NOS-TLPlot support?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "NOS-TLPlot supports 12 visualization types, including traffic-light plots, radar charts, heatmaps, dot profiles, donut charts, lollipop plots, stacked area charts, pie charts, line ordered plots, table views, thematic radar charts, and star distribution."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is NOS-TLPlot free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, NOS-TLPlot is completely free and open-source, licensed under Apache 2.0. It is available as an interactive web application and a Python package."
+        }
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
 
@@ -905,18 +952,18 @@
     <section class="carousel">
       <button class="carousel-arrow prev">&#10094;</button>
       <div class="carousel-track">
-        <img src="example/output.png" alt="NOS Bubble Plot">
-        <img src="example/output_lollipop.png" alt="Lollipop Chart">
-        <img src="example/output_dot_profile.png" alt="Dot Profile">
-        <img src="example/output_stacked_area.png" alt="Stacked Area Chart">
-        <img src="example/output_donut.png" alt="Donut Chart">
-        <img src="example/output_pie.png" alt="Pie Chart">
-        <img src="example/output_heatmap.png" alt="Heatmap">
-        <img src="example/output_table.png" alt="Score Table">
-        <img src="example/output_line_ordered.png" alt="Line Ordered Scores">
-        <img src="example/NOS_star.png" alt="NOS star visualization Plot">
-        <img src="example/output_radar.png" alt="Domain Scores Radar Chart">
-        <img src="example/output_theme_radar.png" alt="Theme-based Radar Chart">
+        <img src="example/output.png" alt="Newcastle-Ottawa Scale bubble plot visualization">
+        <img src="example/output_lollipop.png" alt="NOS risk of bias lollipop chart">
+        <img src="example/output_dot_profile.png" alt="NOS domain scores dot profile plot">
+        <img src="example/output_stacked_area.png" alt="Newcastle-Ottawa Scale stacked area chart">
+        <img src="example/output_donut.png" alt="NOS risk of bias donut chart">
+        <img src="example/output_pie.png" alt="Newcastle-Ottawa Scale pie chart visualization">
+        <img src="example/output_heatmap.png" alt="NOS risk of bias heatmap">
+        <img src="example/output_table.png" alt="Newcastle-Ottawa Scale summary score table">
+        <img src="example/output_line_ordered.png" alt="NOS study scores ordered line plot">
+        <img src="example/NOS_star.png" alt="Newcastle-Ottawa Scale star distribution plot">
+        <img src="example/output_radar.png" alt="NOS domain scores radar chart">
+        <img src="example/output_theme_radar.png" alt="Thematic radar chart for NOS risk of bias">
       </div>
       <button class="carousel-arrow next">&#10095;</button>
     </section>

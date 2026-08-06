@@ -249,7 +249,7 @@ NOS-TLPlot Software code is cited:
 DOI: [10.5281/zenodo.17065214](https://doi.org/10.5281/zenodo.17065214)
 
 
-NOS-TLPlot Software Metapaper is cited:
+NOS-TLPlot Software Metapaper is cited: **[PREFERRED]**
 
 > **Sahu, V. (2026). NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments. *Journal of Open Research Software*, 14(1), 7.**
 DOI: [10.5334/jors.635](https://doi.org/10.5334/jors.635)

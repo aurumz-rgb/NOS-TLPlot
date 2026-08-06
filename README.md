@@ -208,7 +208,7 @@ Note: Radar Plots and Dot Profile plot is only limited to 5 studies.
 
 ---
 
-### 🧩 Repository Structure
+###  Repository Structure
 
 ```
 NOS-TLPlot/
@@ -224,7 +224,7 @@ NOS-TLPlot/
 
 ---
 
-##  Support
+##  ⭐ Support
 
 *  For usage questions, open a [Discussion](https://github.com/aurumz-rgb/NOS-TLPlot/discussions)
 *  For bug reports or feature requests, open an [Issue](https://github.com/aurumz-rgb/NOS-TLPlot/issues)
@@ -234,24 +234,24 @@ NOS-TLPlot/
 ---
 
 
-## 📄 Acknowledgment:
+##  Acknowledgment
 
 I sincerely thank the **Journal of Open Research Software (JORS)** for providing a full publication waiver supporting this software.
 
 
 ---
 
-## 🎯 Citation
+##  🧩 Citation
 
 NOS-TLPlot Software code is cited:
 
-**Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo.**
+> **Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo.**
 DOI: [10.5281/zenodo.17065214](https://doi.org/10.5281/zenodo.17065214)
 
 
 NOS-TLPlot Software Metapaper is cited:
 
-**Sahu, V. (2026). NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments. *Journal of Open Research Software*, 14(1), 7.**
+> **Sahu, V. (2026). NOS-TLPlot: A Specialized Python Tool for Visualizing Newcastle–Ottawa Scale Risk-of-Bias Assessments. *Journal of Open Research Software*, 14(1), 7.**
 DOI: [10.5334/jors.635](https://doi.org/10.5334/jors.635)
 
 ```bibtex

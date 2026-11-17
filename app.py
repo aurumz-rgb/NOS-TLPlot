@@ -25,6 +25,7 @@ hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    [data-testid="stAppDeployButton"] {display: none;}
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
@@ -49,7 +50,7 @@ st.markdown("""
         text-align: center; 
         font-size: 3.2rem !important;
         font-weight: 800 !important; 
-        margin-top: -80px; 
+        margin-top: -20px !important;
         margin-bottom: 10px; 
         color: #ffffff !important;
         letter-spacing: 1px;
@@ -269,18 +270,18 @@ add_background_png("./assets/background.png")
 
 st.markdown('<div class="top-padding-container">', unsafe_allow_html=True)
 
-gif_file = "assets/Chart.gif"
-if os.path.exists(gif_file):
-    with open(gif_file, "rb") as f:
-        gif_b64 = base64.b64encode(f.read()).decode()
-    gif_data_url = f"data:image/gif;base64,{gif_b64}"
-    
-    gif_html = f"""
-    <div style="display: flex; justify-content: center; margin-bottom: 16px;">
-        <img src="{gif_data_url}" style="width: 180px; height: 180px;">
+logo_file = "assets/logo.png"
+if os.path.exists(logo_file):
+    with open(logo_file, "rb") as f:
+        logo_b64 = base64.b64encode(f.read()).decode()
+    logo_data_url = f"data:image/png;base64,{logo_b64}"
+
+    logo_html = f"""
+    <div style="display: flex; justify-content: center;">
+        <img src="{logo_data_url}" style="width: 170px; height: 170px;">
     </div>
     """
-    components.html(gif_html, height=180)
+    components.html(logo_html, height=170)
 
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 st.markdown('<h1 class="centered-title">NOS-TLPlot</h1>', unsafe_allow_html=True)

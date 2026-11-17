@@ -136,7 +136,7 @@ python3 nos_tlplot.py sample.csv output-traffic-light.png gray
 | `_lollipop.png`      | Lollipop chart for comparative bias     |
 | `_pie.png`           | Proportional risk-of-bias pie           |
 | `_stacked_area.png`  | Stacked area visualization over domains |
-| `_star_dist.png`     | Star distribution visualization         |
+| `_nos_plot.png`      | NOS visualization plot                  |
 
 ---
 
@@ -176,7 +176,7 @@ Your file should have these columns:
 9. **Line Ordered Plot** – Connects domain bias levels for each study.
 10. **Table View** – Tabular representation of bias domains.
 11. **Radar (Thematic)** – Theme-adapted radar chart (gray/colored).
-12. **Star distribution** – Star-adapted plot (only traffic-light).
+12. **NOS Visualization Plot** – Item-level traffic-light grid with domain bands and star totals.
 
 Note: Radar Plots and Dot Profile plot is only limited to 5 studies.
 
@@ -284,8 +284,8 @@ DOI: [10.5334/jors.635](https://doi.org/10.5334/jors.635)
 
 All the Output Sample plots
 
-![Example Result1111](example/NOS_star.png)
-NOS star plot
+![Example NOS Plot](example/nos_plot.png)
+NOS visualization plot
 
 
 ![Example Result1](example/output.png)

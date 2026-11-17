@@ -66,8 +66,8 @@ class TestPlotGeneration:
     def test_professional_plot(self, processed_df):
         self._assert_plot_created(nos_tlplot.professional_plot, processed_df, "prof_plot.png")
 
-    def test_star_distribution_hist(self, processed_df):
-        self._assert_plot_created(nos_tlplot.plot_star_distribution_hist, processed_df, "star_hist.png")
+    def test_nos_visualization(self, processed_df):
+        self._assert_plot_created(nos_tlplot.plot_nos_visualization, processed_df, "nos_plot.png")
 
     def test_domain_heatmap(self, processed_df):
         self._assert_plot_created(nos_tlplot.plot_domain_heatmap, processed_df, "heatmap.png")

@@ -5,7 +5,7 @@ from nos_tlplot import (
     plot_theme_radar, plot_domain_heatmap, plot_dot_profile, 
     plot_score_table, plot_donut_domain_risk, plot_line_ordered_scores, 
     plot_lollipop_total, plot_pie_overall_rob, plot_stacked_area_risk,
-    plot_star_distribution_hist
+    plot_nos_visualization
 )
 import tempfile
 import os
@@ -356,12 +356,12 @@ if uploaded_file is not None:
             plot_files = {}
             plot_exists = {}
             
-            star_plot_files = {}
+            nos_plot_files = {}
             for fmt in [".png", ".pdf", ".svg", ".eps"]:
-                output_path = os.path.join(temp_dir, f"NOS_StarDistributionHist{fmt}")
-                plot_star_distribution_hist(df, output_path, theme=theme)
-                star_plot_files[fmt] = output_path
-            plot_exists["Star Distribution"] = True
+                output_path = os.path.join(temp_dir, f"NOS_nos_plot{fmt}")
+                plot_nos_visualization(df, output_path, theme=theme)
+                nos_plot_files[fmt] = output_path
+            plot_exists["NOS Visualization Plot"] = True
             gc.collect()
             
             radar_exists = num_studies <= 5
@@ -417,14 +417,14 @@ if uploaded_file is not None:
             st.markdown("### Visualization Preview")
             
             if radar_exists:
-                tab1, tab2, tab3 = st.tabs(["Star Distribution", "Radar Charts", "Other Visualizations"])
+                tab1, tab2, tab3 = st.tabs(["NOS Visualization Plot", "Radar Charts", "Other Visualizations"])
             else:
-                tab1, tab2 = st.tabs(["Star Distribution", "Other Visualizations"])
+                tab1, tab2 = st.tabs(["NOS Visualization Plot", "Other Visualizations"])
             
             with tab1:
                 st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                st.image(star_plot_files[".png"], width='stretch')
-                st.caption("Star Distribution Histogram")
+                st.image(nos_plot_files[".png"], width='stretch')
+                st.caption("Newcastle-Ottawa Scale (NOS) Visualization Plot")
                 
                 st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
                 
@@ -438,12 +438,12 @@ if uploaded_file is not None:
                 
                 download_html = ""
                 for fmt in formats:
-                    file_path = star_plot_files[fmt]
+                    file_path = nos_plot_files[fmt]
                     with open(file_path, "rb") as f:
                         file_data = f.read()
                         b64_data = base64.b64encode(file_data).decode()
                     
-                    filename = f"NOS_StarDistributionHist{fmt}"
+                    filename = f"NOS_nos_plot{fmt}"
                     download_html += f'<a download="{filename}" href="data:{mime_types[fmt]};base64,{b64_data}" class="small-download-btn">{fmt[1:].upper()}</a>'
                 
                 st.markdown(download_html, unsafe_allow_html=True)
@@ -531,7 +531,7 @@ if uploaded_file is not None:
             
             plot_files.clear()
             del plot_files
-            del star_plot_files
+            del nos_plot_files
             gc.collect()
         
     except Exception as e:

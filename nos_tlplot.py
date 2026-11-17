@@ -784,52 +784,149 @@ def plot_stacked_area_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
     plt.close()
     print(f"✅ Stacked area chart saved to {output_file}")
 
-def plot_star_distribution_hist(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
-    colors_map = get_theme_colors(theme)
-    domains = ["Selection", "Comparability", "Outcome/Exposure"]
-    
-    fig, axs = plt.subplots(1, 3, figsize=(15, 5))
-    
-    star_colors = {
-        0: "#d32f2f",  
-        1: "#f57c00", 
-        2: "#fbc02d",  
-        3: "#689f38",  
-        4: "#388e3c", 
-        5: "#1976d2"   
-    }
-    
-    for i, domain in enumerate(domains):
-        star_counts = df[domain].value_counts().sort_index()
-        
-        x = range(0, 6)
-        heights = [star_counts.get(stars, 0) for stars in x]
-        colors = [star_colors[stars] for stars in x]
-        
-        bars = axs[i].bar(x, heights, color=colors, edgecolor='black', alpha=0.8, linewidth=1.2)
-        
-        for bar, height in zip(bars, heights):
-            if height > 0:
-                axs[i].text(bar.get_x() + bar.get_width()/2., height + 0.05,
-                           f'{int(height)}', ha='center', va='bottom', fontweight='bold')
-        
-        axs[i].set_title(f"{domain} Domain", fontsize=14, pad=10)
-        axs[i].set_xlabel("Star Rating", fontsize=12)
-        axs[i].set_ylabel("Number of Studies", fontsize=12)
-        axs[i].set_xticks(x)
-        axs[i].set_ylim(0, max(heights) * 1.2 if heights else 1)
-        axs[i].grid(axis='y', linestyle='--', alpha=0.7)
-    
-    fig.suptitle("NOS Star Distribution by Domain", fontsize=16, y=1.05, fontweight='bold')
-    
-    legend_elements = [Patch(facecolor=star_colors[stars], label=f'{stars} Stars', 
-                           edgecolor='black', linewidth=1.2) for stars in range(0, 6)]
-    fig.legend(handles=legend_elements, loc='center right', bbox_to_anchor=(1.15, 0.5))
-    
+NOS_ITEMS = [
+    ("Representativeness", "D1", "Representativeness of the exposed cohort"),
+    ("Non-exposed Selection", "D2", "Selection of the non-exposed cohort"),
+    ("Exposure Ascertainment", "D3", "Ascertainment of exposure"),
+    ("Outcome Absent at Start", "D4", "Outcome not present at start of study"),
+    ("Comparability (Age/Gender)", "D5", "Comparability - most important factor"),
+    ("Comparability (Other)", "D6", "Comparability - additional factor"),
+    ("Outcome Assessment", "D7", "Assessment of outcome"),
+    ("Follow-up Length", "D8", "Follow-up long enough for outcomes to occur"),
+    ("Follow-up Adequacy", "D9", "Adequacy of follow-up"),
+]
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+NOS_DOMAINS = [("SELECTION", 0, 3), ("COMPARABILITY", 4, 5), ("OUTCOME / EXPOSURE", 6, 8)]
+
+NOS_SYMBOLS = {"Low": "+", "Moderate": "?", "High": "−"}
+
+
+def _contrast_text(color):
+    r, g, b = mcolors.to_rgb(color)
+    luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
+    return "white" if luminance < 0.55 else "#1A1A1A"
+
+
+def plot_nos_visualization(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
+    colors = get_theme_colors(theme)
+    n = len(df)
+
+    x_total, x_overall = 9.59, 10.80
+    grid_l, grid_r = -0.55, 11.40
+    box_l, box_r = grid_l + 0.02, grid_r
+    strip_y0, strip_y1 = n + 0.14, n + 0.66
+    band_y0, band_y1 = strip_y1, strip_y1 + 0.52
+    code_y = n + 0.40
+    grid_top, grid_bot = strip_y0, -0.49
+
+    ax_w = (grid_r - grid_l) * 0.95
+    ax_h = (band_y1 + 0.10 - grid_bot) * 0.62
+    fig_w = ax_w + 2.2
+    footer_h = 2.70
+    fig_h = 0.95 + ax_h + footer_h + 0.55
+
+    fig = plt.figure(figsize=(fig_w, fig_h))
+    ax = fig.add_axes([0.35 / fig_w, (footer_h + 0.55) / fig_h, ax_w / fig_w, ax_h / fig_h])
+
+    y_of = {i: n - 0.675 - i for i in range(n)}
+
+    for rx in [0.5, 1.5, 2.5, 4.5, 6.5, 7.5]:
+        ax.vlines(rx, grid_bot, strip_y1, color="#9AA1AA", lw=0.8, zorder=6)
+    for rx in [3.5, 5.5, 8.98, 10.20]:
+        ax.vlines(rx, grid_bot, strip_y1, color="#6E767F", lw=1.6, zorder=6)
+    ax.add_patch(Rectangle((box_l, grid_bot), box_r - box_l, strip_y1 - grid_bot,
+                           fill=False, edgecolor="#6E767F", lw=0.9, zorder=6))
+    ax.hlines(grid_top, box_l, box_r, color="#9AA1AA", lw=1.0, zorder=1)
+    ax.hlines(grid_bot, box_l, box_r, color="#9AA1AA", lw=1.0, zorder=1)
+
+    item_pts, item_cols, item_syms = [], [], []
+    overall_pts, overall_cols, overall_syms = [], [], []
+    for i, (_, row) in enumerate(df.iterrows()):
+        r = y_of[i]
+        for c, (col, _, _) in enumerate(NOS_ITEMS):
+            risk = "Low" if int(row[col]) == 1 else "High"
+            item_pts.append((c, r))
+            item_cols.append(colors[risk])
+            item_syms.append(NOS_SYMBOLS[risk])
+        overall_pts.append((x_overall, r))
+        overall_cols.append(colors.get(row["Overall RoB"], "#888888"))
+        overall_syms.append(NOS_SYMBOLS.get(row["Overall RoB"], "?"))
+
+    ax.scatter(*zip(*item_pts), s=1150, c=item_cols, edgecolors="none", zorder=3)
+    ax.scatter(*zip(*overall_pts), s=1500, c=overall_cols, edgecolors="none", zorder=3)
+    for (x, y), sym, col in zip(item_pts, item_syms, item_cols):
+        ax.text(x, y, sym, ha="center", va="center", fontsize=16, fontweight="bold",
+                color=_contrast_text(col), zorder=4)
+    for (x, y), sym, col in zip(overall_pts, overall_syms, overall_cols):
+        ax.text(x, y, sym, ha="center", va="center", fontsize=18, fontweight="bold",
+                color=_contrast_text(col), zorder=4)
+
+    for i, (_, row) in enumerate(df.iterrows()):
+        ax.scatter([x_total], [y_of[i]], s=1600, c=["#E9EDF1"], edgecolors="none", zorder=3)
+        ax.text(x_total, y_of[i], f"{int(row['Total Score'])}/9", ha="center", va="center",
+                fontsize=12, fontweight="bold", color="#37414B", zorder=4)
+
+    ax.add_patch(Rectangle((box_l, band_y0), box_r - box_l, band_y1 - band_y0,
+                           facecolor="#3A3F4A", edgecolor="none", zorder=5))
+    for name, c0, c1 in NOS_DOMAINS:
+        ax.text((c0 + c1) / 2.0 + 0.02, (band_y0 + band_y1) / 2.0, name, ha="center",
+                va="center", fontsize=11, fontweight="bold", color="white", zorder=6)
+    ax.text(x_total, (band_y0 + band_y1) / 2.0, "TOTAL", ha="center", va="center",
+            fontsize=11, fontweight="bold", color="white", zorder=6)
+    ax.text(x_overall, (band_y0 + band_y1) / 2.0, "OVERALL", ha="center", va="center",
+            fontsize=11, fontweight="bold", color="white", zorder=6)
+
+    ax.add_patch(Rectangle((box_l, strip_y0), box_r - box_l, strip_y1 - strip_y0,
+                           facecolor="#D7DBE0", edgecolor="none", zorder=4))
+    for c, (_, code, _) in enumerate(NOS_ITEMS):
+        ax.text(c, code_y, code, ha="center", va="center", fontsize=11.5,
+                fontweight="bold", color="#1A1A1A", zorder=6)
+
+    ax.set_xlim(grid_l, grid_r + 0.04)
+    ax.set_ylim(grid_bot, band_y1 + 0.10)
+    ax.set_yticks([y_of[i] for i in range(n)])
+    ax.set_yticklabels(df["Author, Year"], fontsize=11.5)
+    ax.set_xticks([])
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    ax.tick_params(axis="y", length=0, pad=8)
+
+    fig.text(0.52, (fig_h - 0.525) / fig_h, "Newcastle-Ottawa Scale (NOS) Visualization Plot",
+             ha="center", va="center", fontsize=18, fontweight="bold", color="#1A1A1A")
+
+    key_ax = fig.add_axes([0.35 / fig_w, 0.20 / fig_h, ax_w / fig_w, footer_h / fig_h])
+    key_ax.set_xlim(0, 1)
+    key_ax.set_ylim(0, 1)
+    key_ax.axis("off")
+
+    key_ax.text(0.02, 0.95, "Domains:", ha="left", va="center", fontsize=14,
+                fontweight="bold", color="#1A1A1A")
+    y = 0.82
+    for _, code, desc in NOS_ITEMS:
+        key_ax.text(0.02, y, code, ha="left", va="center", fontsize=14,
+                    fontweight="bold", color="#1A1A1A")
+        key_ax.text(0.075, y, desc, ha="left", va="center", fontsize=14, color="#333333")
+        y -= 0.092
+
+    key_ax.text(0.80, 0.95, "Judgement", ha="left", va="center", fontsize=14,
+                fontweight="bold", color="#1A1A1A")
+    y = 0.82
+    for risk in ["Low", "Moderate", "High"]:
+        face = colors[risk]
+        key_ax.scatter([0.812], [y], s=500, c=[face], edgecolors="none", zorder=3)
+        key_ax.text(0.812, y, NOS_SYMBOLS[risk], ha="center", va="center", fontsize=13,
+                    fontweight="bold", color=_contrast_text(face), zorder=4)
+        key_ax.text(0.845, y, f"{risk} risk", ha="left", va="center", fontsize=13,
+                    color="#333333")
+        y -= 0.14
+
+    valid_ext = [".png", ".pdf", ".svg", ".eps"]
+    ext = os.path.splitext(output_file)[1].lower()
+    if ext not in valid_ext:
+        raise ValueError(f"Unsupported file format: {ext}. Use one of {valid_ext}")
+    plt.savefig(output_file, dpi=300, bbox_inches="tight")
     plt.close()
-    print(f"✅ Star distribution histogram saved to {output_file}")
+    print(f"✅ NOS plot saved to {output_file}")
 
 def read_input_file(file_path: str) -> pd.DataFrame:
     ext = os.path.splitext(file_path)[1].lower()
@@ -868,4 +965,4 @@ if __name__ == "__main__":
     plot_lollipop_total(df, f"{base}_lollipop{ext}", theme)
     plot_pie_overall_rob(df, f"{base}_pie{ext}", theme)
     plot_stacked_area_risk(df, f"{base}_stacked_area{ext}", theme)
-    plot_star_distribution_hist(df, f"{base}_star_hist{ext}", theme)
+    plot_nos_visualization(df, f"{base}_nos_plot{ext}", theme)

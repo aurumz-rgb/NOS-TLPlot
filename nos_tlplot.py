@@ -397,7 +397,7 @@ def plot_domain_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffi
     fig_height = max(5, 0.8 * len(df))
     fig, ax = plt.subplots(figsize=(8, fig_height))
     
-    sns.heatmap(numeric_df, cmap=cmap, norm=norm, linewidths=1.5, linecolor='white', ax=ax, cbar=False)
+    sns.heatmap(numeric_df, cmap=cmap, norm=norm, linewidths=2.5, linecolor='white', ax=ax, cbar=False)
     
 
     ax.set_yticklabels(heatmap_df.index, fontsize=8)
@@ -562,10 +562,10 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
         if i == 0:  
             cell.set_facecolor('#f0f0f0')
             cell.set_edgecolor('white')
-            cell.set_linewidth(1.3)
+            cell.set_linewidth(2.5)
         else:
             cell.set_edgecolor('white')
-            cell.set_linewidth(1.3)
+            cell.set_linewidth(2.5)
     
     ax.set_title("NOS Scores by Study", fontsize=19, pad=19)
     
@@ -913,7 +913,8 @@ def plot_nos_visualization(df: pd.DataFrame, output_file: str, theme: str = "tra
     for _, code, desc in NOS_ITEMS:
         key_ax.text(0.02, y, code, ha="left", va="center", fontsize=14,
                     fontweight="bold", color="#1A1A1A")
-        key_ax.text(0.075, y, desc, ha="left", va="center", fontsize=14, color="#333333")
+        key_ax.text(0.075, y, desc, ha="left", va="center", fontsize=14,
+                    fontweight="normal", color="#333333")
         y -= 0.092
 
     key_ax.text(0.80, 0.95, "Judgement", ha="left", va="center", fontsize=14,
@@ -925,7 +926,7 @@ def plot_nos_visualization(df: pd.DataFrame, output_file: str, theme: str = "tra
         key_ax.text(0.812, y, NOS_SYMBOLS[risk], ha="center", va="center", fontsize=13,
                     fontweight="bold", color=_contrast_text(face), zorder=4)
         key_ax.text(0.845, y, f"{risk} risk", ha="left", va="center", fontsize=13,
-                    color="#333333")
+                    fontweight="normal", color="#333333")
         y -= 0.14
 
     valid_ext = [".png", ".pdf", ".svg", ".eps"]

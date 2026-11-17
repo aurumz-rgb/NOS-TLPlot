@@ -22,7 +22,7 @@ It converts NOS star ratings into **publication-ready traffic-light plots** and 
 
 - **12 Visualization Types**: Traffic-light plots, radar charts, heatmaps, dot profiles, donut charts, lollipop charts, line plots, and more  
 - **Publication-Quality Output**: Export figures in `.png`, `.pdf`, `.svg`, `.eps` formats  
-- **Multiple Themes**: Traffic-light and grayscale themes for various publication requirements  
+- **Multiple Themes**: Traffic-light, grayscale, ocean-blue, and sage themes for various publication requirements  
 - **Interactive Web App**: Built with Streamlit for simple data upload, preview, and figure export  
 - **Command Line Interface**: For batch processing and automated figure generation  
 - **Domain-Specific Risk Assessment**: Automatically converts NOS stars (0–9) to categorical RoB (Low/Moderate/High)  
@@ -83,7 +83,7 @@ streamlit run app.py
 * Real-time visualization preview
 * Choose from 12 plot types
 * Download publication-ready figures in multiple formats
-* Theme switcher (Traffic-light / Grayscale)
+* Theme switcher (Traffic-light / Grayscale / Ocean / Sage)
 
 **Steps:**
 
@@ -120,7 +120,7 @@ python3 nos_tlplot.py sample.csv output-traffic-light.png gray
 | ------------- | --------------------------------------------------- |
 | `input_file`  | Path to CSV/Excel file containing NOS data          |
 | `output_file` | Output file name and extension                      |
-| `theme`       | Optional theme: `traffic_light` (default) or `gray` |
+| `theme`       | Optional theme: `traffic_light` (default), `gray`, `ocean` or `sage` |
 
 **Generated Outputs:**
 
@@ -277,6 +277,25 @@ DOI: [10.5334/jors.635](https://doi.org/10.5334/jors.635)
 }
 ```
 
+
+---
+
+## Themes
+
+NOS-TLPlot ships with four colour themes - `traffic_light` (default), `gray`, `ocean` and `sage` - selectable in the web app or via the optional theme argument on the command line.
+
+| Theme | Low | Moderate | High |
+| ----- | --- | -------- | ---- |
+| `traffic_light` | `#2E7D32` | `#F9A825` | `#C62828` |
+| `gray` | `#C7D5E2` | `#8B98A1` | `#5F6770` |
+| `ocean` | `#6BAED6` | `#2171B5` | `#08306B` |
+| `sage` | `#63BF93` | `#5B6D80` | `#FF884D` |
+
+![Example NOS plot in the ocean theme](example/nos_plot_ocean.png)
+NOS visualization plot in the ocean theme
+
+![Example NOS plot in the sage theme](example/nos_plot_sage.png)
+NOS visualization plot in the sage theme
 
 ---
 

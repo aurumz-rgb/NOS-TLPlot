@@ -23,6 +23,8 @@ except ImportError:
 THEME_OPTIONS = {
     "traffic_light": {"Low":"#2E7D32", "Moderate":"#F9A825", "High":"#C62828"},  
     "gray": {"Low":"#C7D5E2", "Moderate":"#8B98A1", "High":"#5F6770"},            
+    "ocean": {"Low":"#6BAED6", "Moderate":"#2171B5", "High":"#08306B"},
+    "sage": {"Low":"#63BF93", "Moderate":"#5B6D80", "High":"#FF884D"},
 }
 
 plt.style.use('seaborn-v0_8-whitegrid')
@@ -203,7 +205,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
                    loc='upper left', edgecolor='black', facecolor='white', framealpha=1)
     
     explanation = "Note: In Overall Risk column, H=High Risk, M=Moderate Risk, L=Low Risk"
-    fig.text(0.5, 0.1, explanation, ha='center', fontsize=13, style='italic')
+    fig.text(0.5, 0.02, explanation, ha='center', fontsize=13, style='italic')
 
 
     valid_ext = [".png", ".pdf", ".svg", ".eps"]
@@ -260,19 +262,12 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     ax.grid(True, linestyle='-', alpha=0.7, linewidth=1.5)
     
 
-    legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.5, label=rob) for rob in ["Low", "Moderate", "High"]]
-    risk_legend = ax.legend(handles=legend_elements, title="Overall Risk", loc='center left', bbox_to_anchor=(1.15, 0.5))
-    
-
-    n_cols = min(5, max(2, len(df) // 10 + 1))
-    study_legend_elements = [Line2D([0], [0], color=study_colors[i], lw=2, label=row['Author, Year']) 
-                            for i, (_, row) in enumerate(df.iterrows())]
-    
+    study_legend_elements = [Line2D([0], [0], color=study_colors[i], lw=2.5, label=row['Author, Year'])
+                             for i, (_, row) in enumerate(df.iterrows())]
+    ax.legend(handles=study_legend_elements, title="Study", title_fontsize=14,
+              loc='center left', bbox_to_anchor=(1.15, 0.5))
 
     plt.subplots_adjust(bottom=0.22)
-    
-    study_legend = ax.legend(handles=study_legend_elements, loc='upper center', 
-                            bbox_to_anchor=(0.5, -0.12), ncol=n_cols, fontsize=12)
     
 
     domain_mapping = {"A": "Selection", "B": "Comparability", "C": "Outcome/Exposure"}
@@ -540,11 +535,12 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     def apply_alpha(hex_color):
         return mcolors.to_rgba(hex_color, alpha=color_alpha)
     
+    row_fills = [colors_map.get(row["Overall RoB"], "white") for _, row in table_df.iterrows()]
+
     table = ax.table(
         cellText=table_df.values,
         colLabels=table_df.columns,
-        cellColours=[[apply_alpha(colors_map.get(row["Overall RoB"], "white")) for _ in range(len(table_df.columns))] 
-                    for _, row in table_df.iterrows()],
+        cellColours=[[apply_alpha(fill) for _ in range(len(table_df.columns))] for fill in row_fills],
         loc='top left',
         bbox=[0, 0, 1, 1],
         cellLoc='center'
@@ -554,7 +550,10 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     table.set_fontsize(13)
     
     for key, cell in table.get_celld().items():
-        cell.set_text_props(weight='bold')
+        if key[0] > 0:
+            cell.set_text_props(weight='bold', color=_contrast_text(row_fills[key[0] - 1]))
+        else:
+            cell.set_text_props(weight='bold')
         cell.set_edgecolor('white')
     
     table.scale(1.0, 1.2)
@@ -656,14 +655,15 @@ def plot_line_ordered_scores(df: pd.DataFrame, output_file: str, theme: str = "t
     ax.set_ylabel("Score", fontsize=14, labelpad=20)
     ax.grid(alpha=0.7)
     
-    plt.xticks(rotation=45, ha='right')
-    
     if len(df) > 50:
-        ax.tick_params(axis='x', labelsize=10)
-    elif len(df) > 20:
-        ax.tick_params(axis='x', labelsize=11)
-    elif len(df) > 10:
-        ax.tick_params(axis='x', labelsize=12)
+        plt.xticks(rotation=90, ha='center')
+        ax.tick_params(axis='x', labelsize=7)
+    else:
+        plt.xticks(rotation=45, ha='right')
+        if len(df) > 20:
+            ax.tick_params(axis='x', labelsize=11)
+        elif len(df) > 10:
+            ax.tick_params(axis='x', labelsize=12)
     
     ax.legend(title="Domain", bbox_to_anchor=(1.02, 1), loc='upper left', 
              edgecolor='black', facecolor='white', framealpha=1)
@@ -725,14 +725,22 @@ def plot_pie_overall_rob(df: pd.DataFrame, output_file: str, theme: str = "traff
     
     ax.set_position([0.1, 0.1, 0.65, 0.65])
     
+    total = counts.sum()
     wedges, texts, autotexts = ax.pie(counts, labels=counts.index, autopct='%1.1f%%',
                                       colors=[colors_map[rob] for rob in counts.index],
                                       startangle=90, wedgeprops={'linewidth': 4, 'edgecolor': 'white'})
     
-    for autotext in autotexts:
-        autotext.set_color('white')
+    for rob, autotext, text in zip(counts.index, autotexts, texts):
+        pct = counts[rob] / total * 100 if total else 0
         autotext.set_fontweight('bold')
         autotext.set_fontsize(13)
+        if pct == 0:
+            autotext.set_text("")
+        elif pct < 5:
+            autotext.set_text("")
+            text.set_text(f"{text.get_text()} ({pct:.1f}%)")
+        else:
+            autotext.set_color(_contrast_text(colors_map[rob]))
     
     for text in texts:
         text.set_fontweight('bold')

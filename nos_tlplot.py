@@ -100,7 +100,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     colors = get_theme_colors(theme)
     line_width = 1.5
     
-    fig_height = max(6, 0.4 * len(df) + 3)
+    fig_height = max(7.5, 0.55 * len(df) + 3)
     fig = plt.figure(figsize=(20, fig_height))
 
     gs = GridSpec(1, 1, left=0.08, right=0.75, top=0.95, bottom=0.08)
@@ -138,29 +138,29 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     bubble_df["X"] = bubble_df["Domain"].map(domain_positions)
     
     studies = df["Author, Year"].unique()
-    study_positions = {study: i for i, study in enumerate(studies)}
+    study_positions = {study: i * 1.8 for i, study in enumerate(studies)}
     bubble_df["Y"] = bubble_df["Author, Year"].map(study_positions)
     
-    min_size, max_size = 400, 1200
+    min_size, max_size = 610, 1680
     bubble_df["Size"] = min_size + (max_size - min_size) * bubble_df["NormalizedSize"]
     
     for _, row in bubble_df.iterrows():
         glow = Circle((row["X"], row["Y"]), radius=row["Size"]/2000, 
-                     facecolor=row["Color"], alpha=0.4)
+                     facecolor=row["Color"], alpha=0.4, zorder=2)
         ax.add_patch(glow)
         
         bubble = Circle((row["X"], row["Y"]), radius=row["Size"]/2000, 
-                       facecolor=row["Color"], alpha=0.9, edgecolor='black', linewidth=1.5)
+                       facecolor=row["Color"], alpha=0.9, edgecolor='black', linewidth=1.5, zorder=3)
         ax.add_patch(bubble)
         
         if row["Domain"] == "Overall Risk":
             ax.text(row["X"], row["Y"], row["Risk"][0], ha='center', va='center', 
                     color='white', fontsize=14, fontweight='bold',
-                    path_effects=[path_effects.withStroke(linewidth=2, foreground='black')])
+                    path_effects=[path_effects.withStroke(linewidth=2, foreground='black')], zorder=4)
         else:
             ax.text(row["X"], row["Y"], str(int(row["Stars"])), ha='center', va='center', 
                     color='white', fontsize=14, fontweight='bold',
-                    path_effects=[path_effects.withStroke(linewidth=2, foreground='black')])
+                    path_effects=[path_effects.withStroke(linewidth=2, foreground='black')], zorder=4)
     
     for study in studies:
         study_data = bubble_df[bubble_df["Author, Year"] == study].sort_values("X")
@@ -170,20 +170,20 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         for i in range(len(x_vals) - 1):
             segment = [(x_vals[i], y_vals[i]), (x_vals[i+1], y_vals[i+1])]
             color = colors[stars_to_rob(study_data.iloc[i]["Stars"], study_data.iloc[i]["Domain"])]
-            lc = LineCollection([segment], colors=[color], linewidth=3, alpha=0.7)
+            lc = LineCollection([segment], colors=[color], linewidth=3, alpha=0.7, zorder=1)
             ax.add_collection(lc)
     
-    ax.set_title("NOS Risk Assessment Bubble Chart", fontsize=20, pad=20)
+    ax.set_title("NOS Risk Assessment Bubble Chart", fontsize=20, pad=34, fontweight='bold')
     ax.set_xlabel("")
-    ax.set_ylabel("Study", fontsize=14, labelpad=20)
+    ax.set_ylabel("Study", fontsize=14, labelpad=22, fontweight='bold')
     
     ax.set_xticks([0, 7, 14, 21])
-    ax.set_xticklabels(domains, fontsize=14)
+    ax.set_xticklabels(domains, fontsize=16)
     
-    ax.set_yticks(range(len(studies)))
-    ax.set_yticklabels(studies, fontsize=12)
-    ax.set_xlim(-2, 23) 
-    ax.set_ylim(-0.5, len(studies) - 0.5)
+    ax.set_yticks([i * 1.8 for i in range(len(studies))])
+    ax.set_yticklabels(studies, fontsize=14)
+    ax.set_xlim(-1.05, 23)
+    ax.set_ylim(-1.15, (len(studies) - 1) * 1.8 + 0.85)
     ax.grid(False)
     
     ax.set_aspect('equal', adjustable='box')
@@ -191,7 +191,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     for spine in ax.spines.values():
         spine.set_visible(False)
     
-    ax.grid(axis='x', linestyle='--', alpha=0.3)
+    ax.grid(axis='x', linestyle='--', alpha=0.55, color='#70767E')
     
     legend_elements = [
         Line2D([0], [0], marker='o', color='w', label='Low Risk', 
@@ -202,10 +202,32 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
                 markerfacecolor=colors["High"], markersize=15, markeredgewidth=1.2, markeredgecolor='black')
     ]
     leg = ax.legend(handles=legend_elements, title="Risk Level", bbox_to_anchor=(1.02, 1), 
-                   loc='upper left', edgecolor='black', facecolor='white', framealpha=1)
+                   loc='upper left', frameon=True, edgecolor='black', facecolor='white', framealpha=1,
+                   fontsize=15, title_fontsize=16, labelspacing=0.7, borderpad=1.0)
+    for text in leg.get_texts():
+        text.set_fontweight('normal')
+    leg.get_title().set_fontweight('bold')
     
-    explanation = "Note: In Overall Risk column, H=High Risk, M=Moderate Risk, L=Low Risk"
-    fig.text(0.5, 0.02, explanation, ha='center', fontsize=13, style='italic')
+    note_parts = [
+        ("Note: ", True),
+        ("In Overall Risk column, ", False),
+        ("H", True),
+        (" = High Risk, ", False),
+        ("M", True),
+        (" = Moderate Risk, ", False),
+        ("L", True),
+        (" = Low Risk", False),
+    ]
+    note_texts = [fig.text(0.5, 0.01, text, ha='left', va='center', fontsize=16, style='italic',
+                           fontweight='bold' if bold else 'normal')
+                  for text, bold in note_parts]
+    fig.canvas.draw()
+    fig_px = fig.get_figwidth() * fig.dpi
+    widths = [text.get_window_extent(renderer=fig.canvas.get_renderer()).width for text in note_texts]
+    x = (fig_px - sum(widths)) / 2 / fig_px
+    for text, width in zip(note_texts, widths):
+        text.set_position((x, 0.01))
+        x += width / fig_px
 
 
     valid_ext = [".png", ".pdf", ".svg", ".eps"]

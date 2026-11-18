@@ -50,8 +50,8 @@ def get_theme_colors(theme):
 def compact_legend_fontsize(fig):
     return min(11.0, max(8.5, 0.65 * fig.get_size_inches()[0]))
 
-def add_compact_legend(ax, handles, title, anchor_x=1.02):
-    fs = compact_legend_fontsize(ax.get_figure())
+def add_compact_legend(ax, handles, title, anchor_x=1.02, fontsize=None):
+    fs = fontsize if fontsize is not None else compact_legend_fontsize(ax.get_figure())
     leg = ax.legend(handles=handles, title=title, fontsize=fs, title_fontsize=fs + 0.5,
                     loc='upper left', bbox_to_anchor=(anchor_x, 1.0), frameon=True,
                     edgecolor='black', facecolor='white', framealpha=1,
@@ -289,10 +289,10 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     ax.grid(True, linestyle='-', alpha=0.7, linewidth=1.5)
     
 
-    fs = compact_legend_fontsize(fig)
+    fs = min(13.0, compact_legend_fontsize(fig) + 3.0)
     study_legend_elements = [Line2D([0], [0], color=study_colors[i], lw=2.0, label=row['Author, Year'])
                              for i, (_, row) in enumerate(df.iterrows())]
-    leg = add_compact_legend(ax, study_legend_elements, "Study", anchor_x=1.22)
+    leg = add_compact_legend(ax, study_legend_elements, "Study", anchor_x=1.22, fontsize=fs)
 
     plt.subplots_adjust(bottom=0.22)
 
@@ -380,9 +380,9 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     ax.tick_params(axis='y', labelsize=14)
     ax.grid(True, linestyle='-', alpha=0.7, linewidth=1.5)
     
-    fs = compact_legend_fontsize(fig)
+    fs = min(13.0, compact_legend_fontsize(fig) + 3.0)
     legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.0, label=f"{rob} Risk") for rob in ["Low", "Moderate", "High"]]
-    risk_legend = add_compact_legend(ax, legend_elements, "Overall Risk", anchor_x=1.22)
+    risk_legend = add_compact_legend(ax, legend_elements, "Overall Risk", anchor_x=1.22, fontsize=fs)
 
     domain_mapping = {"A": "Selection", "B": "Comparability", "C": "Outcome / Exposure"}
 
@@ -568,7 +568,7 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     table_df = df[["Author, Year", "Selection", "Comparability", "Outcome/Exposure", "Total Score", "Overall RoB"]].copy()
     table_df = table_df.sort_values("Overall RoB", ascending=False)
     
-    fig_width = max(12, 10 + len(table_df.columns) * 1.5)
+    fig_width = max(12, 5 + len(table_df.columns) * 1.63)
     fig_height = max(5, 0.4 * len(table_df) + 1.2)
     
     fig, ax = plt.subplots(figsize=(fig_width, fig_height))
@@ -591,7 +591,7 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     )
     
     table.auto_set_font_size(False)
-    table.set_fontsize(13)
+    table.set_fontsize(15)
     
     for key, cell in table.get_celld().items():
         if key[0] > 0:
@@ -607,17 +607,18 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
             cell.set_facecolor('#f0f0f0')
             cell.set_edgecolor('white')
             cell.set_linewidth(2.5)
+            cell.get_text().set_fontsize(14.5)
         else:
             cell.set_edgecolor('white')
             cell.set_linewidth(2.5)
     
     plt.subplots_adjust(left=0.05, right=0.95)
     
-    fs = compact_legend_fontsize(fig)
+    fs = min(12.5, compact_legend_fontsize(fig) + 2.5)
     legend_elements = [Line2D([0], [0], marker='o', color='w', markerfacecolor=colors_map[rob],
                               markeredgecolor='black', markersize=fs * 0.85, markeredgewidth=0.8, label=f"{rob} Risk")
                        for rob in ["High", "Moderate", "Low"]]
-    add_compact_legend(ax, legend_elements, "Overall Risk")
+    add_compact_legend(ax, legend_elements, "Overall Risk", fontsize=fs)
     
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight', pad_inches=0.2)

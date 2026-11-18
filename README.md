@@ -22,7 +22,7 @@ It converts NOS star ratings into **publication-ready traffic-light plots** and 
 
 - **12 Visualization Types**: Traffic-light plots, radar charts, heatmaps, dot profiles, donut charts, lollipop charts, line plots, and more  
 - **Publication-Quality Output**: Export figures in `.png`, `.pdf`, `.svg`, `.eps` formats  
-- **Multiple Themes**: Traffic-light, grayscale, ocean-blue, and sage themes for various publication requirements  
+- **Multiple Themes**: Traffic-light, grayscale, ocean-blue, and sage themes for various publication requirements — [see the Themes section](#themes)  
 - **Interactive Web App**: Built with Streamlit for simple data upload, preview, and figure export  
 - **Command Line Interface**: For batch processing and automated figure generation  
 - **Domain-Specific Risk Assessment**: Automatically converts NOS stars (0–9) to categorical RoB (Low/Moderate/High)  

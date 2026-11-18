@@ -8,9 +8,7 @@ from matplotlib.lines import Line2D
 import matplotlib.colors as mcolors
 from matplotlib.patches import Patch, Rectangle, Circle
 import numpy as np
-from matplotlib.gridspec import GridSpec
 import matplotlib as mpl
-from matplotlib.patches import Rectangle
 import matplotlib.patheffects as path_effects
 from matplotlib.collections import LineCollection
 
@@ -48,6 +46,9 @@ def get_theme_colors(theme):
     if theme not in THEME_OPTIONS:
         raise ValueError(f"Theme {theme} not available. Choose from {list(THEME_OPTIONS.keys())}")
     return THEME_OPTIONS[theme]
+
+def legend_fontsize(fig):
+    return 1.15 * fig.get_size_inches()[0]
 
 def process_detailed_nos(df: pd.DataFrame) -> pd.DataFrame:
     required_columns = [
@@ -150,7 +151,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         ax.add_patch(glow)
         
         bubble = Circle((row["X"], row["Y"]), radius=row["Size"]/2000, 
-                       facecolor=row["Color"], alpha=0.9, edgecolor='black', linewidth=1.5, zorder=3)
+                       facecolor=row["Color"], alpha=0.9, edgecolor='black', linewidth=1.0, zorder=3)
         ax.add_patch(bubble)
         
         if row["Domain"] == "Overall Risk":
@@ -193,17 +194,18 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     
     ax.grid(axis='x', linestyle='--', alpha=0.55, color='#70767E')
     
+    fs = legend_fontsize(fig)
     legend_elements = [
-        Line2D([0], [0], marker='o', color='w', label='Low Risk', 
-                markerfacecolor=colors["Low"], markersize=15, markeredgewidth=1.2, markeredgecolor='black'),
-        Line2D([0], [0], marker='o', color='w', label='Moderate Risk', 
-                markerfacecolor=colors["Moderate"], markersize=15, markeredgewidth=1.2, markeredgecolor='black'),
-        Line2D([0], [0], marker='o', color='w', label='High Risk', 
-                markerfacecolor=colors["High"], markersize=15, markeredgewidth=1.2, markeredgecolor='black')
+        Line2D([0], [0], marker='o', color='w', label='Low Risk',
+                markerfacecolor=colors["Low"], markersize=fs, markeredgewidth=0.8, markeredgecolor='black'),
+        Line2D([0], [0], marker='o', color='w', label='Moderate Risk',
+                markerfacecolor=colors["Moderate"], markersize=fs, markeredgewidth=0.8, markeredgecolor='black'),
+        Line2D([0], [0], marker='o', color='w', label='High Risk',
+                markerfacecolor=colors["High"], markersize=fs, markeredgewidth=0.8, markeredgecolor='black')
     ]
-    leg = ax.legend(handles=legend_elements, title="Risk Level", bbox_to_anchor=(1.02, 1), 
+    leg = ax.legend(handles=legend_elements, title="Risk Level", bbox_to_anchor=(1.02, 1),
                    loc='upper left', frameon=True, edgecolor='black', facecolor='white', framealpha=1,
-                   fontsize=15, title_fontsize=16, labelspacing=0.7, borderpad=1.0)
+                   fontsize=fs, title_fontsize=fs * 16 / 15, labelspacing=0.7, borderpad=1.0)
     for text in leg.get_texts():
         text.set_fontweight('normal')
     leg.get_title().set_fontweight('bold')
@@ -246,15 +248,11 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         return
     
 
-    try:
-        colors_map = get_theme_colors(theme)
-    except NameError:
+    colors_map = get_theme_colors(theme)
 
-        colors_map = {"Low": "green", "Moderate": "yellow", "High": "red"}
-    
     max_scores = {"Selection": 4, "Comparability": 2, "Outcome/Exposure": 3}
     domains = list(max_scores.keys())
-    
+
     fig_width = max(14, 10 + len(df) * 0.2)
     fig_height = max(10, 8 + len(df) * 0.15)
     fig = plt.figure(figsize=(fig_width, fig_height))
@@ -272,7 +270,7 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         values += values[:1] 
         
         ax.plot(angles, values, 'o-', linewidth=3.0, color=study_colors[idx], alpha=0.8, 
-                markeredgecolor='black', markeredgewidth=1.0, markersize=10)
+                markeredgecolor='black', markeredgewidth=0.8, markersize=10)
         ax.fill(angles, values, alpha=0.2, color=study_colors[idx])
     
     ax.set_xticks(angles[:-1])
@@ -284,41 +282,60 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     ax.grid(True, linestyle='-', alpha=0.7, linewidth=1.5)
     
 
-    study_legend_elements = [Line2D([0], [0], color=study_colors[i], lw=2.5, label=row['Author, Year'])
+    fs = legend_fontsize(fig)
+    study_legend_elements = [Line2D([0], [0], color=study_colors[i], lw=fs / 6, label=row['Author, Year'])
                              for i, (_, row) in enumerate(df.iterrows())]
-    ax.legend(handles=study_legend_elements, title="Study", title_fontsize=14,
-              loc='center left', bbox_to_anchor=(1.15, 0.5))
+    leg = ax.legend(handles=study_legend_elements, title="Study", fontsize=fs, title_fontsize=fs * 16 / 15,
+                    loc='upper left', bbox_to_anchor=(1.06, 1.0), frameon=True,
+                    edgecolor='black', facecolor='white', framealpha=1,
+                    labelspacing=0.7, borderpad=1.0)
+    for text in leg.get_texts():
+        text.set_fontweight('normal')
+    leg.get_title().set_fontweight('bold')
 
     plt.subplots_adjust(bottom=0.22)
     
 
     domain_mapping = {"A": "Selection", "B": "Comparability", "C": "Outcome/Exposure"}
-    
- 
-    legend_x = 0.98
-    legend_y = 0.05
-    
-    rect = Rectangle((legend_x, legend_y - 0.05), 0.25, 0.15, 
-                     transform=ax.transAxes, facecolor='white', 
-                     edgecolor='black', alpha=0.8, linewidth=1.2)
+
+    row_h = 0.05
+
+    labels = [f"{letter} : {domain}" for letter, domain in domain_mapping.items()]
+    row_texts = [ax.text(0.985, 0.02 + (len(labels) - 1 - i) * row_h, label,
+                         transform=ax.transAxes, fontsize=fs, color='black',
+                         verticalalignment='bottom', horizontalalignment='left',
+                         fontweight='bold')
+                 for i, label in enumerate(labels)]
+
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    inv = ax.transAxes.inverted()
+    lbox = leg.get_window_extent(renderer=renderer).transformed(inv)
+    boxes = [t.get_window_extent(renderer=renderer).transformed(inv) for t in row_texts]
+    x0 = min(b.x0 for b in boxes) - 0.015
+    x1 = max(b.x1 for b in boxes) + 0.015
+    y0 = min(b.y0 for b in boxes) - 0.012
+    y1 = max(b.y1 for b in boxes) + 0.012
+    title = ax.text((x0 + x1) / 2, y1 + 0.005, "Domain", transform=ax.transAxes,
+                    fontsize=fs * 16 / 15, color='black', verticalalignment='bottom',
+                    horizontalalignment='center', fontweight='bold')
+    tbox = title.get_window_extent(renderer=renderer).transformed(inv)
+    y1 = max(y1, tbox.y1) + 0.012
+    dx = lbox.x0 - x0
+    dy = (lbox.y0 - 0.02) - y1
+    for t in row_texts + [title]:
+        x, y = t.get_position()
+        t.set_position((x + dx, y + dy))
+    rect = Rectangle((x0 + dx, y0 + dy), x1 - x0, y1 - y0,
+                     transform=ax.transAxes, facecolor='white',
+                     edgecolor='black', alpha=0.8, linewidth=0.8, zorder=2, clip_on=False)
     ax.add_patch(rect)
-    
-    y_offset = 0.03
-    for letter, domain in domain_mapping.items():
-        ax.text(legend_x + 0.01, legend_y + y_offset - 0.05, letter, transform=ax.transAxes, 
-                fontsize=14, color='red', verticalalignment='bottom', 
-                horizontalalignment='left', fontweight='bold')
-        ax.text(legend_x + 0.04, legend_y + y_offset - 0.05, f": {domain}", transform=ax.transAxes, 
-                fontsize=13, color='black', verticalalignment='bottom', 
-                horizontalalignment='left')
-        y_offset += 0.04
-    
 
     explanation = (
         "Note: Scores are normalized to domain maxima (Selection ÷4, Comparability ÷2, Outcome/Exposure ÷3);"
     )
-
-    fig.text(0.5, 0.02, explanation, ha='center', fontsize=12)
+    ax_box = ax.get_position()
+    fig.text((ax_box.x0 + ax_box.x1) / 2, 0.02, explanation, ha='center', fontsize=12)
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
@@ -351,7 +368,7 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
         
         color = colors_map.get(row["Overall RoB"], "grey")
         ax.plot(angles, values, 'o-', linewidth=3.0, color=color, alpha=0.8, 
-                markeredgecolor='black', markeredgewidth=1.0, markersize=10)
+                markeredgecolor='black', markeredgewidth=0.8, markersize=10)
         ax.fill(angles, values, alpha=0.2, color=color)
     
     ax.set_xticks(angles[:-1])
@@ -362,37 +379,57 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     ax.tick_params(axis='y', labelsize=14)
     ax.grid(True, linestyle='-', alpha=0.7, linewidth=1.5)
     
-    legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.5, label=rob) for rob in ["Low", "Moderate", "High"]]
-    risk_legend = ax.legend(handles=legend_elements, title="Overall Risk",title_fontsize=14, loc='center left', bbox_to_anchor=(1.15, 0.5))
-    
+    fs = legend_fontsize(fig)
+    legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=fs / 6, label=f"{rob} Risk") for rob in ["Low", "Moderate", "High"]]
+    risk_legend = ax.legend(handles=legend_elements, title="Overall Risk", fontsize=fs, title_fontsize=fs * 16 / 15,
+                            loc='upper left', bbox_to_anchor=(1.06, 1.0), frameon=True,
+                            edgecolor='black', facecolor='white', framealpha=1,
+                            labelspacing=0.7, borderpad=1.0)
+
     for text in risk_legend.get_texts():
-        text.set_fontsize(14)
+        text.set_fontweight('normal')
+    risk_legend.get_title().set_fontweight('bold')
     
     domain_mapping = {"A": "Selection", "B": "Comparability", "C": "Outcome/Exposure"}
-    
-    legend_x = 0.98
-    legend_y = 0.05
-    
-    rect = Rectangle((legend_x - 0.02, legend_y - 0.05), 0.25, 0.15, 
-                     transform=ax.transAxes, facecolor='white', 
-                     edgecolor='black', alpha=0.8, linewidth=1.2)
+
+    row_h = 0.05
+
+    labels = [f"{letter} : {domain}" for letter, domain in domain_mapping.items()]
+    row_texts = [ax.text(0.985, 0.02 + (len(labels) - 1 - i) * row_h, label,
+                         transform=ax.transAxes, fontsize=fs, color='black',
+                         verticalalignment='bottom', horizontalalignment='left',
+                         fontweight='bold')
+                 for i, label in enumerate(labels)]
+
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    inv = ax.transAxes.inverted()
+    lbox = risk_legend.get_window_extent(renderer=renderer).transformed(inv)
+    boxes = [t.get_window_extent(renderer=renderer).transformed(inv) for t in row_texts]
+    x0 = min(b.x0 for b in boxes) - 0.015
+    x1 = max(b.x1 for b in boxes) + 0.015
+    y0 = min(b.y0 for b in boxes) - 0.012
+    y1 = max(b.y1 for b in boxes) + 0.012
+    title = ax.text((x0 + x1) / 2, y1 + 0.005, "Domain", transform=ax.transAxes,
+                    fontsize=fs * 16 / 15, color='black', verticalalignment='bottom',
+                    horizontalalignment='center', fontweight='bold')
+    tbox = title.get_window_extent(renderer=renderer).transformed(inv)
+    y1 = max(y1, tbox.y1) + 0.012
+    dx = lbox.x0 - x0
+    dy = (lbox.y0 - 0.02) - y1
+    for t in row_texts + [title]:
+        x, y = t.get_position()
+        t.set_position((x + dx, y + dy))
+    rect = Rectangle((x0 + dx, y0 + dy), x1 - x0, y1 - y0,
+                     transform=ax.transAxes, facecolor='white',
+                     edgecolor='black', alpha=0.8, linewidth=0.8, zorder=2, clip_on=False)
     ax.add_patch(rect)
-    
-    y_offset = 0.03
-    for letter, domain in domain_mapping.items():
-        ax.text(legend_x, legend_y + y_offset, letter, transform=ax.transAxes, 
-                fontsize=15, color='red', verticalalignment='bottom', 
-                horizontalalignment='left', fontweight='bold')
-        ax.text(legend_x + 0.03, legend_y + y_offset, f": {domain}", transform=ax.transAxes, 
-                fontsize=14, color='black', verticalalignment='bottom', 
-                horizontalalignment='left')
-        y_offset += 0.04
-    
+
     explanation = (
         "Note: Scores are normalized to domain maxima (Selection ÷4, Comparability ÷2, Outcome/Exposure ÷3);"
     )
-    fig.text(0.5, 0.02, explanation, ha='center', fontsize=12, 
-             )
+    ax_box = ax.get_position()
+    fig.text((ax_box.x0 + ax_box.x1) / 2, 0.02, explanation, ha='center', fontsize=12)
     
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -428,11 +465,17 @@ def plot_domain_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffi
 
     ax.set_ylabel("Author, Year", fontsize=12, labelpad=20)
     
-    legend_elements = [Patch(facecolor=colors_map[rob], label=rob, edgecolor='black', linewidth=1.2) 
-                      for rob in ["High", "Moderate", "Low"]]
-    
-    ax.legend(handles=legend_elements, title="Overall Risk", bbox_to_anchor=(1.2, 0.5), 
-              loc='center left', fontsize=8, title_fontsize=9)
+    fs = legend_fontsize(fig)
+    legend_elements = [Line2D([0], [0], marker='o', color='w', markerfacecolor=colors_map[rob],
+                              markeredgecolor='black', markersize=fs, markeredgewidth=0.8, label=f"{rob} Risk")
+                       for rob in ["High", "Moderate", "Low"]]
+
+    leg = ax.legend(handles=legend_elements, title="Overall Risk", bbox_to_anchor=(1.02, 0.5),
+                    loc='center left', fontsize=fs, title_fontsize=fs * 16 / 15, frameon=True,
+                    edgecolor='black', facecolor='white', framealpha=1,
+                    labelspacing=0.7, borderpad=1.0)
+    for text in leg.get_texts():
+        text.set_fontweight('normal')
     
     ax.set_title("Risk of Bias by Domain and Study", fontsize=15, pad=12)
     
@@ -460,18 +503,20 @@ def plot_star_distribution(df: pd.DataFrame, output_file: str, theme: str = "tra
     
     sns.barplot(data=plot_df, x="Stars", y="Count", hue="Domain", 
                 hue_order=domain_order, palette=palette_list,
-                ax=ax, edgecolor='black', linewidth=1.2, alpha=0.9)
+                ax=ax, edgecolor='black', linewidth=0.8, alpha=0.9)
     
     ax.set_title("Distribution of Star Ratings by Domain", fontsize=16, pad=12)
     ax.set_xlabel("Star Rating", fontsize=12)
     ax.set_ylabel("Number of Studies", fontsize=12)
-    ax.legend(title="Domain", edgecolor='black', facecolor='white', framealpha=1)
+    fs = legend_fontsize(fig)
+    dom_leg = ax.legend(title="Domain", fontsize=fs, title_fontsize=fs * 16 / 15, bbox_to_anchor=(1.02, 1), loc='upper left',
+                        frameon=True, edgecolor='black', facecolor='white', framealpha=1,
+                        labelspacing=0.7, borderpad=1.0)
+    for text in dom_leg.get_texts():
+        text.set_fontweight('normal')
+    dom_leg.get_title().set_fontweight('bold')
     ax.grid(axis='y', linestyle='--', alpha=0.7)
-    
-    risk_legend_elements = [Patch(facecolor=colors_map[rob], label=rob, edgecolor='black', linewidth=1.2) 
-                            for rob in ["High", "Moderate", "Low"]]
-    ax.legend(handles=risk_legend_elements, title="Overall Risk", bbox_to_anchor=(1.2, 0.5), loc='center left')
-    
+
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
@@ -494,16 +539,8 @@ def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     fig_width = base_width + (num_studies * width_per_study)
     fig_height = base_height + (num_studies * height_per_study)
     
-    jitter_dict = {}
-    grouped = df.groupby('Overall RoB')
-    for rob, group in grouped:
-        n = len(group)
-        if n == 1:
-            jitter_values = [0]
-        else:
-            jitter_values = [-0.15 + (0.3 * i / (n-1)) for i in range(n)]
-        for i, idx in enumerate(group.index):
-            jitter_dict[idx] = jitter_values[i]
+    offsets = np.linspace(-0.2, 0.2, num_studies) if num_studies > 1 else [0.0]
+    jitter_dict = {idx: offsets[i] for i, idx in enumerate(df.index)}
 
     fig, ax = plt.subplots(figsize=(fig_width, fig_height))
     
@@ -525,13 +562,21 @@ def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     ax.set_xlabel("Domain", fontsize=12)
     ax.set_ylabel("Score", fontsize=12)
     ax.grid(axis='y', linestyle='--', alpha=0.7)
+    ax.xaxis.grid(False)
     
     ax.set_xticks(range(len(domains)))
     ax.set_xticklabels(domains)
     ax.set_xlim(-0.3, len(domains)-0.3)
     
-    legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=3.5, label=rob) for rob in ["Low", "Moderate", "High"]]
-    ax.legend(handles=legend_elements, title="Overall Risk", loc='center left', bbox_to_anchor=(1.2, 0.5))
+    fs = legend_fontsize(fig)
+    legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=3.5 * fs / 15, label=f"{rob} Risk") for rob in ["Low", "Moderate", "High"]]
+    leg = ax.legend(handles=legend_elements, title="Overall Risk", fontsize=fs, title_fontsize=fs * 16 / 15,
+                    loc='center left', bbox_to_anchor=(1.02, 0.5),
+                    frameon=True, edgecolor='black', facecolor='white', framealpha=1,
+                    labelspacing=0.7, borderpad=1.0)
+    for text in leg.get_texts():
+        text.set_fontweight('normal')
+    leg.get_title().set_fontweight('bold')
     
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -540,9 +585,7 @@ def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
 
 def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
-    
 
-    color_alpha = 0.9
 
     table_df = df[["Author, Year", "Selection", "Comparability", "Outcome/Exposure", "Total Score", "Overall RoB"]].copy()
     table_df = table_df.sort_values("Overall RoB", ascending=False)
@@ -554,15 +597,16 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     ax.axis('off')
     
 
-    def apply_alpha(hex_color):
-        return mcolors.to_rgba(hex_color, alpha=color_alpha)
-    
+    def tint(hex_color, factor=0.0):
+        r, g, b, _ = mcolors.to_rgba(hex_color)
+        return (r + (1 - r) * factor, g + (1 - g) * factor, b + (1 - b) * factor)
+
     row_fills = [colors_map.get(row["Overall RoB"], "white") for _, row in table_df.iterrows()]
 
     table = ax.table(
         cellText=table_df.values,
         colLabels=table_df.columns,
-        cellColours=[[apply_alpha(fill) for _ in range(len(table_df.columns))] for fill in row_fills],
+        cellColours=[[tint(fill) for _ in range(len(table_df.columns))] for fill in row_fills],
         loc='top left',
         bbox=[0, 0, 1, 1],
         cellLoc='center'
@@ -573,7 +617,7 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     
     for key, cell in table.get_celld().items():
         if key[0] > 0:
-            cell.set_text_props(weight='bold', color=_contrast_text(row_fills[key[0] - 1]))
+            cell.set_text_props(weight='bold', color='black')
         else:
             cell.set_text_props(weight='bold')
         cell.set_edgecolor('white')
@@ -589,14 +633,19 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
             cell.set_edgecolor('white')
             cell.set_linewidth(2.5)
     
-    ax.set_title("NOS Scores by Study", fontsize=19, pad=19)
-    
-
     plt.subplots_adjust(left=0.05, right=0.95)
     
-    legend_elements = [Patch(facecolor=colors_map[rob], label=rob, edgecolor='black', linewidth=1.2) 
-                      for rob in ["High", "Moderate", "Low"]]
-    ax.legend(handles=legend_elements, title="Overall Risk", bbox_to_anchor=(1.05, 1), loc='upper left')
+    fs = legend_fontsize(fig)
+    legend_elements = [Line2D([0], [0], marker='o', color='w', markerfacecolor=colors_map[rob],
+                              markeredgecolor='black', markersize=fs, markeredgewidth=0.8, label=f"{rob} Risk")
+                       for rob in ["High", "Moderate", "Low"]]
+    leg = ax.legend(handles=legend_elements, title="Overall Risk", fontsize=fs, title_fontsize=fs * 16 / 15,
+                    bbox_to_anchor=(1.05, 1), loc='upper left',
+                    frameon=True, edgecolor='black', facecolor='white', framealpha=1,
+                    labelspacing=0.7, borderpad=1.0)
+    for text in leg.get_texts():
+        text.set_fontweight('normal')
+    leg.get_title().set_fontweight('bold')
     
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight', pad_inches=0.2)
@@ -615,12 +664,14 @@ def plot_donut_domain_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
         order = ["High", "Moderate", "Low"]
         risk_counts = risk_counts.reindex(order, fill_value=0)
         
-        wedges, texts, autotexts = axs[i].pie(risk_counts, labels=risk_counts.index, autopct='%1.1f%%',
+        wedge_labels = [name if count > 0 else "" for name, count in risk_counts.items()]
+        wedges, texts, autotexts = axs[i].pie(risk_counts, labels=wedge_labels,
+                                            autopct=lambda pct: f"{pct:.1f}%" if pct > 0 else "",
                                             colors=[colors_map[rob] for rob in risk_counts.index],
-                                            startangle=90, wedgeprops={'linewidth': 1.2, 'edgecolor': 'black'})
+                                            startangle=90, wedgeprops={'linewidth': 0.8, 'edgecolor': 'black'})
         
 
-        center_circle = plt.Circle((0,0), 0.70, fc='white', edgecolor='black', linewidth=1.2)
+        center_circle = plt.Circle((0,0), 0.70, fc='white', edgecolor='black', linewidth=0.8)
         axs[i].add_artist(center_circle)
         
         for j, autotext in enumerate(autotexts):
@@ -640,9 +691,16 @@ def plot_donut_domain_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
     
     fig.suptitle("Risk Distribution by Domain", fontsize=16, y=1.05, fontweight='bold')
     
-    legend_elements = [Patch(facecolor=colors_map[rob], label=rob, edgecolor='black', linewidth=1.2) 
-                      for rob in ["High", "Moderate", "Low"]]
-    fig.legend(handles=legend_elements, loc='center right', bbox_to_anchor=(1.15, 0.5))
+    fs = legend_fontsize(fig)
+    legend_elements = [Line2D([0], [0], marker='o', color='w', markerfacecolor=colors_map[rob],
+                              markeredgecolor='black', markersize=fs, markeredgewidth=0.8, label=f"{rob} Risk")
+                       for rob in ["High", "Moderate", "Low"]]
+    fig_legend = fig.legend(handles=legend_elements, title="Overall Risk", fontsize=fs, title_fontsize=fs * 16 / 15,
+                            loc='center right', bbox_to_anchor=(1.15, 0.5), frameon=True, edgecolor='black',
+                            facecolor='white', framealpha=1, labelspacing=0.7, borderpad=1.0)
+    for text in fig_legend.get_texts():
+        text.set_fontweight('normal')
+    fig_legend.get_title().set_fontweight('bold')
     
    
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -687,8 +745,13 @@ def plot_line_ordered_scores(df: pd.DataFrame, output_file: str, theme: str = "t
         elif len(df) > 10:
             ax.tick_params(axis='x', labelsize=12)
     
-    ax.legend(title="Domain", bbox_to_anchor=(1.02, 1), loc='upper left', 
-             edgecolor='black', facecolor='white', framealpha=1)
+    fs = legend_fontsize(fig)
+    dom_leg = ax.legend(title="Domain", fontsize=fs, title_fontsize=fs * 16 / 15, bbox_to_anchor=(1.02, 1), loc='upper left',
+                        frameon=True, edgecolor='black', facecolor='white', framealpha=1,
+                        labelspacing=0.7, borderpad=1.0)
+    for text in dom_leg.get_texts():
+        text.set_fontweight('normal')
+    dom_leg.get_title().set_fontweight('bold')
     
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -717,21 +780,29 @@ def plot_lollipop_total(df: pd.DataFrame, output_file: str, theme: str = "traffi
     
 
     for i, (idx, row) in enumerate(df_sorted.iterrows()):
-        ax.text(row["Total Score"] + 0.1, i, str(row["Total Score"]), 
+        ax.text(row["Total Score"] + 0.18, i, str(row["Total Score"]),
                va='center', fontsize=10, fontweight='bold')
-    
+
 
     ax.set_yticks(y_positions)
     ax.set_yticklabels(df_sorted["Author, Year"])
+    ax.set_xlim(-0.3, df_sorted["Total Score"].max() + 0.9)
     
     ax.set_title("Total NOS Scores by Study (Lollipop Chart)", fontsize=16, pad=15)
     ax.set_xlabel("Total Score", fontsize=12)
     ax.set_ylabel("Study", fontsize=12, labelpad=20)
     ax.grid(axis='x', alpha=0.7)
     
-    legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.5, label=rob) for rob in ["Low", "Moderate", "High"]]
-    ax.legend(handles=legend_elements, title="Overall Risk", loc='center left', bbox_to_anchor=(1.2, 0.5))
-    
+    fs = legend_fontsize(fig)
+    legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=fs / 6, label=f"{rob} Risk") for rob in ["Low", "Moderate", "High"]]
+    leg = ax.legend(handles=legend_elements, title="Overall Risk", fontsize=fs, title_fontsize=fs * 16 / 15,
+                    loc='center left', bbox_to_anchor=(1.02, 0.5),
+                    frameon=True, edgecolor='black', facecolor='white', framealpha=1,
+                    labelspacing=0.7, borderpad=1.0)
+    for text in leg.get_texts():
+        text.set_fontweight('normal')
+    leg.get_title().set_fontweight('bold')
+
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Lollipop chart saved to {output_file}")
@@ -770,10 +841,18 @@ def plot_pie_overall_rob(df: pd.DataFrame, output_file: str, theme: str = "traff
     
     ax.set_title("Distribution of Overall Risk of Bias", fontsize=16, pad=12)
     
-    legend_elements = [Patch(facecolor=colors_map[rob], label=rob, edgecolor='black', linewidth=1.2) 
-                      for rob in ["High", "Moderate", "Low"]]
-    ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1.2, 0.5))
-    
+    fs = legend_fontsize(fig)
+    legend_elements = [Line2D([0], [0], marker='o', color='w', markerfacecolor=colors_map[rob],
+                              markeredgecolor='black', markersize=fs, markeredgewidth=0.8, label=f"{rob} Risk")
+                       for rob in ["High", "Moderate", "Low"]]
+    leg = ax.legend(handles=legend_elements, title="Overall Risk", fontsize=fs, title_fontsize=fs * 16 / 15,
+                    loc='center left', bbox_to_anchor=(1.02, 0.5),
+                    frameon=True, edgecolor='black', facecolor='white', framealpha=1,
+                    labelspacing=0.7, borderpad=1.0)
+    for text in leg.get_texts():
+        text.set_fontweight('normal')
+    leg.get_title().set_fontweight('bold')
+
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
@@ -798,16 +877,22 @@ def plot_stacked_area_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
     
     ax.stackplot(domains, plot_df_percent.loc[risk_categories], 
                 colors=[colors_map[cat] for cat in risk_categories],
-                labels=risk_categories,
+                labels=[f"{cat} Risk" for cat in risk_categories],
                 alpha=0.8,
                 edgecolor='black',
-                linewidth=1.2)
-    
+                linewidth=0.8)
+
     ax.set_title("Risk Distribution by Domain (Stacked Area Chart)", fontsize=16, pad=12)
     ax.set_xlabel("Domain", fontsize=12)
     ax.set_ylabel("Percentage of Studies (%)", fontsize=12)
-    
-    ax.legend(title="Overall Risk", loc='center left', bbox_to_anchor=(1.2, 0.5))
+
+    fs = legend_fontsize(fig)
+    leg = ax.legend(title="Overall Risk", fontsize=fs, title_fontsize=fs * 16 / 15, loc='center left', bbox_to_anchor=(1.02, 0.5),
+                    frameon=True, edgecolor='black', facecolor='white', framealpha=1,
+                    labelspacing=0.7, borderpad=1.0)
+    for text in leg.get_texts():
+        text.set_fontweight('normal')
+    leg.get_title().set_fontweight('bold')
     
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -939,9 +1024,11 @@ def plot_nos_visualization(df: pd.DataFrame, output_file: str, theme: str = "tra
                     fontweight="normal", color="#333333")
         y -= 0.092
 
-    key_ax.text(0.80, 0.95, "Judgement", ha="left", va="center", fontsize=14,
+    key_ax.add_patch(Rectangle((0.78, 0.40), 0.19, 0.58,
+                               facecolor='white', edgecolor='black', linewidth=0.8, zorder=1))
+    key_ax.text(0.80, 0.89, "Judgement", ha="left", va="center", fontsize=14,
                 fontweight="bold", color="#1A1A1A")
-    y = 0.82
+    y = 0.76
     for risk in ["Low", "Moderate", "High"]:
         face = colors[risk]
         key_ax.scatter([0.812], [y], s=500, c=[face], edgecolors="none", zorder=3)

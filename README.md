@@ -182,6 +182,25 @@ Note: Radar Plots and Dot Profile plot is only limited to 5 studies.
 
 ---
 
+## Themes
+
+NOS-TLPlot ships with four colour themes - `traffic_light` (default), `gray`, `ocean` and `sage` - selectable in the web app or via the optional theme argument on the command line.
+
+| Theme | Low | Moderate | High |
+| ----- | --- | -------- | ---- |
+| `traffic_light` | `#2E7D32` | `#F9A825` | `#C62828` |
+| `gray` | `#C7D5E2` | `#8B98A1` | `#5F6770` |
+| `ocean` | `#6BAED6` | `#2171B5` | `#08306B` |
+| `sage` | `#63BF93` | `#5B6D80` | `#FF884D` |
+
+![Example NOS plot in the ocean theme](example/nos_plot_ocean.png)
+NOS visualization plot in the ocean theme
+
+![Example NOS plot in the sage theme](example/nos_plot_sage.png)
+NOS visualization plot in the sage theme
+
+---
+
 ## NOS Scoring → Risk-of-Bias Conversion
 
 | Total Stars | Interpretation         | Risk Category    |
@@ -329,12 +348,3 @@ Risk of Bias by Domain and Study by heatmap
 
 ![Example Result11](example/output_table.png)
 NOS Scores by Study
-
----
-
-## Themes
-
-NOS-TLPlot ships with four colour themes - `traffic_light` (default), `gray`, `ocean` and `sage` - selectable in the web app or via the optional theme argument on the command line.
-
-| Theme | Low | Moderate | High |
-|

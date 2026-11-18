@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from nos_tlplot import (
     process_detailed_nos, professional_plot, plot_domain_radar, 
-    plot_theme_radar, plot_domain_heatmap, plot_dot_profile, 
+    plot_theme_radar, plot_domain_heatmap, plot_item_heatmap, plot_dot_profile, 
     plot_score_table, plot_donut_domain_risk, plot_line_ordered_scores, 
     plot_lollipop_total, plot_pie_overall_rob, plot_stacked_area_risk,
     plot_nos_visualization
@@ -386,10 +386,11 @@ if uploaded_file is not None:
             plot_functions = [
                 ("Professional Traffic-Light Plot", professional_plot, "traffic_light"),
                 ("Domain Heatmap", plot_domain_heatmap, "heatmap"),
+                ("Item Heatmap", plot_item_heatmap, "item_heatmap"),
                 ("Lollipop Chart", plot_lollipop_total, "lollipop"),
                 ("Score Table", plot_score_table, "table"),
                 ("Donut Chart", plot_donut_domain_risk, "donut"),
-                ("Line Plot of Domain Scores", plot_line_ordered_scores, "line_ordered"),
+                ("Star Ratings Matrix", plot_line_ordered_scores, "star_matrix"),
                 ("Pie Chart", plot_pie_overall_rob, "pie"),
                 ("Stacked Area Chart", plot_stacked_area_risk, "stacked_area")
             ]

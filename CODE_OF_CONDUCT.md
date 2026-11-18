@@ -51,7 +51,7 @@ This Code of Conduct applies to all interactions involving **NOS-TLPlot**, inclu
 
 ## Acknowledgment
 
-By participating in NOS-TLPlot—whether using the tool, contributing code, validating data, or providing feedback—you agree to follow this Code of Conduct.
+By participating in NOS-TLPlot, whether using the tool, contributing code, validating data, or providing feedback, you agree to follow this Code of Conduct.
 
 ---
 

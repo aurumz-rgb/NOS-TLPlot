@@ -95,13 +95,9 @@ class TestPlotGeneration:
         """Dot profile should work for <= 5 studies."""
         self._assert_plot_created(nos_tlplot.plot_dot_profile, processed_df, "dot_success.png")
 
-    def test_dot_profile_fail(self, large_df):
-        """Dot profile should fail/return early for > 5 studies."""
-        with tempfile.TemporaryDirectory() as tmpdir:
-            output_path = os.path.join(tmpdir, "dot_fail.png")
-            # This should print an error and return without creating a file
-            nos_tlplot.plot_dot_profile(large_df, output_path, theme="traffic_light")
-            assert not os.path.exists(output_path), "Dot profile created despite > 5 studies limit"
+    def test_dot_profile_many_studies(self, large_df):
+        """Dot profile generates for any number of studies."""
+        self._assert_plot_created(nos_tlplot.plot_dot_profile, large_df, "dot_many.png")
 
     def test_radar_chart_success(self, processed_df):
         """Radar should work for <= 5 studies."""

@@ -64,6 +64,19 @@ def add_compact_legend(ax, handles, title, anchor_x=1.02, fontsize=None):
     leg.get_title().set_fontweight('bold')
     return leg
 
+def draw_radial_labels_on_top(ax):
+    ax.get_figure().canvas.draw()
+    labels = [t.get_text() for t in ax.get_yticklabels()]
+    values = list(ax.get_yticks())
+    for t in ax.get_yticklabels():
+        t.set_visible(False)
+    theta = np.deg2rad(ax.get_rlabel_position())
+    rmin, rmax = ax.get_ylim()
+    for val, txt in zip(values, labels):
+        if txt and rmin < val <= rmax:
+            ax.text(theta, val, txt, ha='center', va='center', fontsize=14, color='black',
+                    zorder=12, path_effects=[path_effects.withStroke(linewidth=3, foreground='white')])
+
 def add_radar_note(fig, ax):
     bold_text = "Note:"
     normal_text = "Scores are normalized to domain maxima (Selection ÷4, Comparability ÷2, Outcome/Exposure ÷3);"
@@ -205,7 +218,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
             lc = LineCollection([segment], colors=[color], linewidth=3, alpha=0.7, zorder=1)
             ax.add_collection(lc)
     
-    ax.set_title("NOS Risk Assessment Bubble Chart", fontsize=20, pad=34, fontweight='bold')
+    ax.set_title("Newcastle-Ottawa Scale (NOS) Risk Assessment Bubble Chart", fontsize=20, pad=34, fontweight='bold')
     ax.set_xlabel("")
     ax.set_ylabel("Study", fontsize=14, labelpad=22, fontweight='bold')
     
@@ -302,11 +315,12 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(["A", "B", "C"], fontsize=15)
-    ax.set_title("Domain Scores Radar Chart by Study", size=18, pad=34)
+    ax.set_title("Newcastle-Ottawa Scale (NOS) Domain Scores Radar Chart", size=18, pad=34)
     ax.set_ylim(0, 1.08)
     
     ax.tick_params(axis='y', labelsize=14)
     ax.grid(True, linestyle='-', alpha=0.7, linewidth=1.5)
+    draw_radial_labels_on_top(ax)
     
 
     fs = min(13.0, compact_legend_fontsize(fig) + 3.0)
@@ -390,11 +404,12 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(["A", "B", "C"], fontsize=15)
-    ax.set_title("Theme-based Domain Scores Radar Chart", size=19, pad=34)
+    ax.set_title("Newcastle-Ottawa Scale (NOS) Theme-based Radar Chart", size=19, pad=34)
     ax.set_ylim(0, 1.08)
     
     ax.tick_params(axis='y', labelsize=14)
     ax.grid(True, linestyle='-', alpha=0.7, linewidth=1.5)
+    draw_radial_labels_on_top(ax)
     
     fs = min(13.0, compact_legend_fontsize(fig) + 3.0)
     legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.0, label=f"{rob} Risk") for rob in ["Low", "Moderate", "High"]]
@@ -470,7 +485,7 @@ def plot_domain_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffi
     ax.set_xticklabels(heatmap_df.columns, rotation=45, ha='right', fontsize=8.5)
     
 
-    ax.set_ylabel("Author, Year", fontsize=12, labelpad=20)
+    ax.set_ylabel("Study", fontsize=12, labelpad=20)
     
     fs = compact_legend_fontsize(fig)
     legend_elements = [Line2D([0], [0], marker='o', color='w', markerfacecolor=colors_map[rob],
@@ -479,95 +494,101 @@ def plot_domain_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffi
 
     add_compact_legend(ax, legend_elements, "Overall Risk")
 
-    ax.set_title("Risk of Bias by Domain and Study", fontsize=15, pad=12)
+    ax.set_title("Newcastle-Ottawa Scale (NOS) Risk of Bias by Domain", fontsize=15, pad=12)
     
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
     print(f"✅ Domain heatmap plot saved to {output_file}")
 
-def plot_star_distribution(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
-    colors_map = get_theme_colors(theme)
-    domains = ["Selection", "Comparability", "Outcome/Exposure"]
-    
-    plot_data = []
-    for domain in domains:
-        for stars in range(0, 6):
-            count = (df[domain] == stars).sum()
-            plot_data.append({"Domain": domain, "Stars": stars, "Count": count})
-    
-    plot_df = pd.DataFrame(plot_data)
-    
-    fig, ax = plt.subplots(figsize=(10, 6))
-    
-    domain_order = ["Selection", "Comparability", "Outcome/Exposure"]
-    palette_list = [colors_map["Low"], colors_map["Moderate"], colors_map["High"]]
-    
-    sns.barplot(data=plot_df, x="Stars", y="Count", hue="Domain", 
-                hue_order=domain_order, palette=palette_list,
-                ax=ax, edgecolor='black', linewidth=0.8, alpha=0.9)
-    
-    ax.set_title("Distribution of Star Ratings by Domain", fontsize=16, pad=12)
-    ax.set_xlabel("Star Rating", fontsize=12)
-    ax.set_ylabel("Number of Studies", fontsize=12)
-    handles, _ = ax.get_legend_handles_labels()
-    add_compact_legend(ax, handles, "Domain")
-    ax.grid(axis='y', linestyle='--', alpha=0.7)
+def plot_item_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
+    item_cols = [c for c, _, _ in NOS_ITEMS]
+    item_colors = {0: "#C62828", 1: "#2E7D32", 2: "#2E7D32"}
 
+    heatmap_df = df.set_index("Author, Year")[item_cols]
+    n = len(heatmap_df)
+
+    cmap = mcolors.ListedColormap([item_colors[0], item_colors[1], item_colors[2]])
+    norm = mcolors.BoundaryNorm([-0.5, 0.5, 1.5, 2.5], cmap.N)
+
+    fig_height = max(6, 0.8 * n + 3.4)
+    fig, ax = plt.subplots(figsize=(10, fig_height))
+
+    sns.heatmap(heatmap_df, cmap=cmap, norm=norm, linewidths=2.5, linecolor='white',
+                ax=ax, cbar=False)
+
+    for yi, (_, row) in enumerate(heatmap_df.iterrows()):
+        for xi, val in enumerate(row):
+            ax.text(xi + 0.5, yi + 0.5, str(int(val)), ha="center", va="center", fontsize=10,
+                    fontweight="bold", color="white", zorder=4)
+
+    for name, c0, c1 in NOS_DOMAINS:
+        ax.add_patch(Rectangle((c0, -0.62), c1 - c0 + 1, 0.6, facecolor="#3A3F4A",
+                               edgecolor="white", linewidth=1.2, clip_on=False, zorder=5))
+        ax.text((c0 + c1 + 1) / 2, -0.32, name, ha="center", va="center",
+                fontsize=10.5, fontweight="bold", color="white", zorder=6)
+    ax.set_ylim(n, -0.7)
+    ax.xaxis.grid(False)
+    ax.set_title("Newcastle-Ottawa Scale (NOS) Risk of Bias by Domain", fontsize=16, pad=30)
+    ax.tick_params(axis='x', which='both', length=0)
+
+    ax.set_yticks([i + 0.5 for i in range(n)])
+    ax.set_yticklabels([f"{name} (Total: {int(t)}/9)"
+                        for name, t in zip(df["Author, Year"], df["Total Score"])], fontsize=9.5)
+    ax.set_xticks([i + 0.5 for i in range(len(item_cols))])
+    ax.set_xticklabels([code for _, code, _ in NOS_ITEMS], fontsize=10, rotation=0)
+
+    ax.set_ylabel("Study", fontsize=12, labelpad=20)
+
+    fs = compact_legend_fontsize(fig)
+    legend_elements = [Patch(facecolor=item_colors[0], edgecolor="black", linewidth=0.8, label="0 stars (Not met)"),
+                       Patch(facecolor=item_colors[1], edgecolor="black", linewidth=0.8, label="1 star (Met)")]
+    fig_legend = fig.legend(handles=legend_elements, title="Score", loc="lower right",
+                            bbox_to_anchor=(0.9, 0.5 / fig.get_size_inches()[1]),
+                            frameon=True, edgecolor="black",
+                            facecolor="white", framealpha=1, fontsize=fs, title_fontsize=fs + 0.5,
+                            labelspacing=0.5, borderpad=0.6)
+    for text in fig_legend.get_texts():
+        text.set_fontweight('normal')
+    fig_legend.get_title().set_fontweight('bold')
+
+    plt.subplots_adjust(bottom=2.9 / fig.get_size_inches()[1])
+    fig.text(0.10, 2.6 / fig.get_size_inches()[1], "Domains:", fontsize=11, fontweight="bold")
+    y_footer = 2.3 / fig.get_size_inches()[1]
+    for name, code, desc in NOS_ITEMS:
+        fig.text(0.10, y_footer, code, fontsize=10, fontweight="bold")
+        fig.text(0.135, y_footer, desc, fontsize=10, fontweight="normal")
+        y_footer -= 0.24 / fig.get_size_inches()[1]
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"✅ Star distribution plot saved to {output_file}")
+    print(f"✅ Domain heatmap plot saved to {output_file}")
 
 def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
-    if len(df) > 5:
-        print("❌ Cannot generate plot: Maximum 5 studies allowed")
-        return
-    
     colors_map = get_theme_colors(theme)
-    domains = ["Selection", "Comparability", "Outcome/Exposure"]
-    
-    num_studies = len(df)
-    base_width = 10
-    base_height = 5
-    width_per_study = 0.4
-    height_per_study = 0.15
-    
-    fig_width = base_width + (num_studies * width_per_study)
-    fig_height = base_height + (num_studies * height_per_study)
-    
-    offsets = np.linspace(-0.2, 0.2, num_studies) if num_studies > 1 else [0.0]
-    jitter_dict = {idx: offsets[i] for i, idx in enumerate(df.index)}
+    segments = [("Selection", "Selection Stars", colors_map["Low"]),
+                ("Outcome/Exposure", "Outcome Stars", colors_map["High"]),
+                ("Comparability", "Comparability Stars", colors_map["Moderate"])]
 
-    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
-    
-    for idx, row in df.iterrows():
-        scores = [row[domain] for domain in domains]
-        color = colors_map.get(row["Overall RoB"], "grey")
-        jitter = jitter_dict[idx]
-        
-        x_coords = [i + jitter for i in range(len(domains))]
-        
-        ax.plot(x_coords, scores, 'o-', color=color, alpha=0.8, linewidth=3.5, 
-                markersize=8, markeredgecolor='black', markeredgewidth=0.8)
-    
-    for domain in domains:
-        max_score = 4 if domain == "Selection" else (2 if domain == "Comparability" else 3)
-        ax.axhline(y=max_score, color='gray', linestyle='--', alpha=0.5, linewidth=1.0)
-    
-    ax.set_title("Domain Score Profiles by Study", fontsize=16, pad=12)
-    ax.set_xlabel("Domain", fontsize=12)
-    ax.set_ylabel("Score", fontsize=12)
-    ax.grid(axis='y', linestyle='--', alpha=0.7)
-    ax.xaxis.grid(False)
-    
-    ax.set_xticks(range(len(domains)))
-    ax.set_xticklabels(domains)
-    ax.set_xlim(-0.3, len(domains)-0.3)
-    
-    legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.0, label=f"{rob} Risk") for rob in ["Low", "Moderate", "High"]]
-    add_compact_legend(ax, legend_elements, "Overall Risk")
-    
+    fig, ax = plt.subplots(figsize=(10, 0.55 * len(df) + 3))
+    left = [0] * len(df)
+    for col, label, c in segments:
+        vals = df[col].tolist()
+        ax.barh(range(len(df)), vals, left=left, color=c, edgecolor="white",
+                linewidth=1.2, label=label, height=0.72, zorder=3)
+        left = [a + b for a, b in zip(left, vals)]
+
+    ax.set_yticks(range(len(df)))
+    ax.set_yticklabels(df["Author, Year"], fontsize=12)
+    ax.invert_yaxis()
+    ax.set_xlim(0, max(left) + 1.4)
+    ax.set_title("Newcastle-Ottawa Scale (NOS) Domain Stars by Study", fontsize=18, pad=34)
+    ax.set_xlabel("Number of Stars (stacked)", fontsize=12, labelpad=14)
+    ax.set_ylabel("Study", fontsize=12, labelpad=20)
+
+    fs = min(14.0, compact_legend_fontsize(fig) + 2.5)
+    legend_elements = [Patch(facecolor=c, edgecolor="none", label=label) for _, label, c in segments]
+    add_compact_legend(ax, legend_elements, "Domain", fontsize=fs)
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
@@ -578,6 +599,7 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
 
 
     table_df = df[["Author, Year", "Selection", "Comparability", "Outcome/Exposure", "Total Score", "Overall RoB"]].copy()
+    table_df = table_df.rename(columns={"Author, Year": "Study"})
     table_df = table_df.sort_values("Overall RoB", ascending=False)
     
     fig_width = max(12, 5 + len(table_df.columns) * 1.63)
@@ -677,7 +699,7 @@ def plot_donut_domain_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
         
         axs[i].set_title(f"{domain} Domain", fontsize=12)
     
-    fig.suptitle("Risk Distribution by Domain", fontsize=16, y=1.05, fontweight='bold')
+    fig.suptitle("Newcastle-Ottawa Scale (NOS) Risk Distribution by Domain", fontsize=16, y=1.05, fontweight='bold')
     
     fs = compact_legend_fontsize(fig)
     legend_elements = [Line2D([0], [0], marker='o', color='w', markerfacecolor=colors_map[rob],
@@ -697,50 +719,80 @@ def plot_donut_domain_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
     print(f"✅ Donut chart saved to {output_file}")
 
 def plot_line_ordered_scores(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
-    domain_colors = {
-        "Selection": "#1f77b4",  
-        "Comparability": "#ff7f0e",  
-        "Outcome/Exposure": "#2ca02c" 
-    }
+    item_cols = [c for c, _, _ in NOS_ITEMS]
+    star_color, star_edge = "#F7C74A", "#8A6D1F"
+    grid_c, sep_c = "#C9CFD6", "#7C8794"
+    head_c, head_band = "#EEF1F4", "#E2E7ED"
 
-    df_sorted = df.sort_values("Total Score")
-    
-    plot_df = df_sorted.melt(id_vars=["Author, Year", "Overall RoB"], 
-                            value_vars=["Selection", "Comparability", "Outcome/Exposure"],
-                            var_name="Domain", value_name="Score")
-    
-    fig_width = max(16, 8 + len(df) * 0.3)
-    fig_height = max(8, 6 + len(df) * 0.05)
-    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
-    
-    for domain in ["Selection", "Comparability", "Outcome/Exposure"]:
-        domain_data = plot_df[plot_df["Domain"] == domain]
-        ax.plot(domain_data["Author, Year"], domain_data["Score"], 
-               'o-', label=domain, linewidth=2.0, markersize=6, 
-               markeredgecolor='black', markeredgewidth=0.8, color=domain_colors[domain])
-    
-    ax.set_title("Domain Scores Ordered by Total Score", fontsize=19, pad=19)
-    ax.set_xlabel("Study (Ordered by Total Score)", fontsize=14, labelpad=18)
-    ax.set_ylabel("Score", fontsize=14, labelpad=20)
-    ax.grid(alpha=0.7)
-    
-    if len(df) > 50:
-        plt.xticks(rotation=90, ha='center')
-        ax.tick_params(axis='x', labelsize=7)
-    else:
-        plt.xticks(rotation=45, ha='right')
-        if len(df) > 20:
-            ax.tick_params(axis='x', labelsize=11)
-        elif len(df) > 10:
-            ax.tick_params(axis='x', labelsize=12)
-    
-    handles, _ = ax.get_legend_handles_labels()
-    add_compact_legend(ax, handles, "Domain")
-    
+    df_sorted = df.sort_values("Total Score").reset_index(drop=True)
+    n = len(df_sorted)
+
+    fig, ax = plt.subplots(figsize=(12, 0.5 * n + 3.8))
+
+    for i in range(10):
+        x = -0.5 + i
+        heavy = x in (3.5, 5.5, 8.5)
+        ax.plot([x, x], [-0.5, n - 0.5], color="#5F6770" if heavy else sep_c,
+                linewidth=1.5 if heavy else 1.1, zorder=1)
+    ax.plot([9.4, 9.4], [-0.5, n - 0.5], color="#5F6770", linewidth=1.5, zorder=1)
+    for i in range(n + 1):
+        y = -0.5 + i
+        ax.plot([-0.5, 9.4], [y, y], color=sep_c, linewidth=1.1, zorder=1)
+    for x in (3.5, 5.5, 8.5):
+        ax.plot([x, x], [-0.5, n + 0.5], color="#5F6770", linewidth=1.5, zorder=1)
+
+    for xi in range(9):
+        ax.add_patch(Rectangle((xi - 0.5, n - 0.55), 1, 0.5, facecolor=head_c,
+                               edgecolor=grid_c, linewidth=0.9, zorder=2))
+        ax.text(xi, n - 0.30, f"D{xi + 1}", ha="center", va="center",
+                fontsize=11, fontweight="bold", zorder=3)
+    ax.add_patch(Rectangle((8.5, n - 0.55), 0.9, 0.5, facecolor=head_c,
+                           edgecolor=grid_c, linewidth=0.9, zorder=2))
+    ax.text(8.95, n - 0.30, "Total", ha="center", va="center", fontsize=11, fontweight="bold", zorder=3)
+    for name, c0, c1 in NOS_DOMAINS:
+        ax.add_patch(Rectangle((c0 - 0.5, n - 0.05), c1 - c0 + 1, 0.55, facecolor=head_band,
+                               edgecolor=grid_c, linewidth=0.9, zorder=2))
+        ax.text((c0 + c1) / 2, n + 0.225, name.title(), ha="center", va="center",
+                fontsize=12.5, fontweight="bold", zorder=3)
+    ax.add_patch(Rectangle((8.5, n - 0.05), 0.9, 0.55, facecolor=head_band,
+                           edgecolor=grid_c, linewidth=0.9, zorder=2))
+
+    for yi, (_, row) in enumerate(df_sorted.iterrows()):
+        for xi, col in enumerate(item_cols):
+            stars = int(row[col])
+            for k in range(stars):
+                offset = (k - (stars - 1) / 2) * 0.22
+                row_h_in = fig.get_size_inches()[1] * (1 - 2.9 / fig.get_size_inches()[1]) / n
+                star_size = min(400, max(120, 694 * row_h_in ** 2))
+                ax.scatter(xi, yi + offset, marker="*", s=star_size, color=star_color,
+                           edgecolor=star_edge, linewidth=0.7, zorder=3)
+        ax.text(8.95, yi, str(int(row["Total Score"])), ha="center", va="center",
+                fontsize=12, fontweight="bold", zorder=3)
+
+    ax.set_xlim(-0.5, 9.4)
+    ax.set_ylim(-0.5, n + 0.55)
+    ax.set_yticks(range(n))
+    ax.set_yticklabels(df_sorted["Author, Year"], fontsize=11)
+    ax.set_ylabel("Study", fontsize=13, labelpad=20)
+    ax.set_xticks([])
+    ax.tick_params(axis="y", length=0)
+    ax.yaxis.grid(False)
+    for s in ax.spines.values():
+        s.set_visible(False)
+    ax.set_title("Newcastle-Ottawa Scale (NOS) Star Ratings by Study", fontsize=18, pad=34)
+
+    plt.subplots_adjust(bottom=2.9 / fig.get_size_inches()[1])
+    fig.text(0.10, 2.6 / fig.get_size_inches()[1], "Domains:", fontsize=11, fontweight="bold")
+    y_footer = 2.3 / fig.get_size_inches()[1]
+    for name, code, desc in NOS_ITEMS:
+        fig.text(0.10, y_footer, code, fontsize=10, fontweight="bold")
+        fig.text(0.135, y_footer, desc, fontsize=10, fontweight="normal")
+        y_footer -= 0.24 / fig.get_size_inches()[1]
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"✅ Line plot saved to {output_file}")
+    print(f"\u2705 Line plot saved to {output_file}")
+
 
 def plot_lollipop_total(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
@@ -772,8 +824,8 @@ def plot_lollipop_total(df: pd.DataFrame, output_file: str, theme: str = "traffi
     ax.set_yticklabels(df_sorted["Author, Year"])
     ax.set_xlim(-0.3, df_sorted["Total Score"].max() + 0.9)
     
-    ax.set_title("Total NOS Scores by Study (Lollipop Chart)", fontsize=16, pad=15)
-    ax.set_xlabel("Total Score", fontsize=12)
+    ax.set_title("Newcastle-Ottawa Scale (NOS) Total Scores by Study", fontsize=16, pad=34)
+    ax.set_xlabel("Total Score", fontsize=12, labelpad=16)
     ax.set_ylabel("Study", fontsize=12, labelpad=20)
     ax.grid(axis='x', alpha=0.7)
     
@@ -816,7 +868,7 @@ def plot_pie_overall_rob(df: pd.DataFrame, output_file: str, theme: str = "traff
         text.set_fontweight('bold')
         text.set_fontsize(12)
     
-    ax.set_title("Distribution of Overall Risk of Bias", fontsize=16, pad=12)
+    ax.set_title("Newcastle-Ottawa Scale (NOS) Overall Risk Distribution", fontsize=16, pad=12)
     
     fs = compact_legend_fontsize(fig)
     legend_elements = [Line2D([0], [0], marker='o', color='w', markerfacecolor=colors_map[rob],
@@ -846,16 +898,19 @@ def plot_stacked_area_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
     
     fig, ax = plt.subplots(figsize=(8, 6))
     
-    ax.stackplot(domains, plot_df_percent.loc[risk_categories], 
+    ax.stackplot(range(len(domains)), plot_df_percent.loc[risk_categories], 
                 colors=[colors_map[cat] for cat in risk_categories],
                 labels=[f"{cat} Risk" for cat in risk_categories],
                 alpha=0.8,
                 edgecolor='black',
                 linewidth=0.8)
 
-    ax.set_title("Risk Distribution by Domain (Stacked Area Chart)", fontsize=16, pad=12)
-    ax.set_xlabel("Domain", fontsize=12)
-    ax.set_ylabel("Percentage of Studies (%)", fontsize=12)
+    ax.set_title("Newcastle-Ottawa Scale (NOS) Risk Distribution (Stacked Area)", fontsize=16, pad=34)
+    ax.set_xlabel("Domain", fontsize=12, labelpad=16)
+    ax.set_ylabel("Percentage of Studies (%)", fontsize=12, labelpad=16)
+    ax.set_xticks(range(len(domains)))
+    ax.set_xticklabels(["Selection", "Comparability", "Outcome / Exposure"])
+    ax.tick_params(axis='x', pad=12)
 
     handles, _ = ax.get_legend_handles_labels()
     add_compact_legend(ax, handles, "Overall Risk")
@@ -1043,6 +1098,7 @@ if __name__ == "__main__":
     plot_domain_radar(df, f"{base}_radar{ext}", theme)
     plot_theme_radar(df, f"{base}_theme_radar{ext}", theme)
     plot_domain_heatmap(df, f"{base}_heatmap{ext}", theme)
+    plot_item_heatmap(df, f"{base}_item_heatmap{ext}", theme)
     plot_dot_profile(df, f"{base}_dot_profile{ext}", theme)
     plot_score_table(df, f"{base}_table{ext}", theme)
     plot_donut_domain_risk(df, f"{base}_donut{ext}", theme)

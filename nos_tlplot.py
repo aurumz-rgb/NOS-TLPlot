@@ -246,7 +246,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         ("L", True),
         (" = Low Risk", False),
     ]
-    note_y = -0.01
+    note_y = -0.05
     note_texts = [fig.text(0.5, note_y, text, ha='left', va='center', fontsize=16, style='italic',
                            fontweight='bold' if bold else 'normal')
                   for text, bold in note_parts]

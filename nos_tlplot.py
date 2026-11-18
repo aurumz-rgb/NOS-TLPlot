@@ -511,7 +511,7 @@ def plot_item_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     cmap = mcolors.ListedColormap([item_colors[0], item_colors[1], item_colors[2]])
     norm = mcolors.BoundaryNorm([-0.5, 0.5, 1.5, 2.5], cmap.N)
 
-    fig_height = max(6, 0.8 * n + 3.4)
+    fig_height = max(6, 0.8 * n + 4.6)
     fig, ax = plt.subplots(figsize=(10, fig_height))
 
     sns.heatmap(heatmap_df, cmap=cmap, norm=norm, linewidths=2.5, linecolor='white',
@@ -534,7 +534,7 @@ def plot_item_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffic_
 
     ax.set_yticks([i + 0.5 for i in range(n)])
     ax.set_yticklabels([f"{name} (Total: {int(t)}/9)"
-                        for name, t in zip(df["Author, Year"], df["Total Score"])], fontsize=9.5)
+                        for name, t in zip(df["Author, Year"], df["Total Score"])], fontsize=9.5, rotation=0)
     ax.set_xticks([i + 0.5 for i in range(len(item_cols))])
     ax.set_xticklabels([code for _, code, _ in NOS_ITEMS], fontsize=10, rotation=0)
 
@@ -552,9 +552,9 @@ def plot_item_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         text.set_fontweight('normal')
     fig_legend.get_title().set_fontweight('bold')
 
-    plt.subplots_adjust(bottom=2.9 / fig.get_size_inches()[1])
-    fig.text(0.10, 2.6 / fig.get_size_inches()[1], "Domains:", fontsize=11, fontweight="bold")
-    y_footer = 2.3 / fig.get_size_inches()[1]
+    plt.subplots_adjust(bottom=4.1 / fig.get_size_inches()[1])
+    fig.text(0.10, 3.55 / fig.get_size_inches()[1], "Domains:", fontsize=11, fontweight="bold")
+    y_footer = 3.25 / fig.get_size_inches()[1]
     for name, code, desc in NOS_ITEMS:
         fig.text(0.10, y_footer, code, fontsize=10, fontweight="bold")
         fig.text(0.135, y_footer, desc, fontsize=10, fontweight="normal")
@@ -727,7 +727,7 @@ def plot_line_ordered_scores(df: pd.DataFrame, output_file: str, theme: str = "t
     df_sorted = df.sort_values("Total Score").reset_index(drop=True)
     n = len(df_sorted)
 
-    fig, ax = plt.subplots(figsize=(12, 0.5 * n + 3.8))
+    fig, ax = plt.subplots(figsize=(12, 0.5 * n + 5.0))
 
     for i in range(10):
         x = -0.5 + i
@@ -781,9 +781,9 @@ def plot_line_ordered_scores(df: pd.DataFrame, output_file: str, theme: str = "t
         s.set_visible(False)
     ax.set_title("Newcastle-Ottawa Scale (NOS) Star Ratings by Study", fontsize=18, pad=34)
 
-    plt.subplots_adjust(bottom=2.9 / fig.get_size_inches()[1])
-    fig.text(0.10, 2.6 / fig.get_size_inches()[1], "Domains:", fontsize=11, fontweight="bold")
-    y_footer = 2.3 / fig.get_size_inches()[1]
+    plt.subplots_adjust(bottom=4.1 / fig.get_size_inches()[1])
+    fig.text(0.10, 3.8 / fig.get_size_inches()[1], "Domains:", fontsize=11, fontweight="bold")
+    y_footer = 3.5 / fig.get_size_inches()[1]
     for name, code, desc in NOS_ITEMS:
         fig.text(0.10, y_footer, code, fontsize=10, fontweight="bold")
         fig.text(0.135, y_footer, desc, fontsize=10, fontweight="normal")

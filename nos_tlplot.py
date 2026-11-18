@@ -727,7 +727,7 @@ def plot_line_ordered_scores(df: pd.DataFrame, output_file: str, theme: str = "t
     df_sorted = df.sort_values("Total Score").reset_index(drop=True)
     n = len(df_sorted)
 
-    fig, ax = plt.subplots(figsize=(12, 0.5 * n + 5.0))
+    fig, ax = plt.subplots(figsize=(12, 0.5 * n + 5.8))
 
     for i in range(10):
         x = -0.5 + i
@@ -781,9 +781,9 @@ def plot_line_ordered_scores(df: pd.DataFrame, output_file: str, theme: str = "t
         s.set_visible(False)
     ax.set_title("Newcastle-Ottawa Scale (NOS) Star Ratings by Study", fontsize=18, pad=34)
 
-    plt.subplots_adjust(bottom=4.1 / fig.get_size_inches()[1])
-    fig.text(0.10, 3.8 / fig.get_size_inches()[1], "Domains:", fontsize=11, fontweight="bold")
-    y_footer = 3.5 / fig.get_size_inches()[1]
+    plt.subplots_adjust(bottom=4.9 / fig.get_size_inches()[1])
+    fig.text(0.10, 4.6 / fig.get_size_inches()[1], "Domains:", fontsize=11, fontweight="bold")
+    y_footer = 4.3 / fig.get_size_inches()[1]
     for name, code, desc in NOS_ITEMS:
         fig.text(0.10, y_footer, code, fontsize=10, fontweight="bold")
         fig.text(0.135, y_footer, desc, fontsize=10, fontweight="normal")

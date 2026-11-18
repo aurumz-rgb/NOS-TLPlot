@@ -283,7 +283,7 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(["A", "B", "C"], fontsize=15)
     ax.set_title("Domain Scores Radar Chart by Study", size=18, pad=20)
-    ax.set_ylim(0, 1)
+    ax.set_ylim(0, 1.08)
     
     ax.tick_params(axis='y', labelsize=14)
     ax.grid(True, linestyle='-', alpha=0.7, linewidth=1.5)
@@ -292,7 +292,7 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     fs = compact_legend_fontsize(fig)
     study_legend_elements = [Line2D([0], [0], color=study_colors[i], lw=2.0, label=row['Author, Year'])
                              for i, (_, row) in enumerate(df.iterrows())]
-    leg = add_compact_legend(ax, study_legend_elements, "Study", anchor_x=1.10)
+    leg = add_compact_legend(ax, study_legend_elements, "Study", anchor_x=1.22)
 
     plt.subplots_adjust(bottom=0.22)
 
@@ -375,14 +375,14 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(["A", "B", "C"], fontsize=15)
     ax.set_title("Theme-based Domain Scores Radar Chart", size=19, pad=20)
-    ax.set_ylim(0, 1)
+    ax.set_ylim(0, 1.08)
     
     ax.tick_params(axis='y', labelsize=14)
     ax.grid(True, linestyle='-', alpha=0.7, linewidth=1.5)
     
     fs = compact_legend_fontsize(fig)
     legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.0, label=f"{rob} Risk") for rob in ["Low", "Moderate", "High"]]
-    risk_legend = add_compact_legend(ax, legend_elements, "Overall Risk", anchor_x=1.10)
+    risk_legend = add_compact_legend(ax, legend_elements, "Overall Risk", anchor_x=1.22)
 
     domain_mapping = {"A": "Selection", "B": "Comparability", "C": "Outcome / Exposure"}
 
@@ -584,7 +584,7 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     table = ax.table(
         cellText=table_df.values,
         colLabels=table_df.columns,
-        cellColours=[[tint(fill) for _ in range(len(table_df.columns))] for fill in row_fills],
+        cellColours=[[tint(fill, 0.82) for _ in range(len(table_df.columns))] for fill in row_fills],
         loc='top left',
         bbox=[0, 0, 1, 1],
         cellLoc='center'

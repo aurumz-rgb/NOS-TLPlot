@@ -11,6 +11,7 @@ import numpy as np
 import matplotlib as mpl
 import matplotlib.patheffects as path_effects
 from matplotlib.collections import LineCollection
+from matplotlib.transforms import ScaledTranslation
 
 try:
     from PIL import Image
@@ -40,6 +41,7 @@ mpl.rcParams['legend.title_fontsize'] = 11
 mpl.rcParams['figure.dpi'] = 300
 mpl.rcParams['savefig.dpi'] = 300
 mpl.rcParams['savefig.bbox'] = 'tight'
+mpl.rcParams['savefig.pad_inches'] = 0.3
 mpl.rcParams['savefig.transparent'] = False
 
 def get_theme_colors(theme):
@@ -61,6 +63,23 @@ def add_compact_legend(ax, handles, title, anchor_x=1.02, fontsize=None):
         text.set_fontweight('normal')
     leg.get_title().set_fontweight('bold')
     return leg
+
+def add_radar_note(fig, ax):
+    bold_text = "Note:"
+    normal_text = "Scores are normalized to domain maxima (Selection ÷4, Comparability ÷2, Outcome/Exposure ÷3);"
+    ax_box = ax.get_position()
+    center_x = (ax_box.x0 + ax_box.x1) / 2
+    y = ax_box.y0 - 0.055
+    bold = fig.text(center_x, y, bold_text, ha='left', fontsize=12, fontweight='bold')
+    normal = fig.text(center_x, y, normal_text, ha='left', fontsize=12, fontweight='normal')
+    fig.canvas.draw()
+    renderer = fig.canvas.get_renderer()
+    bold_w = bold.get_window_extent(renderer).width / fig.bbox.width
+    normal_w = normal.get_window_extent(renderer).width / fig.bbox.width
+    gap = 0.0025
+    start_x = center_x - (bold_w + gap + normal_w) / 2
+    bold.set_position((start_x, y))
+    normal.set_position((start_x + bold_w + gap, y))
 
 def process_detailed_nos(df: pd.DataFrame) -> pd.DataFrame:
     required_columns = [
@@ -168,11 +187,11 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         
         if row["Domain"] == "Overall Risk":
             ax.text(row["X"], row["Y"], row["Risk"][0], ha='center', va='center', 
-                    color='white', fontsize=14, fontweight='bold',
+                    color='white', fontsize=18, fontweight='bold',
                     path_effects=[path_effects.withStroke(linewidth=2, foreground='black')], zorder=4)
         else:
             ax.text(row["X"], row["Y"], str(int(row["Stars"])), ha='center', va='center', 
-                    color='white', fontsize=14, fontweight='bold',
+                    color='white', fontsize=17, fontweight='bold',
                     path_effects=[path_effects.withStroke(linewidth=2, foreground='black')], zorder=4)
     
     for study in studies:
@@ -206,7 +225,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     
     ax.grid(axis='x', linestyle='--', alpha=0.55, color='#70767E')
     
-    fs = compact_legend_fontsize(fig)
+    fs = min(14.0, compact_legend_fontsize(fig) + 2.5)
     legend_elements = [
         Line2D([0], [0], marker='o', color='w', label='Low Risk',
                 markerfacecolor=colors["Low"], markersize=fs * 0.9, markeredgewidth=0.8, markeredgecolor='black'),
@@ -215,7 +234,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         Line2D([0], [0], marker='o', color='w', label='High Risk',
                 markerfacecolor=colors["High"], markersize=fs * 0.9, markeredgewidth=0.8, markeredgecolor='black')
     ]
-    add_compact_legend(ax, legend_elements, "Risk Level")
+    add_compact_legend(ax, legend_elements, "Risk Level", fontsize=fs)
     
     note_parts = [
         ("Note: ", True),
@@ -227,7 +246,8 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         ("L", True),
         (" = Low Risk", False),
     ]
-    note_texts = [fig.text(0.5, 0.01, text, ha='left', va='center', fontsize=16, style='italic',
+    note_y = -0.01
+    note_texts = [fig.text(0.5, note_y, text, ha='left', va='center', fontsize=16, style='italic',
                            fontweight='bold' if bold else 'normal')
                   for text, bold in note_parts]
     fig.canvas.draw()
@@ -235,7 +255,7 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     widths = [text.get_window_extent(renderer=fig.canvas.get_renderer()).width for text in note_texts]
     x = (fig_px - sum(widths)) / 2 / fig_px
     for text, width in zip(note_texts, widths):
-        text.set_position((x, 0.01))
+        text.set_position((x, note_y))
         x += width / fig_px
 
 
@@ -282,7 +302,7 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
     
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(["A", "B", "C"], fontsize=15)
-    ax.set_title("Domain Scores Radar Chart by Study", size=18, pad=20)
+    ax.set_title("Domain Scores Radar Chart by Study", size=18, pad=34)
     ax.set_ylim(0, 1.08)
     
     ax.tick_params(axis='y', labelsize=14)
@@ -332,11 +352,7 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
                      edgecolor='black', alpha=1.0, linewidth=0.8, zorder=2, clip_on=False)
     ax.add_patch(rect)
 
-    explanation = (
-        "Note: Scores are normalized to domain maxima (Selection ÷4, Comparability ÷2, Outcome/Exposure ÷3);"
-    )
-    ax_box = ax.get_position()
-    fig.text((ax_box.x0 + ax_box.x1) / 2, ax_box.y0 - 0.025, explanation, ha='center', fontsize=12)
+    add_radar_note(fig, ax)
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
@@ -374,7 +390,7 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     
     ax.set_xticks(angles[:-1])
     ax.set_xticklabels(["A", "B", "C"], fontsize=15)
-    ax.set_title("Theme-based Domain Scores Radar Chart", size=19, pad=20)
+    ax.set_title("Theme-based Domain Scores Radar Chart", size=19, pad=34)
     ax.set_ylim(0, 1.08)
     
     ax.tick_params(axis='y', labelsize=14)
@@ -420,11 +436,7 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
                      edgecolor='black', alpha=1.0, linewidth=0.8, zorder=2, clip_on=False)
     ax.add_patch(rect)
 
-    explanation = (
-        "Note: Scores are normalized to domain maxima (Selection ÷4, Comparability ÷2, Outcome/Exposure ÷3);"
-    )
-    ax_box = ax.get_position()
-    fig.text((ax_box.x0 + ax_box.x1) / 2, ax_box.y0 - 0.025, explanation, ha='center', fontsize=12)
+    add_radar_note(fig, ax)
     
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
@@ -584,7 +596,7 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     table = ax.table(
         cellText=table_df.values,
         colLabels=table_df.columns,
-        cellColours=[[tint(fill, 0.82) for _ in range(len(table_df.columns))] for fill in row_fills],
+        cellColours=[[tint(fill, 0.45) for _ in range(len(table_df.columns))] for fill in row_fills],
         loc='top left',
         bbox=[0, 0, 1, 1],
         cellLoc='center'
@@ -594,6 +606,10 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     table.set_fontsize(15)
     
     for key, cell in table.get_celld().items():
+        cell.get_text().set_transform(
+            cell.get_text().get_transform()
+            + ScaledTranslation(0, -2.5 / 72, fig.dpi_scale_trans)
+        )
         if key[0] > 0:
             cell.set_text_props(weight='bold', color='black')
         else:
@@ -607,7 +623,6 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
             cell.set_facecolor('#f0f0f0')
             cell.set_edgecolor('white')
             cell.set_linewidth(2.5)
-            cell.get_text().set_fontsize(14.5)
         else:
             cell.set_edgecolor('white')
             cell.set_linewidth(2.5)
@@ -621,7 +636,7 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     add_compact_legend(ax, legend_elements, "Overall Risk", fontsize=fs)
     
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight', pad_inches=0.2)
+    plt.savefig(output_file, dpi=300, bbox_inches='tight', pad_inches=0.3)
     plt.close()
     print(f"✅ Score table plot saved to {output_file}")
 
@@ -920,12 +935,13 @@ def plot_nos_visualization(df: pd.DataFrame, output_file: str, theme: str = "tra
 
     ax.scatter(*zip(*item_pts), s=1150, c=item_cols, edgecolors="none", zorder=3)
     ax.scatter(*zip(*overall_pts), s=1500, c=overall_cols, edgecolors="none", zorder=3)
+    force_white_symbols = theme == "traffic_light"
     for (x, y), sym, col in zip(item_pts, item_syms, item_cols):
         ax.text(x, y, sym, ha="center", va="center", fontsize=16, fontweight="bold",
-                color=_contrast_text(col), zorder=4)
+                color="white" if force_white_symbols else _contrast_text(col), zorder=4)
     for (x, y), sym, col in zip(overall_pts, overall_syms, overall_cols):
         ax.text(x, y, sym, ha="center", va="center", fontsize=18, fontweight="bold",
-                color=_contrast_text(col), zorder=4)
+                color="white" if force_white_symbols else _contrast_text(col), zorder=4)
 
     for i, (_, row) in enumerate(df.iterrows()):
         ax.scatter([x_total], [y_of[i]], s=1600, c=["#E9EDF1"], edgecolors="none", zorder=3)
@@ -984,7 +1000,7 @@ def plot_nos_visualization(df: pd.DataFrame, output_file: str, theme: str = "tra
         face = colors[risk]
         key_ax.scatter([0.812], [y], s=500, c=[face], edgecolors="none", zorder=3)
         key_ax.text(0.812, y, NOS_SYMBOLS[risk], ha="center", va="center", fontsize=13,
-                    fontweight="bold", color=_contrast_text(face), zorder=4)
+                    fontweight="bold", color="white" if force_white_symbols else _contrast_text(face), zorder=4)
         key_ax.text(0.845, y, f"{risk} risk", ha="left", va="center", fontsize=13,
                     fontweight="normal", color="#333333")
         y -= 0.14

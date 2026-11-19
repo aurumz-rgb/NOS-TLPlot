@@ -21,7 +21,7 @@ It converts NOS star ratings into **publication-ready traffic-light plots** and 
 ## ✨ Key Features
 
 - **13 Visualization Types**: Traffic-light plots, radar charts, heatmaps, item heatmaps, stacked star profiles, donut charts, lollipop charts, star matrices, and more  
-- **Publication-Quality Output**: Export figures in `.png`, `.pdf`, `.svg`, `.eps` formats  
+- **Publication-Quality Output**: Export figures in `.png`, `.pdf`, `.svg`, `.tiff` formats  
 - **Multiple Themes**: Traffic-light, grayscale, ocean-blue, and sage themes for various publication requirements. [See the Themes section](#themes)  
 - **Interactive Web App**: Built with Streamlit for simple data upload, preview, and figure export  
 - **Command Line Interface**: For batch processing and automated figure generation  

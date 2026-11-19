@@ -44,7 +44,7 @@ mpl.rcParams['savefig.bbox'] = 'tight'
 mpl.rcParams['savefig.pad_inches'] = 0.3
 mpl.rcParams['savefig.transparent'] = False
 
-VALID_OUTPUT_EXTS = [".png", ".pdf", ".svg", ".eps"]
+VALID_OUTPUT_EXTS = [".png", ".pdf", ".svg", ".tiff"]
 
 def output_paths(output_file):
     return output_file if isinstance(output_file, (list, tuple)) else [output_file]
@@ -54,7 +54,10 @@ def save_plots(output_file, pad_inches=None):
     if pad_inches is not None:
         kwargs["pad_inches"] = pad_inches
     for path in output_paths(output_file):
-        plt.savefig(path, **kwargs)
+        extra = {}
+        if os.path.splitext(path)[1].lower() in (".tif", ".tiff"):
+            extra["pil_kwargs"] = {"compression": "tiff_lzw"}
+        plt.savefig(path, **kwargs, **extra)
 
 def output_label(output_file):
     if isinstance(output_file, (list, tuple)):
@@ -1096,7 +1099,7 @@ def read_input_file(file_path: str) -> pd.DataFrame:
 
 if __name__ == "__main__":
     if len(sys.argv) not in [3,4]:
-        print("Usage: python3 nos_tlplot.py input_file output_file.(png|pdf|svg|eps) [theme]")
+        print("Usage: python3 nos_tlplot.py input_file output_file.(png|pdf|svg|tiff) [theme]")
         sys.exit(1)
 
     input_file, output_file = sys.argv[1], sys.argv[2]

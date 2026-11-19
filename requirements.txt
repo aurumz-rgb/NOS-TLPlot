@@ -8,3 +8,4 @@ openpyxl==3.1.5
 pytest
 pytest-mock
 
+Pillow==11.3.0

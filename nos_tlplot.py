@@ -21,7 +21,7 @@ except ImportError:
 
 THEME_OPTIONS = {
     "traffic_light": {"Low":"#2E7D32", "Moderate":"#F9A825", "High":"#C62828"},  
-    "gray": {"Low":"#C7D5E2", "Moderate":"#8B98A1", "High":"#5F6770"},            
+    "gray": {"Low":"#D6D6D6", "Moderate":"#9E9E9E", "High":"#3C3C3C"},            
     "ocean": {"Low":"#6BAED6", "Moderate":"#2171B5", "High":"#08306B"},
     "sage": {"Low":"#63BF93", "Moderate":"#5B6D80", "High":"#FF884D"},
 }

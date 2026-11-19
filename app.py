@@ -335,8 +335,8 @@ All figures are **publication-ready**.
 
 st.markdown("### Upload Your Data")
 st.markdown('<p style="color: #f5f6fa; font-size: 1.1rem;">Upload a <b>CSV</b> or <b>Excel (.xlsx)</b> file.</p>', unsafe_allow_html=True)
-theme = st.selectbox("Select Plot Theme", options=["traffic_light", "gray", "ocean", "sage"])
 uploaded_file = st.file_uploader("Choose a CSV or Excel file", type=["csv","xls","xlsx"])
+theme = st.selectbox("Select Plot Theme", options=["traffic_light", "gray", "ocean", "sage"])
 
 if uploaded_file is not None:
     try:

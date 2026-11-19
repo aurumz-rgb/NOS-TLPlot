@@ -529,7 +529,7 @@ def plot_item_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffic_
                 fontsize=10.5, fontweight="bold", color="white", zorder=6)
     ax.set_ylim(n, -0.7)
     ax.xaxis.grid(False)
-    ax.set_title("Newcastle-Ottawa Scale (NOS) Risk of Bias by Domain", fontsize=16, pad=30)
+    ax.set_title("Newcastle-Ottawa Scale (NOS) Item-Level Star Heatmap by Domain", fontsize=16, pad=30)
     ax.tick_params(axis='x', which='both', length=0)
 
     ax.set_yticks([i + 0.5 for i in range(n)])
@@ -562,7 +562,7 @@ def plot_item_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffic_
 
     plt.savefig(output_file, dpi=300, bbox_inches='tight')
     plt.close()
-    print(f"✅ Domain heatmap plot saved to {output_file}")
+    print(f"✅ Item heatmap plot saved to {output_file}")
 
 def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)

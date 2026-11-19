@@ -348,7 +348,7 @@ if uploaded_file is not None:
         num_studies = len(df)
         
         if num_studies > 5:
-            st.warning("Note: Radar plots and dot profile plot are only generated when there are 5 or fewer studies.")
+            st.warning("Note: Radar plots are only generated when there are 5 or fewer studies.")
         
         gc.collect()
         
@@ -395,8 +395,7 @@ if uploaded_file is not None:
                 ("Stacked Area Chart", plot_stacked_area_risk, "stacked_area")
             ]
             
-            if num_studies <= 5:
-                plot_functions.insert(3, ("Dot Profile Plot", plot_dot_profile, "dot_profile"))
+            plot_functions.insert(3, ("Dot Profile Plot", plot_dot_profile, "dot_profile"))
             
             for name, func, base in plot_functions:
                 format_files = {}

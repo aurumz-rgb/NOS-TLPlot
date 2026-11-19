@@ -129,10 +129,11 @@ python3 nos_tlplot.py sample.csv output-traffic-light.png gray
 | `_traffic-light.png` | Classic traffic-light bubble plot       |
 | `_radar.png`         | Radar chart of domain scores            |
 | `_heatmap.png`       | Color heatmap for domain-level bias     |
-| `_dot_profile.png`   | Dot-style bias visualization            |
+| `_item_heatmap.png`  | Item-level star heatmap with domain bands |
+| `_dot_profile.png`   | Stacked domain stars per study          |
 | `_table.png`         | Summary table with domain scores        |
 | `_donut.png`         | Donut chart of overall bias levels      |
-| `_line_ordered.png`  | Sequential line plot of domain bias     |
+| `_line_ordered.png`  | Item-level star ratings matrix          |
 | `_lollipop.png`      | Lollipop chart for comparative bias     |
 | `_pie.png`           | Proportional risk-of-bias pie           |
 | `_stacked_area.png`  | Stacked area visualization over domains |

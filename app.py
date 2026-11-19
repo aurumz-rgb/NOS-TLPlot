@@ -422,33 +422,36 @@ if uploaded_file is not None:
                 tab1, tab2 = st.tabs(["NOS Visualization Plot", "Other Visualizations"])
             
             with tab1:
-                st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                st.image(nos_plot_files[".png"], width='stretch')
-                st.caption("Newcastle-Ottawa Scale (NOS) Visualization Plot")
+
+                nos_cols = st.columns(3)
+                with nos_cols[0]:
+                    st.markdown('<div class="plot-container">', unsafe_allow_html=True)
+                    st.image(nos_plot_files[".png"], width='stretch')
+                    st.caption("Newcastle-Ottawa Scale (NOS) Visualization Plot")
                 
-                st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
+                    st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
                 
-                formats = [".png", ".pdf", ".svg", ".eps"]
-                mime_types = {
-                    ".png": "image/png",
-                    ".pdf": "application/pdf",
-                    ".svg": "image/svg+xml",
-                    ".eps": "application/postscript"
-                }
+                    formats = [".png", ".pdf", ".svg", ".eps"]
+                    mime_types = {
+                        ".png": "image/png",
+                        ".pdf": "application/pdf",
+                        ".svg": "image/svg+xml",
+                        ".eps": "application/postscript"
+                    }
                 
-                download_html = ""
-                for fmt in formats:
-                    file_path = nos_plot_files[fmt]
-                    with open(file_path, "rb") as f:
-                        file_data = f.read()
-                        b64_data = base64.b64encode(file_data).decode()
+                    download_html = ""
+                    for fmt in formats:
+                        file_path = nos_plot_files[fmt]
+                        with open(file_path, "rb") as f:
+                            file_data = f.read()
+                            b64_data = base64.b64encode(file_data).decode()
                     
-                    filename = f"NOS_nos_plot{fmt}"
-                    download_html += f'<a download="{filename}" href="data:{mime_types[fmt]};base64,{b64_data}" class="small-download-btn">{fmt[1:].upper()}</a>'
+                        filename = f"NOS_nos_plot{fmt}"
+                        download_html += f'<a download="{filename}" href="data:{mime_types[fmt]};base64,{b64_data}" class="small-download-btn">{fmt[1:].upper()}</a>'
                 
-                st.markdown(download_html, unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
+                    st.markdown(download_html, unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
             
             if radar_exists:
                 with tab2:

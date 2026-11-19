@@ -44,6 +44,29 @@ mpl.rcParams['savefig.bbox'] = 'tight'
 mpl.rcParams['savefig.pad_inches'] = 0.3
 mpl.rcParams['savefig.transparent'] = False
 
+VALID_OUTPUT_EXTS = [".png", ".pdf", ".svg", ".eps"]
+
+def output_paths(output_file):
+    return output_file if isinstance(output_file, (list, tuple)) else [output_file]
+
+def save_plots(output_file, pad_inches=None):
+    kwargs = {"dpi": 300, "bbox_inches": "tight"}
+    if pad_inches is not None:
+        kwargs["pad_inches"] = pad_inches
+    for path in output_paths(output_file):
+        plt.savefig(path, **kwargs)
+
+def output_label(output_file):
+    if isinstance(output_file, (list, tuple)):
+        return f"{len(output_file)} formats"
+    return output_file
+
+def validate_output_ext(output_file):
+    for path in output_paths(output_file):
+        ext = os.path.splitext(path)[1].lower()
+        if ext not in VALID_OUTPUT_EXTS:
+            raise ValueError(f"Unsupported file format: {ext}. Use one of {VALID_OUTPUT_EXTS}")
+
 def get_theme_colors(theme):
     if theme not in THEME_OPTIONS:
         raise ValueError(f"Theme {theme} not available. Choose from {list(THEME_OPTIONS.keys())}")
@@ -272,13 +295,10 @@ def professional_plot(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         x += width / fig_px
 
 
-    valid_ext = [".png", ".pdf", ".svg", ".eps"]
-    ext = os.path.splitext(output_file)[1].lower()
-    if ext not in valid_ext:
-        raise ValueError(f"Unsupported file format: {ext}. Use one of {valid_ext}")
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    validate_output_ext(output_file)
+    save_plots(output_file)
     plt.close()
-    print(f"✅ Professional combined plot saved to {output_file}")
+    print(f"✅ Professional combined plot saved to {output_label(output_file)}")
 
 
 
@@ -368,9 +388,9 @@ def plot_domain_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_
 
     add_radar_note(fig, ax)
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    save_plots(output_file)
     plt.close()
-    print(f"✅ Domain radar chart saved to {output_file}")
+    print(f"✅ Domain radar chart saved to {output_label(output_file)}")
 
 
 
@@ -454,9 +474,9 @@ def plot_theme_radar(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     add_radar_note(fig, ax)
     
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    save_plots(output_file)
     plt.close()
-    print(f"✅ Theme-based radar chart saved to {output_file}")
+    print(f"✅ Theme-based radar chart saved to {output_label(output_file)}")
 
 def plot_domain_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
@@ -497,9 +517,9 @@ def plot_domain_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffi
     ax.set_title("Newcastle-Ottawa Scale (NOS) Risk of Bias by Domain", fontsize=15, pad=12)
     
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    save_plots(output_file)
     plt.close()
-    print(f"✅ Domain heatmap plot saved to {output_file}")
+    print(f"✅ Domain heatmap plot saved to {output_label(output_file)}")
 
 def plot_item_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     item_cols = [c for c, _, _ in NOS_ITEMS]
@@ -560,9 +580,9 @@ def plot_item_heatmap(df: pd.DataFrame, output_file: str, theme: str = "traffic_
         fig.text(0.135, y_footer, desc, fontsize=10, fontweight="normal")
         y_footer -= 0.24 / fig.get_size_inches()[1]
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    save_plots(output_file)
     plt.close()
-    print(f"✅ Item heatmap plot saved to {output_file}")
+    print(f"✅ Item heatmap plot saved to {output_label(output_file)}")
 
 def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
@@ -590,9 +610,9 @@ def plot_dot_profile(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     legend_elements = [Patch(facecolor=c, edgecolor="none", label=label) for _, label, c in segments]
     add_compact_legend(ax, legend_elements, "Domain", fontsize=fs)
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    save_plots(output_file)
     plt.close()
-    print(f"✅ Dot profile plot saved to {output_file}")
+    print(f"✅ Dot profile plot saved to {output_label(output_file)}")
 
 def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
@@ -658,9 +678,9 @@ def plot_score_table(df: pd.DataFrame, output_file: str, theme: str = "traffic_l
     add_compact_legend(ax, legend_elements, "Overall Risk", fontsize=fs)
     
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight', pad_inches=0.3)
+    save_plots(output_file, pad_inches=0.3)
     plt.close()
-    print(f"✅ Score table plot saved to {output_file}")
+    print(f"✅ Score table plot saved to {output_label(output_file)}")
 
 def plot_donut_domain_risk(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
@@ -714,9 +734,9 @@ def plot_donut_domain_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
     fig_legend.get_title().set_fontweight('bold')
     
    
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    save_plots(output_file)
     plt.close()
-    print(f"✅ Donut chart saved to {output_file}")
+    print(f"✅ Donut chart saved to {output_label(output_file)}")
 
 def plot_line_ordered_scores(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     item_cols = [c for c, _, _ in NOS_ITEMS]
@@ -789,9 +809,9 @@ def plot_line_ordered_scores(df: pd.DataFrame, output_file: str, theme: str = "t
         fig.text(0.135, y_footer, desc, fontsize=10, fontweight="normal")
         y_footer -= 0.24 / fig.get_size_inches()[1]
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    save_plots(output_file)
     plt.close()
-    print(f"\u2705 Line plot saved to {output_file}")
+    print(f"\u2705 Line plot saved to {output_label(output_file)}")
 
 
 def plot_lollipop_total(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
@@ -832,9 +852,9 @@ def plot_lollipop_total(df: pd.DataFrame, output_file: str, theme: str = "traffi
     legend_elements = [Line2D([0], [0], color=colors_map[rob], lw=2.0, label=f"{rob} Risk") for rob in ["Low", "Moderate", "High"]]
     add_compact_legend(ax, legend_elements, "Overall Risk")
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    save_plots(output_file)
     plt.close()
-    print(f"✅ Lollipop chart saved to {output_file}")
+    print(f"✅ Lollipop chart saved to {output_label(output_file)}")
 
 def plot_pie_overall_rob(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
@@ -877,9 +897,9 @@ def plot_pie_overall_rob(df: pd.DataFrame, output_file: str, theme: str = "traff
     add_compact_legend(ax, legend_elements, "Overall Risk")
 
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    save_plots(output_file)
     plt.close()
-    print(f"✅ Pie chart saved to {output_file}")
+    print(f"✅ Pie chart saved to {output_label(output_file)}")
 
 def plot_stacked_area_risk(df: pd.DataFrame, output_file: str, theme: str = "traffic_light"):
     colors_map = get_theme_colors(theme)
@@ -916,9 +936,9 @@ def plot_stacked_area_risk(df: pd.DataFrame, output_file: str, theme: str = "tra
     add_compact_legend(ax, handles, "Overall Risk")
     
 
-    plt.savefig(output_file, dpi=300, bbox_inches='tight')
+    save_plots(output_file)
     plt.close()
-    print(f"✅ Stacked area chart saved to {output_file}")
+    print(f"✅ Stacked area chart saved to {output_label(output_file)}")
 
 NOS_ITEMS = [
     ("Representativeness", "D1", "Representativeness of the exposed cohort"),
@@ -1060,13 +1080,10 @@ def plot_nos_visualization(df: pd.DataFrame, output_file: str, theme: str = "tra
                     fontweight="normal", color="#333333")
         y -= 0.14
 
-    valid_ext = [".png", ".pdf", ".svg", ".eps"]
-    ext = os.path.splitext(output_file)[1].lower()
-    if ext not in valid_ext:
-        raise ValueError(f"Unsupported file format: {ext}. Use one of {valid_ext}")
-    plt.savefig(output_file, dpi=300, bbox_inches="tight")
+    validate_output_ext(output_file)
+    save_plots(output_file)
     plt.close()
-    print(f"✅ NOS plot saved to {output_file}")
+    print(f"✅ NOS plot saved to {output_label(output_file)}")
 
 def read_input_file(file_path: str) -> pd.DataFrame:
     ext = os.path.splitext(file_path)[1].lower()

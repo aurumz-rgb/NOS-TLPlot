@@ -356,26 +356,21 @@ if uploaded_file is not None:
             plot_files = {}
             plot_exists = {}
             
-            nos_plot_files = {}
-            for fmt in [".png", ".pdf", ".svg", ".eps"]:
-                output_path = os.path.join(temp_dir, f"NOS_nos_plot{fmt}")
-                plot_nos_visualization(df, output_path, theme=theme)
-                nos_plot_files[fmt] = output_path
+            nos_plot_files = {fmt: os.path.join(temp_dir, f"NOS_nos_plot{fmt}") for fmt in [".png", ".pdf", ".svg", ".eps"]}
+            plot_nos_visualization(df, list(nos_plot_files.values()), theme=theme)
             plot_exists["NOS Visualization Plot"] = True
             gc.collect()
             
             radar_exists = num_studies <= 5
             if radar_exists:
                 output_files_radar = {ext: os.path.join(temp_dir, f"NOS_radar{ext}") for ext in [".png",".pdf",".svg",".eps"]}
-                for out_ext, path in output_files_radar.items():
-                    plot_domain_radar(df, path, theme=theme)
+                plot_domain_radar(df, list(output_files_radar.values()), theme=theme)
                 plot_files["Radar Chart"] = output_files_radar
                 plot_exists["Radar Chart"] = True
                 gc.collect()
                 
                 output_files_theme_radar = {ext: os.path.join(temp_dir, f"NOS_theme_radar{ext}") for ext in [".png",".pdf",".svg",".eps"]}
-                for out_ext, path in output_files_theme_radar.items():
-                    plot_theme_radar(df, path, theme=theme)
+                plot_theme_radar(df, list(output_files_theme_radar.values()), theme=theme)
                 plot_files["Theme-based Radar Chart"] = output_files_theme_radar
                 plot_exists["Theme-based Radar Chart"] = True
                 gc.collect()
@@ -398,16 +393,9 @@ if uploaded_file is not None:
             plot_functions.insert(3, ("Dot Profile Plot", plot_dot_profile, "dot_profile"))
             
             for name, func, base in plot_functions:
-                format_files = {}
-                success = True
-                for fmt in [".png", ".pdf", ".svg", ".eps"]:
-                    output_path = os.path.join(temp_dir, f"NOS_{base}{fmt}")
-                    func(df, output_path, theme=theme)
-                    if not os.path.exists(output_path):
-                        success = False
-                        break
-                    format_files[fmt] = output_path
-                if success:
+                format_files = {fmt: os.path.join(temp_dir, f"NOS_{base}{fmt}") for fmt in [".png", ".pdf", ".svg", ".eps"]}
+                func(df, list(format_files.values()), theme=theme)
+                if all(os.path.exists(path) for path in format_files.values()):
                     plot_files[name] = format_files
                     plot_exists[name] = True
                 else:

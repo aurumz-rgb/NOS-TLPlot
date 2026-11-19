@@ -166,19 +166,19 @@ Your file should have these columns:
 
 ## 🎨 Visualization Types
 
-1. **Traffic-light bubble Plot** – Standard bubble risk-of-bias visualization.
-2. **Radar Chart** – Displays study performance across domains.
-3. **Heatmap** – Visual overview of domain-level variation.
-4. **Dot Profile** – Stacked domain stars for each study.
-5. **Donut Chart** – Visualizes proportions of bias categories.
-6. **Lollipop Plot** – Combines numerical and categorical domains.
-7. **Stacked Area Chart** – Displays temporal or comparative changes.
-8. **Pie Chart** – Quick overview of overall bias distribution.
-9. **Line Ordered Plot** – Item-level star matrix ordered by total score.
-10. **Table View** – Tabular representation of bias domains.
-11. **Radar (Thematic)** – Theme-adapted radar chart (gray/colored).
-12. **NOS Visualization Plot** – Item-level traffic-light grid with domain bands and star totals.
-13. **Item Heatmap** – Item-level star heatmap with domain bands and per-cell star counts.
+1. **Traffic-Light Bubble Plot** – Classic NOS traffic-light visualization.
+2. **Domain Radar Chart** – Domain scores per study as radar polygons.
+3. **Theme Radar Chart** – Theme-adapted radar chart.
+4. **Domain Heatmap** – Color heatmap for domain-level bias.
+5. **Item-Level Star Heatmap** – Item stars grouped into domain bands.
+6. **Stacked Domain Stars** – Stacked domain stars for each study.
+7. **Score Table** – Summary table of stars and overall risk.
+8. **Risk Donut Chart** – Risk proportions per domain.
+9. **Star Ratings Matrix** – Item-level star matrix ordered by total score.
+10. **Total Score Lollipop** – Total NOS scores per study.
+11. **Overall Risk Pie** – Overall risk-of-bias distribution.
+12. **Stacked Area Risk Chart** – Risk distribution across domains.
+13. **NOS Visualization Grid** – Item-level traffic-light grid with domain bands and totals.
 
 Note: Radar Plots are only limited to 5 studies.
 

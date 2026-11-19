@@ -25,6 +25,11 @@ hide_streamlit_style = """
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     [data-testid="stAppDeployButton"] {display: none;}
+    [data-testid="stMain"] { scrollbar-width: thin; scrollbar-color: rgba(245,246,250,0.28) transparent; }
+    [data-testid="stMain"]::-webkit-scrollbar { width: 10px; }
+    [data-testid="stMain"]::-webkit-scrollbar-track { background: transparent; }
+    [data-testid="stMain"]::-webkit-scrollbar-thumb { background: rgba(245,246,250,0.28); border-radius: 10px; }
+    [data-testid="stMain"]::-webkit-scrollbar-thumb:hover { background: rgba(245,246,250,0.45); }
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
@@ -276,6 +281,10 @@ if os.path.exists(logo_file):
     logo_data_url = f"data:image/png;base64,{logo_b64}"
 
     logo_html = f"""
+    <style>
+        html, body {{ margin: 0; padding: 0; overflow: hidden; background: transparent; }}
+        img {{ display: block; }}
+    </style>
     <div style="display: flex; justify-content: center;">
         <img src="{logo_data_url}" style="width: 170px; height: 170px;">
     </div>
@@ -602,7 +611,10 @@ bib_data_encoded = base64.b64encode(bib_data.encode()).decode()
 
 escaped_citation = citation_text.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
 st.iframe(f"""
-    <button id="copyButton" style="background: linear-gradient(135deg, #74ebd5, #ACB6E5); color: #2c3e50; font-weight: 600; padding: 0.45rem 0.9rem; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.25); margin-top: 10px;">Copy Citation</button>
+    <style>
+        html, body {{ margin: 0; padding: 0; overflow: hidden; background: transparent; }}
+    </style>
+    <button id="copyButton" style="background: linear-gradient(135deg, #74ebd5, #ACB6E5); color: #2c3e50; font-weight: 600; padding: 0.45rem 0.9rem; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.25); margin-top: 8px;">Copy Citation</button>
     <script>
         document.getElementById("copyButton").addEventListener("click", function() {{
             navigator.clipboard.writeText("{escaped_citation}").then(function() {{

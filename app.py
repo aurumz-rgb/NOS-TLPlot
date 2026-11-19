@@ -12,7 +12,6 @@ import os
 import shutil
 from io import BytesIO
 import base64
-import streamlit.components.v1 as components
 import gc  
 
 st.set_page_config(
@@ -281,7 +280,7 @@ if os.path.exists(logo_file):
         <img src="{logo_data_url}" style="width: 170px; height: 170px;">
     </div>
     """
-    components.html(logo_html, height=170)
+    st.iframe(logo_html, height=170)
 
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 st.markdown('<h1 class="centered-title">NOS-TLPlot</h1>', unsafe_allow_html=True)
@@ -602,7 +601,7 @@ ris_data_encoded = base64.b64encode(ris_data.encode()).decode()
 bib_data_encoded = base64.b64encode(bib_data.encode()).decode()
 
 escaped_citation = citation_text.replace('\\', '\\\\').replace('"', '\\"').replace('\n', '\\n').replace('\r', '\\r').replace('\t', '\\t')
-components.html(f"""
+st.iframe(f"""
     <button id="copyButton" style="background: linear-gradient(135deg, #74ebd5, #ACB6E5); color: #2c3e50; font-weight: 600; padding: 0.45rem 0.9rem; border-radius: 10px; border: none; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.25); margin-top: 10px;">Copy Citation</button>
     <script>
         document.getElementById("copyButton").addEventListener("click", function() {{

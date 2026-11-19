@@ -2,10 +2,10 @@ import streamlit as st
 import pandas as pd
 from nos_tlplot import (
     process_detailed_nos, professional_plot, plot_domain_radar, 
-    plot_theme_radar, plot_domain_heatmap, plot_dot_profile, 
+    plot_theme_radar, plot_domain_heatmap, plot_item_heatmap, plot_dot_profile, 
     plot_score_table, plot_donut_domain_risk, plot_line_ordered_scores, 
     plot_lollipop_total, plot_pie_overall_rob, plot_stacked_area_risk,
-    plot_star_distribution_hist
+    plot_nos_visualization
 )
 import tempfile
 import os
@@ -25,6 +25,7 @@ hide_streamlit_style = """
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
+    [data-testid="stAppDeployButton"] {display: none;}
     </style>
 """
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
@@ -49,7 +50,7 @@ st.markdown("""
         text-align: center; 
         font-size: 3.2rem !important;
         font-weight: 800 !important; 
-        margin-top: -80px; 
+        margin-top: -20px !important;
         margin-bottom: 10px; 
         color: #ffffff !important;
         letter-spacing: 1px;
@@ -269,18 +270,18 @@ add_background_png("./assets/background.png")
 
 st.markdown('<div class="top-padding-container">', unsafe_allow_html=True)
 
-gif_file = "assets/Chart.gif"
-if os.path.exists(gif_file):
-    with open(gif_file, "rb") as f:
-        gif_b64 = base64.b64encode(f.read()).decode()
-    gif_data_url = f"data:image/gif;base64,{gif_b64}"
-    
-    gif_html = f"""
-    <div style="display: flex; justify-content: center; margin-bottom: 16px;">
-        <img src="{gif_data_url}" style="width: 180px; height: 180px;">
+logo_file = "assets/logo.png"
+if os.path.exists(logo_file):
+    with open(logo_file, "rb") as f:
+        logo_b64 = base64.b64encode(f.read()).decode()
+    logo_data_url = f"data:image/png;base64,{logo_b64}"
+
+    logo_html = f"""
+    <div style="display: flex; justify-content: center;">
+        <img src="{logo_data_url}" style="width: 170px; height: 170px;">
     </div>
     """
-    components.html(gif_html, height=180)
+    components.html(logo_html, height=170)
 
 st.markdown('<div class="main-content">', unsafe_allow_html=True)
 st.markdown('<h1 class="centered-title">NOS-TLPlot</h1>', unsafe_allow_html=True)
@@ -334,8 +335,8 @@ All figures are **publication-ready**.
 
 st.markdown("### Upload Your Data")
 st.markdown('<p style="color: #f5f6fa; font-size: 1.1rem;">Upload a <b>CSV</b> or <b>Excel (.xlsx)</b> file.</p>', unsafe_allow_html=True)
-theme = st.selectbox("Select Plot Theme", options=["traffic_light", "gray"])
 uploaded_file = st.file_uploader("Choose a CSV or Excel file", type=["csv","xls","xlsx"])
+theme = st.selectbox("Select Plot Theme", options=["traffic_light", "gray", "ocean", "sage"])
 
 if uploaded_file is not None:
     try:
@@ -347,7 +348,7 @@ if uploaded_file is not None:
         num_studies = len(df)
         
         if num_studies > 5:
-            st.warning("Note: Radar plots and dot profile plot are only generated when there are 5 or fewer studies.")
+            st.warning("Note: Radar plots are only generated when there are 5 or fewer studies.")
         
         gc.collect()
         
@@ -355,26 +356,21 @@ if uploaded_file is not None:
             plot_files = {}
             plot_exists = {}
             
-            star_plot_files = {}
-            for fmt in [".png", ".pdf", ".svg", ".eps"]:
-                output_path = os.path.join(temp_dir, f"NOS_StarDistributionHist{fmt}")
-                plot_star_distribution_hist(df, output_path, theme=theme)
-                star_plot_files[fmt] = output_path
-            plot_exists["Star Distribution"] = True
+            nos_plot_files = {fmt: os.path.join(temp_dir, f"NOS_nos_plot{fmt}") for fmt in [".png", ".pdf", ".svg", ".tiff"]}
+            plot_nos_visualization(df, list(nos_plot_files.values()), theme=theme)
+            plot_exists["NOS Visualization Plot"] = True
             gc.collect()
             
             radar_exists = num_studies <= 5
             if radar_exists:
-                output_files_radar = {ext: os.path.join(temp_dir, f"NOS_radar{ext}") for ext in [".png",".pdf",".svg",".eps"]}
-                for out_ext, path in output_files_radar.items():
-                    plot_domain_radar(df, path, theme=theme)
+                output_files_radar = {ext: os.path.join(temp_dir, f"NOS_radar{ext}") for ext in [".png",".pdf",".svg",".tiff"]}
+                plot_domain_radar(df, list(output_files_radar.values()), theme=theme)
                 plot_files["Radar Chart"] = output_files_radar
                 plot_exists["Radar Chart"] = True
                 gc.collect()
                 
-                output_files_theme_radar = {ext: os.path.join(temp_dir, f"NOS_theme_radar{ext}") for ext in [".png",".pdf",".svg",".eps"]}
-                for out_ext, path in output_files_theme_radar.items():
-                    plot_theme_radar(df, path, theme=theme)
+                output_files_theme_radar = {ext: os.path.join(temp_dir, f"NOS_theme_radar{ext}") for ext in [".png",".pdf",".svg",".tiff"]}
+                plot_theme_radar(df, list(output_files_theme_radar.values()), theme=theme)
                 plot_files["Theme-based Radar Chart"] = output_files_theme_radar
                 plot_exists["Theme-based Radar Chart"] = True
                 gc.collect()
@@ -385,28 +381,21 @@ if uploaded_file is not None:
             plot_functions = [
                 ("Professional Traffic-Light Plot", professional_plot, "traffic_light"),
                 ("Domain Heatmap", plot_domain_heatmap, "heatmap"),
+                ("Item Heatmap", plot_item_heatmap, "item_heatmap"),
                 ("Lollipop Chart", plot_lollipop_total, "lollipop"),
                 ("Score Table", plot_score_table, "table"),
                 ("Donut Chart", plot_donut_domain_risk, "donut"),
-                ("Line Plot of Domain Scores", plot_line_ordered_scores, "line_ordered"),
+                ("Star Ratings Matrix", plot_line_ordered_scores, "star_matrix"),
                 ("Pie Chart", plot_pie_overall_rob, "pie"),
                 ("Stacked Area Chart", plot_stacked_area_risk, "stacked_area")
             ]
             
-            if num_studies <= 5:
-                plot_functions.insert(3, ("Dot Profile Plot", plot_dot_profile, "dot_profile"))
+            plot_functions.insert(3, ("Dot Profile Plot", plot_dot_profile, "dot_profile"))
             
             for name, func, base in plot_functions:
-                format_files = {}
-                success = True
-                for fmt in [".png", ".pdf", ".svg", ".eps"]:
-                    output_path = os.path.join(temp_dir, f"NOS_{base}{fmt}")
-                    func(df, output_path, theme=theme)
-                    if not os.path.exists(output_path):
-                        success = False
-                        break
-                    format_files[fmt] = output_path
-                if success:
+                format_files = {fmt: os.path.join(temp_dir, f"NOS_{base}{fmt}") for fmt in [".png", ".pdf", ".svg", ".tiff"]}
+                func(df, list(format_files.values()), theme=theme)
+                if all(os.path.exists(path) for path in format_files.values()):
                     plot_files[name] = format_files
                     plot_exists[name] = True
                 else:
@@ -416,38 +405,41 @@ if uploaded_file is not None:
             st.markdown("### Visualization Preview")
             
             if radar_exists:
-                tab1, tab2, tab3 = st.tabs(["Star Distribution", "Radar Charts", "Other Visualizations"])
+                tab1, tab2, tab3 = st.tabs(["NOS Visualization Plot", "Radar Charts", "Other Visualizations"])
             else:
-                tab1, tab2 = st.tabs(["Star Distribution", "Other Visualizations"])
+                tab1, tab2 = st.tabs(["NOS Visualization Plot", "Other Visualizations"])
             
             with tab1:
-                st.markdown('<div class="plot-container">', unsafe_allow_html=True)
-                st.image(star_plot_files[".png"], width='stretch')
-                st.caption("Star Distribution Histogram")
+
+                nos_cols = st.columns(3)
+                with nos_cols[0]:
+                    st.markdown('<div class="plot-container">', unsafe_allow_html=True)
+                    st.image(nos_plot_files[".png"], width='stretch')
+                    st.caption("Newcastle-Ottawa Scale (NOS) Visualization Plot")
                 
-                st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
+                    st.markdown('<div class="download-buttons-container">', unsafe_allow_html=True)
                 
-                formats = [".png", ".pdf", ".svg", ".eps"]
-                mime_types = {
-                    ".png": "image/png",
-                    ".pdf": "application/pdf",
-                    ".svg": "image/svg+xml",
-                    ".eps": "application/postscript"
-                }
+                    formats = [".png", ".pdf", ".svg", ".tiff"]
+                    mime_types = {
+                        ".png": "image/png",
+                        ".pdf": "application/pdf",
+                        ".svg": "image/svg+xml",
+                        ".tiff": "image/tiff"
+                    }
                 
-                download_html = ""
-                for fmt in formats:
-                    file_path = star_plot_files[fmt]
-                    with open(file_path, "rb") as f:
-                        file_data = f.read()
-                        b64_data = base64.b64encode(file_data).decode()
+                    download_html = ""
+                    for fmt in formats:
+                        file_path = nos_plot_files[fmt]
+                        with open(file_path, "rb") as f:
+                            file_data = f.read()
+                            b64_data = base64.b64encode(file_data).decode()
                     
-                    filename = f"NOS_StarDistributionHist{fmt}"
-                    download_html += f'<a download="{filename}" href="data:{mime_types[fmt]};base64,{b64_data}" class="small-download-btn">{fmt[1:].upper()}</a>'
+                        filename = f"NOS_nos_plot{fmt}"
+                        download_html += f'<a download="{filename}" href="data:{mime_types[fmt]};base64,{b64_data}" class="small-download-btn">{fmt[1:].upper()}</a>'
                 
-                st.markdown(download_html, unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
-                st.markdown('</div>', unsafe_allow_html=True)
+                    st.markdown(download_html, unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
+                    st.markdown('</div>', unsafe_allow_html=True)
             
             if radar_exists:
                 with tab2:
@@ -530,7 +522,7 @@ if uploaded_file is not None:
             
             plot_files.clear()
             del plot_files
-            del star_plot_files
+            del nos_plot_files
             gc.collect()
         
     except Exception as e:

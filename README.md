@@ -1,6 +1,6 @@
 
 ![Logo](assets/preview1.png)
-[![Python Version](https://img.shields.io/badge/python-3.11+-blue)](https://www.python.org/)
+[![Python Version](https://img.shields.io/badge/python-3.12+-blue)](https://www.python.org/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Streamlit Demo](https://img.shields.io/badge/Streamlit-Demo-orange)](https://nos-tlplot.streamlit.app)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.17065214.svg)](https://doi.org/10.5281/zenodo.17065214)
@@ -10,7 +10,7 @@
 ---
 
 **NOS-TLPlot** is an open-source Python tool for **visualising Newcastle–Ottawa Scale (NOS) risk-of-bias assessments**.  
-It converts NOS star ratings into **publication-ready traffic-light plots** and **10 specialized visualizations**, enabling reviewers and readers to interpret study-level risk-of-bias results clearly and reproducibly.
+It converts NOS star ratings into **publication-ready traffic-light plots** and **13 specialized visualizations**, enabling reviewers and readers to interpret study-level risk-of-bias results clearly and reproducibly.
  
 📂 **Code & Archive (Zenodo DOI):** [10.5281/zenodo.17065214](https://doi.org/10.5281/zenodo.17065214)
 
@@ -20,9 +20,9 @@ It converts NOS star ratings into **publication-ready traffic-light plots** and 
 
 ## ✨ Key Features
 
-- **12 Visualization Types**: Traffic-light plots, radar charts, heatmaps, dot profiles, donut charts, lollipop charts, line plots, and more  
-- **Publication-Quality Output**: Export figures in `.png`, `.pdf`, `.svg`, `.eps` formats  
-- **Multiple Themes**: Traffic-light and grayscale themes for various publication requirements  
+- **13 Visualization Types**: Traffic-light plots, radar charts, heatmaps, item heatmaps, stacked star profiles, donut charts, lollipop charts, star matrices, and more  
+- **Publication-Quality Output**: Export figures in `.png`, `.pdf`, `.svg`, `.tiff` formats  
+- **Multiple Themes**: Traffic-light, grayscale, ocean-blue, and sage themes for various publication requirements. [See the Themes section](#themes)  
 - **Interactive Web App**: Built with Streamlit for simple data upload, preview, and figure export  
 - **Command Line Interface**: For batch processing and automated figure generation  
 - **Domain-Specific Risk Assessment**: Automatically converts NOS stars (0–9) to categorical RoB (Low/Moderate/High)  
@@ -33,10 +33,10 @@ It converts NOS star ratings into **publication-ready traffic-light plots** and 
 
 ## USE
 
-- Vercel web leading to Streamlit → [nos-tlplot.vercel.app](https://nos-tlplot.vercel.app)
+- Main web (GitHub Pages) leading to Streamlit → [nos-tlplot.github.io](https://nos-tlplot.github.io)
 
 ![Example Result33](example/Screenshot3.png)
-Vercel user-interface
+Main web user-interface
 
 ---
 
@@ -52,7 +52,7 @@ Streamlit user-interface
 ## 📥 Installation (Optional)
 
 ### Prerequisites
-- This code is based on Python-3.12.3 (however works with **3.11+**)
+- Requires **Python 3.12+** (developed on Python 3.12.3)
 - `pip` package manager  
 
 ### Installation Steps
@@ -83,7 +83,7 @@ streamlit run app.py
 * Real-time visualization preview
 * Choose from 12 plot types
 * Download publication-ready figures in multiple formats
-* Theme switcher (Traffic-light / Grayscale)
+* Theme switcher (Traffic-light / Grayscale / Ocean / Sage)
 
 **Steps:**
 
@@ -120,7 +120,7 @@ python3 nos_tlplot.py sample.csv output-traffic-light.png gray
 | ------------- | --------------------------------------------------- |
 | `input_file`  | Path to CSV/Excel file containing NOS data          |
 | `output_file` | Output file name and extension                      |
-| `theme`       | Optional theme: `traffic_light` (default) or `gray` |
+| `theme`       | Optional theme: `traffic_light` (default), `gray`, `ocean` or `sage` |
 
 **Generated Outputs:**
 
@@ -129,14 +129,15 @@ python3 nos_tlplot.py sample.csv output-traffic-light.png gray
 | `_traffic-light.png` | Classic traffic-light bubble plot       |
 | `_radar.png`         | Radar chart of domain scores            |
 | `_heatmap.png`       | Color heatmap for domain-level bias     |
-| `_dot_profile.png`   | Dot-style bias visualization            |
+| `_item_heatmap.png`  | Item-level star heatmap with domain bands |
+| `_dot_profile.png`   | Stacked domain stars per study          |
 | `_table.png`         | Summary table with domain scores        |
 | `_donut.png`         | Donut chart of overall bias levels      |
-| `_line_ordered.png`  | Sequential line plot of domain bias     |
+| `_line_ordered.png`  | Item-level star ratings matrix          |
 | `_lollipop.png`      | Lollipop chart for comparative bias     |
 | `_pie.png`           | Proportional risk-of-bias pie           |
 | `_stacked_area.png`  | Stacked area visualization over domains |
-| `_star_dist.png`     | Star distribution visualization         |
+| `_nos_plot.png`      | NOS visualization plot                  |
 
 ---
 
@@ -165,20 +166,21 @@ Your file should have these columns:
 
 ## 🎨 Visualization Types
 
-1. **Traffic-light bubble Plot** – Standard bubble risk-of-bias visualization.
-2. **Radar Chart** – Displays study performance across domains.
-3. **Heatmap** – Visual overview of domain-level variation.
-4. **Dot Profile** – Shows domain-level bias in compact form.
-5. **Donut Chart** – Visualizes proportions of bias categories.
-6. **Lollipop Plot** – Combines numerical and categorical domains.
-7. **Stacked Area Chart** – Displays temporal or comparative changes.
-8. **Pie Chart** – Quick overview of overall bias distribution.
-9. **Line Ordered Plot** – Connects domain bias levels for each study.
-10. **Table View** – Tabular representation of bias domains.
-11. **Radar (Thematic)** – Theme-adapted radar chart (gray/colored).
-12. **Star distribution** – Star-adapted plot (only traffic-light).
+1. **Traffic-Light Bubble Plot** – Classic NOS traffic-light visualization.
+2. **Domain Radar Chart** – Domain scores per study as radar polygons.
+3. **Theme Radar Chart** – Theme-adapted radar chart.
+4. **Domain Heatmap** – Color heatmap for domain-level bias.
+5. **Item-Level Star Heatmap** – Item stars grouped into domain bands.
+6. **Stacked Domain Stars** – Stacked domain stars for each study.
+7. **Score Table** – Summary table of stars and overall risk.
+8. **Risk Donut Chart** – Risk proportions per domain.
+9. **Star Ratings Matrix** – Item-level star matrix ordered by total score.
+10. **Total Score Lollipop** – Total NOS scores per study.
+11. **Overall Risk Pie** – Overall risk-of-bias distribution.
+12. **Stacked Area Risk Chart** – Risk distribution across domains.
+13. **NOS Visualization Grid** – Item-level traffic-light grid with domain bands and totals.
 
-Note: Radar Plots and Dot Profile plot is only limited to 5 studies.
+Note: Radar Plots are only limited to 5 studies.
 
 ---
 
@@ -245,7 +247,7 @@ I sincerely thank the **Journal of Open Research Software (JORS)** for providing
 
 NOS-TLPlot Software code is cited:
 
-> **Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3). Zenodo.**
+> **Sahu, V. (2025). NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v3.0.0). Zenodo.**
 DOI: [10.5281/zenodo.17065214](https://doi.org/10.5281/zenodo.17065214)
 
 
@@ -257,11 +259,11 @@ DOI: [10.5334/jors.635](https://doi.org/10.5334/jors.635)
 ```bibtex
 @software{Sahu2025,
   author = {Sahu, Vihaan},
-  title = {NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v2.0.3)},
+  title = {NOS-TLPlot: Visualization Tool for Newcastle–Ottawa Scale in Meta-Analysis (v3.0.0)},
   year = {2025},
   doi = {10.5281/zenodo.17065214},
   url = {https://doi.org/10.5281/zenodo.17065214},
-  version = {2.0.3}
+  version = {3.0.0}
 }
 
 @article{Sahu2026,
@@ -277,15 +279,14 @@ DOI: [10.5334/jors.635](https://doi.org/10.5334/jors.635)
 }
 ```
 
-
 ---
 
 # Sample Plots
 
 All the Output Sample plots
 
-![Example Result1111](example/NOS_star.png)
-NOS star plot
+![Example NOS Plot](example/nos_plot.png)
+NOS visualization plot
 
 
 ![Example Result1](example/output.png)
@@ -301,7 +302,7 @@ Theme-based Domain Scores Radar Chart
 
 
 ![Example Result4](example/output_line_ordered.png)
-Domain Scores Ordered by Total Score
+NOS star ratings matrix by study (ordered by total score)
 
 
 ![Example Result5](example/output_lollipop.png)
@@ -309,7 +310,7 @@ Total NOS Scores by Study (Lollipop Chart)
 
 
 ![Example Result6](example/output_dot_profile.png)
-Domain Score Profiles by Study
+Domain stars by study (stacked)
 
 
 ![Example Result7](example/output_stacked_area.png)
@@ -328,7 +329,28 @@ Distribution of Overall Risk of Bias Pie
 Risk of Bias by Domain and Study by heatmap
 
 
+![Example Result12](example/output_item_heatmap.png)
+Item-level NOS star heatmap by domain
+
+
 ![Example Result11](example/output_table.png)
 NOS Scores by Study
 
+---
 
+## Themes
+
+NOS-TLPlot ships with four colour themes - `traffic_light` (default), `gray`, `ocean` and `sage` - selectable in the web app or via the optional theme argument on the command line.
+
+| Theme | Low | Moderate | High |
+| ----- | --- | -------- | ---- |
+| `traffic_light` | `#2E7D32` | `#F9A825` | `#C62828` |
+| `gray` | `#D6D6D6` | `#9E9E9E` | `#3C3C3C` |
+| `ocean` | `#6BAED6` | `#2171B5` | `#08306B` |
+| `sage` | `#63BF93` | `#5B6D80` | `#FF884D` |
+
+![Example NOS plot in the ocean theme](example/nos_plot_ocean.png)
+NOS visualization plot in the ocean theme
+
+![Example NOS plot in the sage theme](example/nos_plot_sage.png)
+NOS visualization plot in the sage theme

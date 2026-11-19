@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <g stroke="#1C1C1E" stroke-width="12" stroke-linecap="round" stroke-linejoin="round">
+    <!-- housing, solid dark grey -->
+    <rect x="166" y="30" width="180" height="452" rx="30" fill="#343940"/>
+
+    <!-- wings -->
+    <path d="M 176 100 L 158 100 Q 144 100 144 114 L 144 130 Q 144 144 158 144 L 176 144" fill="#343940"/>
+    <path d="M 336 100 L 354 100 Q 368 100 368 114 L 368 130 Q 368 144 354 144 L 336 144" fill="#343940"/>
+    <path d="M 176 234 L 158 234 Q 144 234 144 248 L 144 264 Q 144 278 158 278 L 176 278" fill="#343940"/>
+    <path d="M 336 234 L 354 234 Q 368 234 368 248 L 368 264 Q 368 278 354 278 L 336 278" fill="#343940"/>
+    <path d="M 176 368 L 158 368 Q 144 368 144 382 L 144 398 Q 144 412 158 412 L 176 412" fill="#343940"/>
+    <path d="M 336 368 L 354 368 Q 368 368 368 382 L 368 398 Q 368 412 354 412 L 336 412" fill="#343940"/>
+
+    <!-- hood arcs -->
+    <path d="M 173 110 A 87 87 0 0 1 339 110" fill="none"/>
+    <path d="M 173 244 A 87 87 0 0 1 339 244" fill="none"/>
+    <path d="M 173 378 A 87 87 0 0 1 339 378" fill="none"/>
+
+    <!-- lamp circles, filled -->
+    <circle cx="256" cy="122" r="48" fill="#E5484D"/>
+    <circle cx="256" cy="256" r="48" fill="#F5A623"/>
+    <circle cx="256" cy="390" r="48" fill="#2FBE5F"/>
+
+    <!-- darker shade, bottom half of each lamp (flat, no gradient) -->
+    <path d="M 214 122 A 42 42 0 0 0 298 122 Z" fill="#C13A3F" stroke="none"/>
+    <path d="M 214 256 A 42 42 0 0 0 298 256 Z" fill="#D68B10" stroke="none"/>
+    <path d="M 214 390 A 42 42 0 0 0 298 390 Z" fill="#27A14F" stroke="none"/>
+  </g>
+
+  <!-- letters -->
+  <g fill="#FFFFFF" font-family="Helvetica Neue, Helvetica, Arial, sans-serif" font-weight="bold" text-anchor="middle">
+    <text x="256" y="142" font-size="56">N</text>
+    <text x="256" y="276" font-size="56">O</text>
+    <text x="256" y="410" font-size="56">S</text>
+  </g>
+</svg>

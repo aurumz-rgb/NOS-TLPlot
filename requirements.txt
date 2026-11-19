@@ -1,10 +1,10 @@
 numpy==2.5.2
 pandas==2.2.3
-matplotlib==3.10.8
+matplotlib==3.11.1
 seaborn==0.13.2
 streamlit==1.55.0
-pyarrow==25.0.0
+pyarrow==25.0.1
 openpyxl==3.1.5
 pytest
 pytest-mock
-
+Pillow==13.0.0

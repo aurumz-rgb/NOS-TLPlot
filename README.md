@@ -88,7 +88,7 @@ streamlit run app.py
 
 * Upload CSV/Excel files
 * Real-time visualization preview
-* Choose from 12 plot types
+* Choose from 13 plot types
 * Download publication-ready figures in multiple formats
 * Theme switcher (Traffic-light / Grayscale / Ocean / Sage)
 
@@ -135,6 +135,7 @@ python3 nos_tlplot.py sample.csv output-traffic-light.png gray
 | -------------------- | --------------------------------------- |
 | `_traffic-light.png` | Classic traffic-light bubble plot       |
 | `_radar.png`         | Radar chart of domain scores            |
+| `_theme_radar.png`   | Theme-adapted radar chart               |
 | `_heatmap.png`       | Color heatmap for domain-level bias     |
 | `_item_heatmap.png`  | Item-level star heatmap with domain bands |
 | `_dot_profile.png`   | Stacked domain stars per study          |
@@ -225,9 +226,9 @@ NOS-TLPlot/
 ├── nos_tlplot.py          # Main plotting engine
 ├── requirements.txt       # Dependencies
 ├── README.md              # Project documentation
-├── citation.cff           # Citation metadata
+├── CITATION.cff           # Citation metadata
 ├── LICENSE                # Apache 2.0 License
-├── examples               # All the Sample outputs
+├── example                # All the sample outputs
 
 ```
 

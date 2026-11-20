@@ -661,7 +661,7 @@ st.markdown("""
         <div>Licensed under the Apache License, Version 2.0</div>
     </div>
     <div class="footer-center">
-        <span>NOS-TLPlot</span>
+        <a href='https://nos-tlplot.github.io/nos.tlplotR/index.html' target='_blank' class='footer-link'>nos.tlplotR Package</a>
         <span>Professional NOS Visualization Tool</span>
         <a href='https://github.com/aurumz-rgb/nos-tlplot' target='_blank' class='footer-link'>GitHub Repository</a>
     </div>

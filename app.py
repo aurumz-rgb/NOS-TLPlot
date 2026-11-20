@@ -306,7 +306,7 @@ with st.expander("**Setting Up Your Data**", expanded=True):
 It generates:
 
 *  **Traffic light plots** (domain-level judgements)
-*  **Weighted bar plots** (summary distributions)
+*  **The NOS visualization grid** (item-level stars with domain bands and totals)
 *  **Multiple specialized visualizations** (radar charts, heatmaps, etc.)
 
 All figures are **publication-ready**.

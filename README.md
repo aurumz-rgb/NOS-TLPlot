@@ -66,6 +66,13 @@ cd NOS-TLPlot
 pip install -r requirements.txt
 ````
 
+### Or use the packages directly
+
+Skip the clone — NOS-TLPlot ships as installable packages too:
+
+* **Python**: `pip install nos-tlplot` · [PyPI](https://pypi.org/project/nos-tlplot/)
+* **R**: `remotes::install_github("nos-tlplot/nos.tlplotR")` · [package docs](https://nos-tlplot.github.io/nos.tlplotR/)
+
 ---
 
 ## ⚡ Usage (directly via Streamlit web OR)
